@@ -187,7 +187,8 @@ export async function triggerSyncAll(): Promise<number> {
 
     return syncedCount;
   } catch (error) {
-    console.error('Error triggering sync all:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error triggering sync all:', errorMsg);
     return 0;
   }
 }
