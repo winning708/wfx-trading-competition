@@ -320,13 +320,42 @@ export default function RegistrationPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Integrate with payment processor (Stripe/Paystack) and backend
-      // For now, simulate successful registration
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      setIsSuccess(true);
+      // Simulate form validation delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setStep("payment");
     } catch (error) {
       console.error("Registration error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePaymentSelect = (paymentId: string) => {
+    setSelectedPayment(paymentId);
+  };
+
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedPayment) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // TODO: Integrate with actual payment processor
+      // Simulate payment processing
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // In production, redirect to payment processor
+      console.log(
+        `Processing payment with ${selectedPayment} for ${formData.email}`
+      );
+
+      setStep("success");
+    } catch (error) {
+      console.error("Payment error:", error);
     } finally {
       setIsLoading(false);
     }
