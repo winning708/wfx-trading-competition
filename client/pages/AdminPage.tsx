@@ -185,7 +185,8 @@ export default function AdminPage() {
         alert("✅ Credential uploaded successfully! No traders available for auto-assignment.");
       }
     } else {
-      alert("Failed to upload credential. Account number may already exist.");
+      const errorMsg = result.error || "Account number may already exist";
+      alert(`❌ Error: Failed to upload credential.\n\n${errorMsg}`);
     }
   };
 
