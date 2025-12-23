@@ -384,23 +384,23 @@ export const handleMT5TestConnection: RequestHandler = async (req, res) => {
     console.log('[MT5 Test] Token length:', mt5_api_token.length);
 
     const { testMT5Connection } = await import('../lib/mt5-client');
-    const success = await testMT5Connection(
+    const testResult = await testMT5Connection(
       mt5_account_id,
       mt5_api_token,
       mt5_server_endpoint
     );
 
-    if (success) {
+    if (testResult.success) {
       console.log('[MT5 Test] Connection successful!');
       return res.json({
         success: true,
-        message: 'MT5 connection test successful! Your configuration is correct.',
+        message: testResult.message || 'MT5 connection test successful! Your configuration is correct.',
       });
     } else {
       console.log('[MT5 Test] Connection failed');
       return res.json({
         success: false,
-        message: 'MT5 connection test failed. Check your credentials and endpoint URL.',
+        message: testResult.message || 'MT5 connection test failed. Check your credentials and endpoint URL.',
       });
     }
   } catch (error) {
