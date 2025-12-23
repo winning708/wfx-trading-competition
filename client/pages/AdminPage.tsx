@@ -419,6 +419,17 @@ export default function AdminPage() {
               <Activity className="inline h-4 w-4 mr-2" />
               Monitoring
             </button>
+            <button
+              onClick={() => setActiveTab("payments")}
+              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+                activeTab === "payments"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <CreditCard className="inline h-4 w-4 mr-2" />
+              Payments
+            </button>
           </div>
 
           {/* Traders Tab */}
