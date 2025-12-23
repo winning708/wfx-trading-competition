@@ -149,10 +149,14 @@ export default function AdminPage() {
   const loadAssignments = async () => {
     setIsLoadingAssignments(true);
     try {
+      console.log('[AdminPage] Loading assignments...');
       const data = await getAssignments();
+      console.log('[AdminPage] Loaded', data.length, 'assignments');
       setAssignments(data);
     } catch (error) {
-      console.error("Error loading assignments:", error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("Error loading assignments:", errorMsg);
+      setAssignments([]);
     } finally {
       setIsLoadingAssignments(false);
     }
