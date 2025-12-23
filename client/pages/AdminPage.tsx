@@ -844,6 +844,298 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Monitoring Tab */}
+          {activeTab === "monitoring" && (
+            <div className="space-y-6">
+              {/* Info Box */}
+              <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
+                <h3 className="font-semibold text-foreground mb-2">MyFXBook Integration</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Link your trading accounts to MyFXBook to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
+                </p>
+                <details className="text-sm text-muted-foreground">
+                  <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
+                    📖 How to get MyFXBook credentials
+                  </summary>
+                  <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
+                    <p><strong>1. Log in to MyFXBook</strong> - Visit myf xbook.com and sign in</p>
+                    <p><strong>2. Go to Account Settings</strong> - Click your profile → Settings</p>
+                    <p><strong>3. Find API Credentials</strong> - Look for "Account ID" and "API Password" (not your login password)</p>
+                    <p><strong>4. Copy your Account ID</strong> - This is your MyFXBook account identifier (usually a number)</p>
+                    <p><strong>5. Use API Password</strong> - Your API password is a special password for API access</p>
+                  </div>
+                </details>
+              </div>
+
+              {/* MyFXBook Link Form */}
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-foreground">MyFXBook Integrations</h2>
+                <button
+                  onClick={() => setShowLinkForm(!showLinkForm)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  Link MyFXBook
+                </button>
+              </div>
+
+              {showLinkForm && (
+                <div className="rounded-lg border border-border bg-card p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MyFXBook Account</h3>
+
+                  <form onSubmit={handleLinkMyFXBook} className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Select Trading Credential *
+                        </label>
+                        <select
+                          value={selectedCredentialForLink}
+                          onChange={(e) => setSelectedCredentialForLink(e.target.value)}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        >
+                          <option value="">Choose a credential...</option>
+                          {credentials.map((cred) => (
+                            <option key={cred.id} value={cred.id}>
+                              {cred.account_username} ({cred.account_number})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          MyFXBook Account ID *
+                        </label>
+                        <Input
+                          type="text"
+                          value={myfxbookForm.myfxbook_account_id}
+                          onChange={(e) =>
+                            setMyfxbookForm({
+                              ...myfxbookForm,
+                              myfxbook_account_id: e.target.value,
+                            })
+                          }
+                          placeholder="e.g., 1234567"
+                        />
+                      </div>
+
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          MyFXBook API Password *
+                        </label>
+                        <Input
+                          type="password"
+                          value={myfxbookForm.myfxbook_password}
+                          onChange={(e) =>
+                            setMyfxbookForm({
+                              ...myfxbookForm,
+                              myfxbook_password: e.target.value,
+                            })
+                          }
+                          placeholder="Your MyFXBook API password"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setShowLinkForm(false)}
+                        className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                      >
+                        Link Account
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Sync Controls */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSyncAll}
+                  disabled={isSyncing}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success text-success-foreground hover:bg-success/90 transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                  Sync All
+                </button>
+              </div>
+
+              {/* Integrations List */}
+              <div className="rounded-lg border border-border bg-card overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border bg-card/50">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Credential
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        MyFXBook Account
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Sync Status
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Last Sync
+                      </th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {isLoadingMonitoring ? (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center">
+                          <p className="text-muted-foreground">Loading integrations...</p>
+                        </td>
+                      </tr>
+                    ) : myfxbookIntegrations.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-6 py-8 text-center">
+                          <p className="text-muted-foreground">No MyFXBook integrations yet</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      myfxbookIntegrations.map((integration) => (
+                        <tr
+                          key={integration.id}
+                          className="border-b border-border hover:bg-card/50 transition-colors"
+                        >
+                          <td className="px-6 py-4 font-mono text-sm text-foreground">
+                            {integration.credential?.account_username || "N/A"}
+                          </td>
+                          <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
+                            {integration.myfxbook_account_id}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                integration.sync_status === 'success'
+                                  ? 'bg-success/10 text-success'
+                                  : integration.sync_status === 'error'
+                                  ? 'bg-destructive/10 text-destructive'
+                                  : integration.sync_status === 'syncing'
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'bg-muted text-muted-foreground'
+                              }`}
+                            >
+                              {integration.sync_status === 'syncing' && (
+                                <RefreshCw className="h-3 w-3 animate-spin" />
+                              )}
+                              {integration.sync_status === 'success' && (
+                                <Check className="h-3 w-3" />
+                              )}
+                              {integration.sync_status === 'error' && (
+                                <AlertCircle className="h-3 w-3" />
+                              )}
+                              {integration.sync_status.charAt(0).toUpperCase() +
+                                integration.sync_status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-muted-foreground">
+                            {integration.last_sync
+                              ? new Date(integration.last_sync).toLocaleString()
+                              : 'Never'}
+                          </td>
+                          <td className="px-6 py-4 text-right space-x-2">
+                            <button
+                              onClick={() => handleManualSync(integration.id)}
+                              disabled={isSyncing}
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"
+                            >
+                              <RefreshCw className="h-4 w-4" />
+                              Sync
+                            </button>
+                            <button
+                              onClick={() => handleDeleteIntegration(integration.id)}
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Sync History */}
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-4">Recent Sync History</h3>
+                <div className="rounded-lg border border-border bg-card overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-card/50">
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                          Type
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                          Status
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                          Records Updated
+                        </th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                          Synced
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {syncHistory.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} className="px-6 py-8 text-center">
+                            <p className="text-muted-foreground">No sync history yet</p>
+                          </td>
+                        </tr>
+                      ) : (
+                        syncHistory.map((sync) => (
+                          <tr
+                            key={sync.id}
+                            className="border-b border-border hover:bg-card/50 transition-colors"
+                          >
+                            <td className="px-6 py-4 text-sm capitalize text-foreground">
+                              {sync.sync_type}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                                  sync.status === 'success'
+                                    ? 'bg-success/10 text-success'
+                                    : sync.status === 'error'
+                                    ? 'bg-destructive/10 text-destructive'
+                                    : 'bg-primary/10 text-primary'
+                                }`}
+                              >
+                                {sync.status.charAt(0).toUpperCase() + sync.status.slice(1)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-muted-foreground">
+                              {sync.records_updated}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-muted-foreground">
+                              {new Date(sync.synced_at).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
