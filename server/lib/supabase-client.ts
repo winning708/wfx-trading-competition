@@ -88,18 +88,9 @@ export async function getActiveMT5Integrations(): Promise<any[]> {
   try {
     const { data, error } = await supabase
       .from('mt5_integrations')
-      .select(`
-        id,
-        credential_id,
-        mt5_account_id,
-        mt5_api_token,
-        mt5_server_endpoint,
-        sync_status,
-        last_sync,
-        trading_credentials(id),
-        credential_assignments(trader_id)
-      `)
-      .eq('is_active', true);
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching MT5 integrations:', error);
