@@ -9,6 +9,9 @@ import {
   handleMT5SyncAll,
   handleMT5SyncIntegration,
   handleMT5TestConnection,
+  handleForexFactorySyncAll,
+  handleForexFactorySyncIntegration,
+  handleForexFactoryTestConnection,
 } from "./routes/sync";
 import {
   handleFlutterwaveWebhookRequest,
