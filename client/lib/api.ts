@@ -25,40 +25,66 @@ async function withRetry<T>(
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
     const data = await withRetry(async () => {
-      // Fetch performance data and join with traders
-      const { data: result, error } = await supabase
-        .from('performance_data')
-        .select(
-          `trader_id,
-           starting_balance,
-           current_balance,
-           profit_percentage,
-           traders(full_name)`
-        )
-        .order('profit_percentage', { ascending: false })
-        .limit(10);
+      // Use raw SQL query to get leaderboard data
+      const { data: result, error } = await supabase.rpc('get_leaderboard', {
+        limit_count: 10,
+      });
 
       if (error) {
-        console.error('Supabase query error:', error.message, error);
-        throw new Error(`Query failed: ${error.message}`);
+        console.warn('RPC not available, falling back to table query:', error.message);
+
+        // Fallback: fetch from tables directly
+        const { data: perfData, error: perfError } = await supabase
+          .from('performance_data')
+          .select('*')
+          .order('profit_percentage', { ascending: false })
+          .limit(10);
+
+        if (perfError) {
+          console.error('Performance data query error:', perfError.message);
+          throw new Error(`Query failed: ${perfError.message}`);
+        }
+
+        // Now fetch trader names
+        if (!perfData || perfData.length === 0) {
+          console.warn('No performance data found');
+          return [];
+        }
+
+        const traderIds = perfData.map((p: any) => p.trader_id);
+        const { data: traders, error: tradersError } = await supabase
+          .from('traders')
+          .select('id, full_name')
+          .in('id', traderIds);
+
+        if (tradersError) {
+          console.error('Traders query error:', tradersError.message);
+          throw new Error(`Traders query failed: ${tradersError.message}`);
+        }
+
+        const traderMap = new Map(traders?.map((t: any) => [t.id, t.full_name]) || []);
+
+        return perfData.map((item: any) => ({
+          trader_id: item.trader_id,
+          starting_balance: item.starting_balance,
+          current_balance: item.current_balance,
+          profit_percentage: item.profit_percentage,
+          trader_name: traderMap.get(item.trader_id) || 'Anonymous',
+        }));
       }
 
-      console.log('Raw result from Supabase:', result);
+      console.log('RPC result:', result);
       return result || [];
     }, 3, 500);
 
     if (!Array.isArray(data)) {
-      console.error('Expected array from Supabase, got:', typeof data);
+      console.error('Expected array from query, got:', typeof data);
       return [];
     }
 
     const traders: Trader[] = data.map((item: any, index: number) => {
-      let username = 'Anonymous';
-
-      // Supabase returns nested objects for foreign keys
-      if (item.traders && typeof item.traders === 'object') {
-        username = item.traders.full_name || 'Anonymous';
-      }
+      // Handle both RPC and fallback response formats
+      let username = item.trader_name || (item.traders?.full_name) || 'Anonymous';
 
       return {
         rank: index + 1,
@@ -69,10 +95,10 @@ export async function getLeaderboard(): Promise<Trader[]> {
       };
     });
 
-    console.log('Processed traders:', traders);
+    console.log('Final leaderboard traders:', traders);
     return traders;
   } catch (error) {
-    console.error('Error in getLeaderboard:', error);
+    console.error('Fatal error in getLeaderboard:', error);
     return [];
   }
 }
