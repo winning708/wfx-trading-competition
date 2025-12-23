@@ -50,7 +50,7 @@ interface Trader {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
-    "traders" | "credentials" | "assignments" | "monitoring"
+    "traders" | "credentials" | "assignments" | "monitoring" | "payments"
   >("traders");
 
   // Traders state
