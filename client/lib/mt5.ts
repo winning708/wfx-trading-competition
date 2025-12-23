@@ -330,3 +330,40 @@ export async function getRecentMT5Syncs(
     return [];
   }
 }
+
+/**
+ * Test MT5 connection with provided credentials
+ */
+export async function testMT5Connection(
+  mt5_account_id: string,
+  mt5_api_token: string,
+  mt5_server_endpoint: string
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    console.log('[MT5 Test] Testing connection...');
+
+    const response = await fetch('/api/sync/mt5/test', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mt5_account_id,
+        mt5_api_token,
+        mt5_server_endpoint,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log('[MT5 Test] Response:', data);
+
+    if (!response.ok) {
+      return { success: false, message: data.message || 'Test failed' };
+    }
+
+    return { success: data.success, message: data.message };
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[MT5 Test] Error:', error);
+    return { success: false, message: errorMsg };
+  }
+}
