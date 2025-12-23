@@ -234,7 +234,14 @@ export async function triggerMT5SyncAll(): Promise<{
 
     const data = await response.json();
 
+    console.log('[MT5 Sync] Response:', { status: response.status, ok: response.ok, data });
+
     if (!response.ok) {
+      return { success: false, error: data.message || 'Sync failed' };
+    }
+
+    // If backend returned success: false, convert to error
+    if (!data.success) {
       return { success: false, error: data.message || 'Sync failed' };
     }
 
