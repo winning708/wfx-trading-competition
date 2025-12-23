@@ -912,12 +912,30 @@ export default function AdminPage() {
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
-                    📖 How to set up Forex Factory Trade Explorer connection
+                    📖 How to set up Forex Factory Trade Explorer connection (powered by RapidAPI)
                   </summary>
-                  <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
-                    <p><strong>1. Get Account Username</strong> - Your Forex Factory account username (e.g., johndoe)</p>
-                    <p><strong>2. Get API Key</strong> - Request from Forex Factory API dashboard</p>
-                    <p><strong>3. Get System ID</strong> - The specific trading system ID you want to track</p>
+                  <div className="mt-3 space-y-3 ml-2 border-l-2 border-primary/30 pl-3">
+                    <div>
+                      <p><strong>1. Get RapidAPI Key</strong></p>
+                      <ul className="text-xs mt-1 ml-4 space-y-1">
+                        <li>• Go to <a href="https://rapidapi.com/ousema.frikha/api/forex-factory-scraper1" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">RapidAPI Forex Factory Scraper</a></li>
+                        <li>• Click "Subscribe to Test" (free tier available)</li>
+                        <li>• Copy your API Key from the dashboard</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p><strong>2. Get Forex Factory Account Username</strong></p>
+                      <ul className="text-xs mt-1 ml-4 space-y-1">
+                        <li>• Your username from your Forex Factory profile (e.g., johndoe)</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p><strong>3. Get System ID</strong></p>
+                      <ul className="text-xs mt-1 ml-4 space-y-1">
+                        <li>• The specific trading system ID you want to track on Forex Factory</li>
+                        <li>• Find it in your Forex Factory "My Systems" page</li>
+                      </ul>
+                    </div>
                     <p><strong>4. Link Account</strong> - Fill in the form below and click "Link Account"</p>
                   </div>
                 </details>
