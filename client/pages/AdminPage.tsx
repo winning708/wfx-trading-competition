@@ -1181,6 +1181,11 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Payments Tab */}
+          {activeTab === "payments" && (
+            <PaymentMonitoring />
+          )}
         </div>
       </div>
     </div>
