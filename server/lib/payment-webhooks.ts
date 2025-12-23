@@ -140,6 +140,7 @@ export async function handleFlutterwaveWebhook(
     const { data } = payload;
 
     // Extract email early for failed payment logging
+    // Extract trader email from tx_ref (format: "trader_[email]_[timestamp]")
     const emailMatch = data.tx_ref?.match(/trader_(.+?)_\d+$/);
     const email = emailMatch ? emailMatch[1] : null;
 
@@ -161,14 +162,10 @@ export async function handleFlutterwaveWebhook(
       return { success: false, message: 'Payment not successful' };
     }
 
-    // Extract trader email from tx_ref (format: "trader_[email]_[timestamp]")
-    const emailMatch = data.tx_ref.match(/trader_(.+?)_\d+$/);
-    if (!emailMatch) {
+    if (!emailMatch || !email) {
       console.error('[Payment] Could not extract email from tx_ref:', data.tx_ref);
       return { success: false, message: 'Invalid transaction reference' };
     }
-
-    const email = emailMatch[1];
 
     console.log('[Payment] Processing Flutterwave payment for:', email);
 
