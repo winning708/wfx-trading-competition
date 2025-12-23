@@ -366,7 +366,7 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
 /**
  * Internal function to sync a single MT5 integration
  */
-async function syncMT5Integration(integration: any): Promise<boolean> {
+async function syncMT5Integration(integration: any): Promise<{ success: boolean; error?: string }> {
   try {
     const integrationId = integration.id;
     const credentialId = integration.credential_id;
@@ -375,6 +375,21 @@ async function syncMT5Integration(integration: any): Promise<boolean> {
     const mt5ServerEndpoint = integration.mt5_server_endpoint;
 
     console.log(`[MT5 Sync] Syncing integration ${integrationId}...`);
+
+    // Validate required fields
+    if (!mt5AccountId || !mt5ApiToken || !mt5ServerEndpoint) {
+      const missing = [
+        !mt5AccountId ? 'MT5 Account ID' : null,
+        !mt5ApiToken ? 'MT5 API Token' : null,
+        !mt5ServerEndpoint ? 'MT5 Server Endpoint' : null,
+      ].filter(Boolean).join(', ');
+
+      const errorMsg = `Missing required MT5 configuration: ${missing}`;
+      console.error(`[MT5 Sync] ${errorMsg}`);
+      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      return { success: false, error: errorMsg };
+    }
 
     // Step 1: Log sync start
     await logSyncAttempt(integrationId, 'automatic', 'in_progress');
@@ -387,13 +402,14 @@ async function syncMT5Integration(integration: any): Promise<boolean> {
       console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
       await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
-      return false;
+      return { success: false, error: errorMsg };
     }
 
     const traderId = traderData.traders.id;
     const traderName = traderData.traders.full_name;
 
     console.log(`[MT5 Sync] Syncing for trader: ${traderName} (${traderId})`);
+    console.log(`[MT5 Sync] Using MT5 Account: ${mt5AccountId}, Endpoint: ${mt5ServerEndpoint}`);
 
     // Step 3: Fetch account data from MT5
     const syncResult = await syncMT5Account(
@@ -408,7 +424,7 @@ async function syncMT5Integration(integration: any): Promise<boolean> {
       console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
       await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
-      return false;
+      return { success: false, error: errorMsg };
     }
 
     console.log(
@@ -427,7 +443,7 @@ async function syncMT5Integration(integration: any): Promise<boolean> {
       console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
       await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
-      return false;
+      return { success: false, error: errorMsg };
     }
 
     // Step 5: Log successful sync
@@ -435,12 +451,12 @@ async function syncMT5Integration(integration: any): Promise<boolean> {
     await updateMT5IntegrationSyncStatus(integrationId, 'success');
 
     console.log(`[MT5 Sync] Successfully synced integration ${integrationId}`);
-    return true;
+    return { success: true };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
     console.error(`[MT5 Sync] Error in syncMT5Integration:`, error);
     await logSyncAttempt(integration.id, 'automatic', 'error', 0, errorMsg);
     await updateMT5IntegrationSyncStatus(integration.id, 'error', errorMsg);
-    return false;
+    return { success: false, error: errorMsg };
   }
 }
