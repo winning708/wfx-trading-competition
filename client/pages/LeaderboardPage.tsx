@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import { Trophy, TrendingUp, Clock } from "lucide-react";
+import { getLeaderboard, getTraderCount } from "@/lib/api";
 
 interface Trader {
   rank: number;
@@ -10,64 +11,33 @@ interface Trader {
   profitPercentage: number;
 }
 
-const mockLeaderboard: Trader[] = [
-  {
-    rank: 1,
-    username: "TradeMaster01",
-    startingBalance: 1000,
-    currentBalance: 1850,
-    profitPercentage: 85.0,
-  },
-  {
-    rank: 2,
-    username: "ProfitSeeker",
-    startingBalance: 1000,
-    currentBalance: 1720,
-    profitPercentage: 72.0,
-  },
-  {
-    rank: 3,
-    username: "MarketWizard",
-    startingBalance: 1000,
-    currentBalance: 1650,
-    profitPercentage: 65.0,
-  },
-  {
-    rank: 4,
-    username: "SwingTrader99",
-    startingBalance: 1000,
-    currentBalance: 1520,
-    profitPercentage: 52.0,
-  },
-  {
-    rank: 5,
-    username: "LongTermHolder",
-    startingBalance: 1000,
-    currentBalance: 1380,
-    profitPercentage: 38.0,
-  },
-];
-
 export default function LeaderboardPage() {
-  const [leaderboard, setLeaderboard] = useState<Trader[]>(mockLeaderboard);
+  const [leaderboard, setLeaderboard] = useState<Trader[]>([]);
   const [isLive] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [traderCount, setTraderCount] = useState(0);
 
   useEffect(() => {
-    // Simulate real-time updates
-    const interval = setInterval(() => {
-      setLeaderboard((prev) =>
-        prev.map((trader) => ({
-          ...trader,
-          currentBalance:
-            trader.currentBalance +
-            (Math.random() - 0.45) * (trader.rank === 1 ? 50 : 30),
-          profitPercentage:
-            ((trader.currentBalance + (Math.random() - 0.45) * 40 - 1000) /
-              1000) *
-            100,
-        }))
-      );
-    }, 5000);
+    // Fetch leaderboard data on component mount
+    const fetchLeaderboard = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getLeaderboard();
+        setLeaderboard(data);
+
+        const count = await getTraderCount();
+        setTraderCount(count);
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+
+    // Set up real-time updates every 15 minutes
+    const interval = setInterval(fetchLeaderboard, 15 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -120,7 +90,7 @@ export default function LeaderboardPage() {
                     Registered Traders
                   </p>
                   <p className="text-lg font-semibold text-foreground">
-                    {leaderboard.length}+
+                    {traderCount > 0 ? traderCount : "0"}
                   </p>
                 </div>
                 <TrendingUp className="h-5 w-5 text-success" />
@@ -168,46 +138,60 @@ export default function LeaderboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {leaderboard.map((trader) => (
-                  <tr
-                    key={trader.rank}
-                    className="border-b border-border hover:bg-card/50 transition-colors"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        {trader.rank === 1 && (
-                          <Trophy className="h-5 w-5 text-primary" />
-                        )}
-                        <span className="font-semibold text-foreground">
-                          #{trader.rank}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="font-medium text-foreground">
-                        {trader.username}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right text-muted-foreground">
-                      ${trader.startingBalance.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 text-right font-medium text-foreground">
-                      ${trader.currentBalance.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <span
-                        className={`font-semibold ${
-                          trader.profitPercentage >= 0
-                            ? "text-success"
-                            : "text-destructive"
-                        }`}
-                      >
-                        {trader.profitPercentage >= 0 ? "+" : ""}
-                        {trader.profitPercentage.toFixed(2)}%
-                      </span>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center">
+                      <p className="text-muted-foreground">Loading leaderboard...</p>
                     </td>
                   </tr>
-                ))}
+                ) : leaderboard.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center">
+                      <p className="text-muted-foreground">No traders registered yet</p>
+                    </td>
+                  </tr>
+                ) : (
+                  leaderboard.map((trader) => (
+                    <tr
+                      key={trader.rank}
+                      className="border-b border-border hover:bg-card/50 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          {trader.rank === 1 && (
+                            <Trophy className="h-5 w-5 text-primary" />
+                          )}
+                          <span className="font-semibold text-foreground">
+                            #{trader.rank}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="font-medium text-foreground">
+                          {trader.username}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right text-muted-foreground">
+                        ${trader.startingBalance.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 text-right font-medium text-foreground">
+                        ${trader.currentBalance.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <span
+                          className={`font-semibold ${
+                            trader.profitPercentage >= 0
+                              ? "text-success"
+                              : "text-destructive"
+                          }`}
+                        >
+                          {trader.profitPercentage >= 0 ? "+" : ""}
+                          {trader.profitPercentage.toFixed(2)}%
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
