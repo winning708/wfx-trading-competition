@@ -69,11 +69,19 @@ export async function fetchMT5AccountData(
     });
 
     if (!response.ok) {
-      console.error(`[MT5] HTTP Error: ${response.status}`);
-      throw new Error(`HTTP ${response.status}`);
+      const responseText = await response.text();
+      console.error(`[MT5] HTTP Error ${response.status}: ${responseText.substring(0, 200)}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      const responseText = await response.text();
+      console.error(`[MT5] Failed to parse JSON response: ${responseText.substring(0, 200)}`);
+      throw new Error(`Invalid JSON response from MT5 API. Server returned: ${responseText.substring(0, 100)}`);
+    }
 
     // Normalize response data (different providers have different formats)
     const accountData = normalizeAccountData(data);
