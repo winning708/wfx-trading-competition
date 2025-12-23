@@ -16,19 +16,24 @@ export default function LeaderboardPage() {
   const [isLive] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [traderCount, setTraderCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch leaderboard data on component mount
     const fetchLeaderboard = async () => {
       try {
         setIsLoading(true);
+        setError(null);
+
         const data = await getLeaderboard();
         setLeaderboard(data);
 
         const count = await getTraderCount();
         setTraderCount(count);
       } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Failed to load leaderboard';
         console.error("Error fetching leaderboard:", error);
+        setError(errorMsg);
       } finally {
         setIsLoading(false);
       }
@@ -116,6 +121,13 @@ export default function LeaderboardPage() {
       {/* Leaderboard Table */}
       <section className="px-4 py-16 md:py-24">
         <div className="container mx-auto">
+          {error && (
+            <div className="mb-8 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+              <p className="text-sm text-destructive">
+                <strong>Error loading leaderboard:</strong> {error}
+              </p>
+            </div>
+          )}
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full">
               <thead>
