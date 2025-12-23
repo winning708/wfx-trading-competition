@@ -1071,14 +1071,14 @@ export default function AdminPage() {
                           <p className="text-muted-foreground">Loading integrations...</p>
                         </td>
                       </tr>
-                    ) : mt5Integrations.length === 0 ? (
+                    ) : forexFactoryIntegrations.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">No MT5 integrations yet</p>
+                          <p className="text-muted-foreground">No Forex Factory integrations yet</p>
                         </td>
                       </tr>
                     ) : (
-                      mt5Integrations.map((integration) => (
+                      forexFactoryIntegrations.map((integration) => (
                         <tr
                           key={integration.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
