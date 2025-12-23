@@ -217,18 +217,18 @@ interface PaymentMethod {
 
 const PAYMENT_METHODS: PaymentMethod[] = [
   {
-    id: "stripe",
-    name: "Stripe",
-    description: "Credit/Debit Card (Visa, Mastercard, Amex)",
-    icon: "💳",
-    color: "from-blue-600 to-blue-700",
+    id: "binance",
+    name: "Binance Pay",
+    description: "Cryptocurrency payment with Binance",
+    icon: "🔶",
+    color: "from-yellow-500 to-yellow-600",
   },
   {
-    id: "paystack",
-    name: "Paystack",
-    description: "African payments platform",
-    icon: "🏦",
-    color: "from-blue-500 to-indigo-600",
+    id: "bybit",
+    name: "Bybit Pay",
+    description: "Crypto payments via Bybit platform",
+    icon: "⚡",
+    color: "from-cyan-500 to-blue-600",
   },
   {
     id: "flutterwave",
@@ -236,13 +236,6 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     description: "Cards, Mobile Money, Bank Transfer",
     icon: "💰",
     color: "from-red-500 to-orange-600",
-  },
-  {
-    id: "paypal",
-    name: "PayPal",
-    description: "PayPal Account or Cards",
-    icon: "🔵",
-    color: "from-blue-700 to-indigo-800",
   },
 ];
 
