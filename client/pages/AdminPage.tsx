@@ -353,9 +353,10 @@ export default function AdminPage() {
     (cred) => !assignments.some((a) => a.credential_id === cred.id)
   );
 
-  // Get traders without assigned credentials
+  // Get traders without assigned credentials (and with valid IDs)
   const tradersWithoutCredentials = traders.filter(
     (trader) =>
+      trader.id && // Must have a valid ID (UUID format)
       !assignments.some((a) => a.trader_id === trader.id)
   );
 
