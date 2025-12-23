@@ -54,6 +54,11 @@ export function createServer() {
   app.post("/api/sync/mt5/trigger/:integrationId", handleMT5SyncIntegration);
   app.post("/api/sync/mt5/test", handleMT5TestConnection);
 
+  // Forex Factory Sync routes
+  app.post("/api/sync/forex-factory/trigger", handleForexFactorySyncAll);
+  app.post("/api/sync/forex-factory/trigger/:integrationId", handleForexFactorySyncIntegration);
+  app.post("/api/sync/forex-factory/test", handleForexFactoryTestConnection);
+
   // Payment routes
   app.post("/api/payment/webhooks/flutterwave", handleFlutterwaveWebhookRequest);
   app.post("/api/payment/webhooks/binance", handleBinanceWebhookRequest);
