@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import { handleSyncAll, handleSyncIntegration, handleSyncStatus } from "./routes/sync";
 
 export function createServer() {
   const app = express();
@@ -18,6 +19,11 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // MyFXBook Sync routes
+  app.post("/api/sync/trigger", handleSyncAll);
+  app.post("/api/sync/trigger/:integrationId", handleSyncIntegration);
+  app.get("/api/sync/status", handleSyncStatus);
 
   return app;
 }
