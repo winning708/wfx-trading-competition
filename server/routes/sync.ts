@@ -279,11 +279,11 @@ export const handleMT5SyncAll: RequestHandler = async (req, res) => {
       try {
         const result = await syncMT5Integration(integration);
 
-        if (result) {
+        if (result.success) {
           syncedCount++;
         } else {
           failedCount++;
-          errors.push(`Failed to sync MT5 integration: ${integration.id}`);
+          errors.push(`MT5 Integration ${integration.id}: ${result.error || 'Unknown error'}`);
         }
       } catch (error) {
         failedCount++;
