@@ -75,17 +75,16 @@ export default function AdminPage() {
   const [selectedCredential, setSelectedCredential] = useState<string>("");
 
   // Monitoring state
-  const [mt4Integrations, setMt4Integrations] = useState<any[]>([]);
+  const [mt5Integrations, setMt5Integrations] = useState<any[]>([]);
   const [isLoadingMonitoring, setIsLoadingMonitoring] = useState(false);
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [syncHistory, setSyncHistory] = useState<SyncHistoryRecord[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
   const [selectedCredentialForLink, setSelectedCredentialForLink] = useState<string>("");
-  const [mt4Form, setMt4Form] = useState({
-    mt4_account_id: "",
-    mt4_api_token: "",
-    mt4_server_endpoint: "",
-    mt4_platform: "mt4" as "mt4" | "mt5",
+  const [mt5Form, setMt5Form] = useState({
+    mt5_account_id: "",
+    mt5_api_token: "",
+    mt5_server_endpoint: "",
   });
 
   // Load traders on mount
