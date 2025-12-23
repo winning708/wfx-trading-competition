@@ -19,6 +19,10 @@ import {
   initiateBinancePayment,
   initiateBybitPayment,
 } from "./routes/payment";
+import {
+  sendConfirmationEmail,
+  sendPaymentReceipt,
+} from "./routes/email";
 
 export function createServer() {
   const app = express();
