@@ -1,18 +1,10 @@
 # Forex Factory Trade Explorer - Quick Start (5 minutes)
 
-## Prerequisites
+## How It Works
 
-You'll need a **free RapidAPI account**. This takes 2 minutes to set up.
+This integration uses a **direct web scraper** to fetch your trading data from Forex Factory. No API key required!
 
-## Step 1: Get Your RapidAPI Key (2 minutes)
-
-1. Go to **[RapidAPI Forex Factory Scraper](https://rapidapi.com/ousema.frikha/api/forex-factory-scraper1)**
-2. Click **"Subscribe to Test"** (the free tier is available)
-3. You'll be taken to your dashboard
-4. Copy your **API Key** from the top section
-5. Save it securely
-
-## Step 2: Get Your Forex Factory Details (1 minute)
+## Step 1: Get Your Forex Factory Details (2 minutes)
 
 ### Account Username
 - Log in to Forex Factory
