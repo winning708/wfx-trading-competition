@@ -1,26 +1,32 @@
 /**
- * MyFXBook & MT5 Sync Route Handler
- * API endpoint to manually trigger MyFXBook and MT5 data syncs
+ * Sync Route Handler
+ * API endpoints to manually trigger data syncs for MyFXBook, MT5, and Forex Factory
  *
  * Endpoints:
  * - POST /api/sync/trigger - Trigger sync for all MyFXBook integrations
  * - POST /api/sync/trigger/:integrationId - Trigger sync for specific MyFXBook integration
  * - POST /api/sync/mt5/trigger - Trigger MT5 sync for all integrations
  * - POST /api/sync/mt5/trigger/:integrationId - Trigger MT5 sync for specific integration
+ * - POST /api/sync/forex-factory/trigger - Trigger Forex Factory sync for all integrations
+ * - POST /api/sync/forex-factory/trigger/:integrationId - Trigger Forex Factory sync for specific integration
+ * - POST /api/sync/forex-factory/test - Test Forex Factory connection
  * - GET /api/sync/status - Get sync status
  */
 
 import { RequestHandler } from 'express';
 import { syncMyFXBookAccount } from '../lib/myfxbook-client';
 import { syncMT5Account } from '../lib/mt5-client';
+import { syncForexFactoryAccount, testForexFactoryConnection } from '../lib/forex-factory-client';
 import {
   getActiveIntegrations,
   getActiveMT5Integrations,
+  getActiveForexFactoryIntegrations,
   getTraderByCredentialId,
   updatePerformanceData,
   logSyncAttempt,
   updateIntegrationSyncStatus,
   updateMT5IntegrationSyncStatus,
+  updateForexFactoryIntegrationSyncStatus,
   getTraderStartingBalance,
 } from '../lib/supabase-client';
 
