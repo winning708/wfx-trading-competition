@@ -348,9 +348,10 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
     const result = await syncMT5Integration(integration);
 
     res.json({
-      success: result,
-      message: result ? 'MT5 Sync successful' : 'MT5 Sync failed',
-      synced: result ? 1 : 0,
+      success: result.success,
+      message: result.success ? 'MT5 Sync successful' : `MT5 Sync failed: ${result.error}`,
+      synced: result.success ? 1 : 0,
+      error: result.error,
     } as SyncResponse);
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
