@@ -40,19 +40,25 @@ export async function getLeaderboard(): Promise<Trader[]> {
 
       if (error) {
         console.error('Supabase error fetching leaderboard:', error);
-        throw new Error(error.message);
+        throw new Error(`Supabase error: ${error.message}`);
       }
 
+      console.log('Raw leaderboard data from Supabase:', result);
       return result || [];
     }, 3, 500);
 
-    return data.map((item: any, index: number) => ({
+    console.log('Processed leaderboard data:', data);
+
+    const traders = data.map((item: any, index: number) => ({
       rank: index + 1,
       username: item.traders?.full_name || 'Anonymous',
-      startingBalance: item.starting_balance,
-      currentBalance: item.current_balance,
-      profitPercentage: item.profit_percentage,
+      startingBalance: parseFloat(item.starting_balance),
+      currentBalance: parseFloat(item.current_balance),
+      profitPercentage: parseFloat(item.profit_percentage),
     }));
+
+    console.log('Final traders array:', traders);
+    return traders;
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
     return [];
