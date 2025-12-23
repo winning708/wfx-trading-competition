@@ -301,6 +301,97 @@ export async function createMT5Integration(
 }
 
 /**
+ * Get all active Forex Factory integrations
+ */
+export async function getActiveForexFactoryIntegrations(): Promise<any[]> {
+  try {
+    const { data, error } = await supabase
+      .from('forex_factory_integrations')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching Forex Factory integrations:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getActiveForexFactoryIntegrations:', error);
+    return [];
+  }
+}
+
+/**
+ * Update Forex Factory integration sync status
+ */
+export async function updateForexFactoryIntegrationSyncStatus(
+  integrationId: string,
+  syncStatus: 'success' | 'error' | 'syncing' | 'pending',
+  errorMessage?: string
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('forex_factory_integrations')
+      .update({
+        sync_status: syncStatus,
+        last_sync: new Date().toISOString(),
+        last_error: errorMessage || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', integrationId);
+
+    if (error) {
+      console.error('Error updating Forex Factory integration status:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error in updateForexFactoryIntegrationSyncStatus:', error);
+    return false;
+  }
+}
+
+/**
+ * Create a new Forex Factory integration
+ */
+export async function createForexFactoryIntegration(
+  credentialId: string,
+  ffAccountUsername: string,
+  ffApiKey: string,
+  ffSystemId: string
+): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from('forex_factory_integrations')
+      .insert([
+        {
+          credential_id: credentialId,
+          ff_account_username: ffAccountUsername,
+          ff_api_key: ffApiKey,
+          ff_system_id: ffSystemId,
+          sync_status: 'pending',
+          is_active: true,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating Forex Factory integration:', error);
+      return null;
+    }
+
+    return data?.id || null;
+  } catch (error) {
+    console.error('Error in createForexFactoryIntegration:', error);
+    return null;
+  }
+}
+
+/**
  * Get starting balance for a trader
  */
 export async function getTraderStartingBalance(traderId: string): Promise<number> {
