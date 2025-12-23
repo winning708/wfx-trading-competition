@@ -390,6 +390,17 @@ export default function AdminPage() {
               <Upload className="inline h-4 w-4 mr-2" />
               Assignments ({assignments.length})
             </button>
+            <button
+              onClick={() => setActiveTab("monitoring")}
+              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+                activeTab === "monitoring"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Activity className="inline h-4 w-4 mr-2" />
+              Monitoring
+            </button>
           </div>
 
           {/* Traders Tab */}
