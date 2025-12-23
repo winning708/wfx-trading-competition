@@ -67,11 +67,11 @@ export async function fetchMT5AccountData(
 
     // Handle different MetaApi endpoint formats
     if (url.includes('mt5api.metaapi.cloud')) {
-      // MetaApi mt5api endpoint format
+      // MetaApi mt5api endpoint format - needs /v1/ version prefix
       if (url.endsWith('/')) {
-        accountDataUrl = `${url}accounts/${accountId}`;
+        accountDataUrl = `${url}v1/accounts/${accountId}`;
       } else {
-        accountDataUrl = `${url}/accounts/${accountId}`;
+        accountDataUrl = `${url}/v1/accounts/${accountId}`;
       }
     } else if (url.includes('api.metaapi.cloud')) {
       // MetaApi REST API v1 endpoint format
