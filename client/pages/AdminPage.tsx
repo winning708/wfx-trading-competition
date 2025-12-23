@@ -237,7 +237,7 @@ export default function AdminPage() {
   const handleManualSync = async (integrationId: string) => {
     setIsSyncing(true);
     try {
-      const result = await triggerMT4SyncIntegration(integrationId);
+      const result = await triggerMT5SyncIntegration(integrationId);
       if (result.success) {
         await loadMonitoring();
         alert("✅ Sync triggered! Data will be updated shortly.");
