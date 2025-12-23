@@ -2,7 +2,13 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
-import { handleSyncAll, handleSyncIntegration, handleSyncStatus } from "./routes/sync";
+import {
+  handleSyncAll,
+  handleSyncIntegration,
+  handleSyncStatus,
+  handleMT4SyncAll,
+  handleMT4SyncIntegration
+} from "./routes/sync";
 
 export function createServer() {
   const app = express();
