@@ -6,8 +6,8 @@ import {
   handleSyncAll,
   handleSyncIntegration,
   handleSyncStatus,
-  handleMT4SyncAll,
-  handleMT4SyncIntegration
+  handleMT5SyncAll,
+  handleMT5SyncIntegration
 } from "./routes/sync";
 
 export function createServer() {
