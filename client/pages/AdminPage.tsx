@@ -996,7 +996,7 @@ export default function AdminPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          RapidAPI Key *
+                          API Key (placeholder) *
                         </label>
                         <Input
                           type="password"
@@ -1007,7 +1007,7 @@ export default function AdminPage() {
                               ff_api_key: e.target.value,
                             })
                           }
-                          placeholder="Your RapidAPI key from https://rapidapi.com"
+                          placeholder="Any value - not required but field must be filled"
                         />
                       </div>
 
