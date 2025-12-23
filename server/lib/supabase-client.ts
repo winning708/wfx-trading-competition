@@ -52,7 +52,7 @@ export interface PerformanceData {
 }
 
 /**
- * Get all active MyFXBook integrations
+ * Get all active MyFXBook integrations (legacy)
  */
 export async function getActiveIntegrations(): Promise<any[]> {
   try {
@@ -78,6 +78,39 @@ export async function getActiveIntegrations(): Promise<any[]> {
     return data || [];
   } catch (error) {
     console.error('Error in getActiveIntegrations:', error);
+    return [];
+  }
+}
+
+/**
+ * Get all active MT4/MT5 integrations
+ */
+export async function getActiveMT4Integrations(): Promise<any[]> {
+  try {
+    const { data, error } = await supabase
+      .from('mt4_integrations')
+      .select(`
+        id,
+        credential_id,
+        mt4_account_id,
+        mt4_api_token,
+        mt4_server_endpoint,
+        mt4_platform,
+        sync_status,
+        last_sync,
+        trading_credentials(id),
+        credential_assignments(trader_id)
+      `)
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Error fetching MT4 integrations:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in getActiveMT4Integrations:', error);
     return [];
   }
 }
