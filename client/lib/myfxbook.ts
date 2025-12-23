@@ -42,13 +42,14 @@ export async function linkMyFXBook(
       .single();
 
     if (error) {
-      console.error('Error linking MyFXBook:', error);
+      console.error('Error linking MyFXBook:', error.message, error);
       return null;
     }
 
     return data;
   } catch (error) {
-    console.error('Error linking MyFXBook:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error linking MyFXBook:', errorMsg);
     return null;
   }
 }
