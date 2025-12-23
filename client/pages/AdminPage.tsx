@@ -254,7 +254,7 @@ export default function AdminPage() {
         alert("✅ Sync triggered! Data will be updated shortly.");
       } else {
         const errorMsg = result.error || 'Unknown error - check server logs';
-        alert(`❌ Sync failed:\n\n${errorMsg}\n\nCommon causes:\n- Invalid MT5 Account ID (should be trading account number, not UUID)\n- Wrong API Token or Server Endpoint\n- MT5 API is not responding`);
+        alert(`❌ Sync failed:\n\n${errorMsg}\n\n📋 TROUBLESHOOTING TIPS:\n\n1. MetaApi Users:\n   - Server Endpoint should be: https://api.metaapi.cloud/v1/accounts\n   - NOT the configuration page URL\n   - MT5 Account ID should be your MetaApi account ID\n\n2. Broker API Users:\n   - Verify the API endpoint URL is correct\n   - Check if Account ID is a number (not UUID)\n   - Confirm API Token/Password hasn't expired\n\n3. General:\n   - Test the endpoint URL in your browser\n   - Check that the Account ID exists and is active\n   - Verify the API credentials have proper permissions`);
       }
     } catch (error) {
       console.error("Error triggering sync:", error);
