@@ -365,6 +365,56 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
 };
 
 /**
+ * Test MT5 connection with provided credentials
+ */
+export const handleMT5TestConnection: RequestHandler = async (req, res) => {
+  try {
+    const { mt5_account_id, mt5_api_token, mt5_server_endpoint } = req.body;
+
+    if (!mt5_account_id || !mt5_api_token || !mt5_server_endpoint) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required parameters: mt5_account_id, mt5_api_token, mt5_server_endpoint',
+      });
+    }
+
+    console.log('[MT5 Test] Testing connection with provided credentials...');
+    console.log('[MT5 Test] Account ID:', mt5_account_id);
+    console.log('[MT5 Test] Endpoint:', mt5_server_endpoint);
+    console.log('[MT5 Test] Token length:', mt5_api_token.length);
+
+    const { testMT5Connection } = await import('../lib/mt5-client');
+    const success = await testMT5Connection(
+      mt5_account_id,
+      mt5_api_token,
+      mt5_server_endpoint
+    );
+
+    if (success) {
+      console.log('[MT5 Test] Connection successful!');
+      return res.json({
+        success: true,
+        message: 'MT5 connection test successful! Your configuration is correct.',
+      });
+    } else {
+      console.log('[MT5 Test] Connection failed');
+      return res.json({
+        success: false,
+        message: 'MT5 connection test failed. Check your credentials and endpoint URL.',
+      });
+    }
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[MT5 Test] Error:', error);
+
+    res.status(500).json({
+      success: false,
+      message: `MT5 connection test error: ${errorMsg}`,
+    });
+  }
+};
+
+/**
  * Internal function to sync a single MT5 integration
  */
 async function syncMT5Integration(integration: any): Promise<{ success: boolean; error?: string }> {
