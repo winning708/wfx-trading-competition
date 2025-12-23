@@ -155,16 +155,27 @@ export async function getUnassignedCredentials(): Promise<TradingCredential[]> {
 export async function assignCredentialToTrader(
   traderId: string,
   credentialId: string
-): Promise<boolean> {
+): Promise<{ success: boolean; error?: string }> {
   try {
+    // Validate inputs
+    if (!traderId || !credentialId) {
+      const msg = 'Missing trader ID or credential ID';
+      console.error('Error assigning credential:', msg);
+      return { success: false, error: msg };
+    }
+
     // First, remove any existing assignment for this trader
-    await supabase
+    const { error: deleteError } = await supabase
       .from('credential_assignments')
       .delete()
       .eq('trader_id', traderId);
 
+    if (deleteError) {
+      console.error('Error removing old assignment:', deleteError);
+    }
+
     // Then create new assignment
-    const { error } = await supabase
+    const { error: insertError } = await supabase
       .from('credential_assignments')
       .insert([
         {
@@ -173,15 +184,23 @@ export async function assignCredentialToTrader(
         },
       ]);
 
-    if (error) {
-      console.error('Error assigning credential:', error);
-      return false;
+    if (insertError) {
+      const errorMsg = insertError.message || JSON.stringify(insertError);
+      console.error('Error assigning credential:', errorMsg);
+      return {
+        success: false,
+        error: `Failed to assign credential: ${errorMsg}`
+      };
     }
 
-    return true;
+    return { success: true };
   } catch (error) {
-    console.error('Error assigning credential:', error);
-    return false;
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error assigning credential:', errorMsg);
+    return {
+      success: false,
+      error: `Exception: ${errorMsg}`
+    };
   }
 }
 
