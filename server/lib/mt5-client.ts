@@ -233,28 +233,43 @@ export async function syncMT5Account(
  * @param accountId - MT5 Account ID
  * @param apiToken - API token/password
  * @param serverEndpoint - API endpoint URL
- * @returns true if connection successful, false otherwise
+ * @returns { success: boolean; message?: string }
  */
 export async function testMT5Connection(
   accountId: string,
   apiToken: string,
   serverEndpoint: string
-): Promise<boolean> {
+): Promise<{ success: boolean; message?: string }> {
   try {
     console.log(`[MT5] Testing connection for account: ${accountId}`);
+    console.log(`[MT5] Using endpoint: ${serverEndpoint}`);
+
+    // Validate endpoint is not a configuration page
+    if (serverEndpoint.includes('/configure-trading-account-credentials/')) {
+      const message = 'Invalid endpoint: You are using a MetaApi configuration page URL instead of the API endpoint. Use https://api.metaapi.cloud/v1/accounts instead.';
+      console.error(`[MT5] ${message}`);
+      return { success: false, message };
+    }
 
     const accountData = await fetchMT5AccountData(accountId, apiToken, serverEndpoint);
 
     if (!accountData) {
-      console.error('[MT5] Connection test failed: invalid account data');
-      return false;
+      console.error('[MT5] Connection test failed: invalid account data or unable to fetch');
+      return {
+        success: false,
+        message: 'Could not fetch account data. Possible causes:\n1. Invalid Account ID for your MetaApi account\n2. API Token is expired or invalid\n3. MetaApi API is temporarily unavailable'
+      };
     }
 
     console.log(`[MT5] Connection test successful for account: ${accountId}`);
-    return true;
+    console.log(`[MT5] Account data received: Balance=${accountData.balance}, Equity=${accountData.equity}`);
+    return {
+      success: true,
+      message: `Successfully connected! Account ${accountId} has balance: ${accountData.balance}`
+    };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
     console.error(`[MT5] Connection test failed: ${errorMsg}`);
-    return false;
+    return { success: false, message: errorMsg };
   }
 }
