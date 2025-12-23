@@ -142,7 +142,6 @@ export async function getUnassignedCredentials(): Promise<TradingCredential[]> {
     const { data, error } = await supabase
       .from('trading_credentials')
       .select('*')
-      .not('id', 'in', `(SELECT credential_id FROM credential_assignments WHERE credential_id IS NOT NULL)`)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
