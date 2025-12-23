@@ -862,41 +862,41 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Info Box */}
               <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
-                <h3 className="font-semibold text-foreground mb-2">MyFXBook Integration</h3>
+                <h3 className="font-semibold text-foreground mb-2">MT4/MT5 Integration</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Link your trading accounts to MyFXBook to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
+                  Link your trading accounts to MT4/MT5 REST API to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
-                    📖 How to get MyFXBook credentials
+                    📖 How to set up MT4/MT5 API connection
                   </summary>
                   <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
-                    <p><strong>1. Log in to MyFXBook</strong> - Visit myf xbook.com and sign in</p>
-                    <p><strong>2. Go to Account Settings</strong> - Click your profile → Settings</p>
-                    <p><strong>3. Find API Credentials</strong> - Look for "Account ID" and "API Password" (not your login password)</p>
-                    <p><strong>4. Copy your Account ID</strong> - This is your MyFXBook account identifier (usually a number)</p>
-                    <p><strong>5. Use API Password</strong> - Your API password is a special password for API access</p>
+                    <p><strong>1. Get MT4 Account ID</strong> - Your trading account number from JustMarkets</p>
+                    <p><strong>2. Get API Token/Password</strong> - Request from your broker or use MetaApi (metaapi.cloud)</p>
+                    <p><strong>3. Get Server Endpoint</strong> - REST API endpoint URL (e.g., https://api.broker.com)</p>
+                    <p><strong>4. Select Platform</strong> - Choose MT4 or MT5</p>
+                    <p><strong>5. Link Account</strong> - Fill in the form below and click "Link MT4/MT5"</p>
                   </div>
                 </details>
               </div>
 
-              {/* MyFXBook Link Form */}
+              {/* MT4 Link Form */}
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-foreground">MyFXBook Integrations</h2>
+                <h2 className="text-xl font-semibold text-foreground">MT4/MT5 Integrations</h2>
                 <button
                   onClick={() => setShowLinkForm(!showLinkForm)}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Link MyFXBook
+                  Link MT4/MT5
                 </button>
               </div>
 
               {showLinkForm && (
                 <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MyFXBook Account</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MT4/MT5 Account</h3>
 
-                  <form onSubmit={handleLinkMyFXBook} className="space-y-4">
+                  <form onSubmit={handleLinkMT4} className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
@@ -918,36 +918,72 @@ export default function AdminPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          MyFXBook Account ID *
+                          MT4 Account ID *
                         </label>
                         <Input
                           type="text"
-                          value={myfxbookForm.myfxbook_account_id}
+                          value={mt4Form.mt4_account_id}
                           onChange={(e) =>
-                            setMyfxbookForm({
-                              ...myfxbookForm,
-                              myfxbook_account_id: e.target.value,
+                            setMt4Form({
+                              ...mt4Form,
+                              mt4_account_id: e.target.value,
                             })
                           }
                           placeholder="e.g., 1234567"
                         />
                       </div>
 
-                      <div className="md:col-span-2">
+                      <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          MyFXBook API Password *
+                          API Token/Password *
                         </label>
                         <Input
                           type="password"
-                          value={myfxbookForm.myfxbook_password}
+                          value={mt4Form.mt4_api_token}
                           onChange={(e) =>
-                            setMyfxbookForm({
-                              ...myfxbookForm,
-                              myfxbook_password: e.target.value,
+                            setMt4Form({
+                              ...mt4Form,
+                              mt4_api_token: e.target.value,
                             })
                           }
-                          placeholder="Your MyFXBook API password"
+                          placeholder="Your MT4 API token or password"
                         />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Server Endpoint *
+                        </label>
+                        <Input
+                          type="url"
+                          value={mt4Form.mt4_server_endpoint}
+                          onChange={(e) =>
+                            setMt4Form({
+                              ...mt4Form,
+                              mt4_server_endpoint: e.target.value,
+                            })
+                          }
+                          placeholder="e.g., https://mt4.broker.com/api"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Platform *
+                        </label>
+                        <select
+                          value={mt4Form.mt4_platform}
+                          onChange={(e) =>
+                            setMt4Form({
+                              ...mt4Form,
+                              mt4_platform: e.target.value as "mt4" | "mt5",
+                            })
+                          }
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        >
+                          <option value="mt4">MT4</option>
+                          <option value="mt5">MT5</option>
+                        </select>
                       </div>
                     </div>
 
