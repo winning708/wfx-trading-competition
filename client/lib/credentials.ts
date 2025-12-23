@@ -1,5 +1,11 @@
 import { supabase } from './supabase';
 
+// Log Supabase initialization
+console.log('[Credentials] Supabase client initialized:', {
+  url: import.meta.env.VITE_SUPABASE_URL,
+  keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0
+});
+
 export interface TradingCredential {
   id: string;
   account_username: string;
