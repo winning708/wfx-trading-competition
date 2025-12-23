@@ -61,20 +61,32 @@ export async function fetchMT5AccountData(
       throw new Error(errorMsg);
     }
 
-    // Normalize endpoint URL
+    // Normalize endpoint URL and build the full account URL
     let url = serverEndpoint.trim();
-
-    // Build the full account URL
-    // If endpoint already contains {accountId} placeholder, replace it
-    // Otherwise append the accountId to the end
     let accountDataUrl: string;
 
-    if (url.includes('{accountId}')) {
-      accountDataUrl = url.replace('{accountId}', accountId);
-    } else if (url.endsWith('/')) {
-      accountDataUrl = `${url}${accountId}`;
+    // Handle different MetaApi endpoint formats
+    if (url.includes('mt5api.metaapi.cloud')) {
+      // MetaApi mt5api endpoint format
+      if (url.endsWith('/')) {
+        accountDataUrl = `${url}accounts/${accountId}`;
+      } else {
+        accountDataUrl = `${url}/accounts/${accountId}`;
+      }
+    } else if (url.includes('api.metaapi.cloud')) {
+      // MetaApi REST API v1 endpoint format
+      if (url.endsWith('/')) {
+        accountDataUrl = `${url}${accountId}`;
+      } else {
+        accountDataUrl = `${url}/${accountId}`;
+      }
     } else {
-      accountDataUrl = `${url}/${accountId}`;
+      // Generic broker API - append accountId
+      if (url.endsWith('/')) {
+        accountDataUrl = `${url}${accountId}`;
+      } else {
+        accountDataUrl = `${url}/${accountId}`;
+      }
     }
 
     console.log(`[MT5] Full request URL: ${accountDataUrl}`);
