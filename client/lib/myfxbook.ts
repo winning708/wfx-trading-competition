@@ -225,13 +225,14 @@ export async function getRecentSyncs(limit: number = 20): Promise<SyncHistory[]>
       .limit(limit);
 
     if (error) {
-      console.error('Error fetching recent syncs:', error);
+      console.error('Error fetching recent syncs:', error.message, error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error fetching recent syncs:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching recent syncs:', errorMsg);
     return [];
   }
 }
