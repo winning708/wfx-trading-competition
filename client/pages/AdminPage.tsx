@@ -26,16 +26,15 @@ import {
   CredentialAssignment,
 } from "@/lib/credentials";
 import {
-  linkMyFXBook,
-  getMyFXBookIntegrationsWithDetails,
-  triggerManualSync,
-  triggerSyncAll,
-  getSyncHistory,
-  getRecentSyncs,
-  deleteMyFXBookIntegration,
-  MyFXBookIntegration,
-  SyncHistory,
-} from "@/lib/myfxbook";
+  linkMT4Account,
+  getMT4IntegrationsWithDetails,
+  triggerMT4SyncIntegration,
+  triggerMT4SyncAll,
+  getRecentMT4Syncs,
+  deleteMT4Integration,
+  MT4Integration,
+  SyncHistoryRecord,
+} from "@/lib/mt4";
 
 interface Trader {
   rank: number;
