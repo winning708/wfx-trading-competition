@@ -175,7 +175,8 @@ export async function assignCredentialToTrader(
       .eq('trader_id', traderId);
 
     if (deleteError) {
-      console.error('Error removing old assignment:', deleteError);
+      const errorMsg = deleteError.message || JSON.stringify(deleteError);
+      console.error('Error removing old assignment:', errorMsg);
     }
 
     // Then create new assignment
