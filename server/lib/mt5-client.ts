@@ -48,8 +48,11 @@ export async function fetchMT5AccountData(
   serverEndpoint: string
 ): Promise<MT5AccountData | null> {
   try {
-    console.log(`[MT5] Fetching data for account: ${accountId}`);
-    console.log(`[MT5] Using endpoint: ${serverEndpoint}`);
+    console.log(`[MT5] ============ MT5 FETCH STARTING ============`);
+    console.log(`[MT5] Account ID: ${accountId}`);
+    console.log(`[MT5] Endpoint: ${serverEndpoint}`);
+    console.log(`[MT5] Token length: ${apiToken.length}`);
+    console.log(`[MT5] Token first 50 chars: ${apiToken.substring(0, 50)}...`);
 
     // Validate endpoint is not a configuration page
     if (serverEndpoint.includes('/configure-trading-account-credentials/')) {
