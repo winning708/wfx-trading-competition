@@ -25,48 +25,57 @@ async function withRetry<T>(
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
     const data = await withRetry(async () => {
-      // First, try the nested query with traders data
+      // Fetch performance_data with trader information via foreign key
       const { data: result, error } = await supabase
         .from('performance_data')
-        .select(
-          'trader_id, starting_balance, current_balance, profit_percentage, traders(full_name)'
-        )
+        .select(`
+          trader_id,
+          starting_balance,
+          current_balance,
+          profit_percentage,
+          traders!inner(full_name)
+        `)
         .order('profit_percentage', { ascending: false })
         .limit(10);
 
       if (error) {
-        console.error('Supabase error fetching leaderboard:', error);
+        console.error('Supabase select error:', error);
         throw new Error(`Supabase error: ${error.message}`);
       }
 
       if (!result || result.length === 0) {
         console.warn('No performance data found in Supabase');
+      } else {
+        console.log('Successfully fetched from Supabase:', result.length, 'traders');
       }
 
-      console.log('Raw leaderboard data from Supabase:', result);
       return result || [];
     }, 3, 500);
 
-    console.log('Processing leaderboard data:', data);
-
     const traders = data.map((item: any, index: number) => {
-      const username =
-        (item.traders && typeof item.traders === 'object' && item.traders.full_name) ||
-        'Anonymous';
+      // Handle both object and array formats for nested data
+      let traderName = 'Anonymous';
+      if (item.traders) {
+        if (Array.isArray(item.traders) && item.traders[0]) {
+          traderName = item.traders[0].full_name || 'Anonymous';
+        } else if (typeof item.traders === 'object' && item.traders.full_name) {
+          traderName = item.traders.full_name;
+        }
+      }
 
       return {
         rank: index + 1,
-        username,
-        startingBalance: parseFloat(item.starting_balance),
-        currentBalance: parseFloat(item.current_balance),
-        profitPercentage: parseFloat(item.profit_percentage),
+        username: traderName,
+        startingBalance: Number(item.starting_balance),
+        currentBalance: Number(item.current_balance),
+        profitPercentage: Number(item.profit_percentage),
       };
     });
 
-    console.log('Final traders array:', traders);
+    console.log('Final leaderboard:', traders);
     return traders;
   } catch (error) {
-    console.error('Error fetching leaderboard:', error);
+    console.error('Failed to fetch leaderboard:', error);
     return [];
   }
 }
