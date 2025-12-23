@@ -130,7 +130,7 @@ export default function AdminPage() {
 
     const result = await uploadCredential(credentialForm);
 
-    if (result) {
+    if (result.credential) {
       setCredentialForm({
         account_username: "",
         account_password: "",
@@ -141,7 +141,13 @@ export default function AdminPage() {
       });
       setShowCredentialForm(false);
       await loadCredentials();
-      alert("Credential uploaded successfully!");
+      await loadAssignments();
+
+      if (result.assignedTo) {
+        alert(`✅ Credential uploaded and automatically assigned to ${result.assignedTo}!`);
+      } else {
+        alert("✅ Credential uploaded successfully! No traders available for auto-assignment.");
+      }
     } else {
       alert("Failed to upload credential. Account number may already exist.");
     }
