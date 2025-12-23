@@ -57,17 +57,9 @@ export async function getActiveIntegrations(): Promise<any[]> {
   try {
     const { data, error } = await supabase
       .from('myfxbook_integrations')
-      .select(`
-        id,
-        credential_id,
-        myfxbook_account_id,
-        myfxbook_password,
-        sync_status,
-        last_sync,
-        trading_credentials(id),
-        credential_assignments(trader_id)
-      `)
-      .eq('is_active', true);
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching integrations:', error);
