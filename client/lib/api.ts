@@ -25,16 +25,12 @@ async function withRetry<T>(
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
     const data = await withRetry(async () => {
+      // First, try the nested query with traders data
       const { data: result, error } = await supabase
         .from('performance_data')
-        .select(`
-          trader_id,
-          starting_balance,
-          current_balance,
-          profit_percentage,
-          rank,
-          traders(full_name)
-        `)
+        .select(
+          'trader_id, starting_balance, current_balance, profit_percentage, traders(full_name)'
+        )
         .order('profit_percentage', { ascending: false })
         .limit(10);
 
@@ -43,19 +39,29 @@ export async function getLeaderboard(): Promise<Trader[]> {
         throw new Error(`Supabase error: ${error.message}`);
       }
 
+      if (!result || result.length === 0) {
+        console.warn('No performance data found in Supabase');
+      }
+
       console.log('Raw leaderboard data from Supabase:', result);
       return result || [];
     }, 3, 500);
 
-    console.log('Processed leaderboard data:', data);
+    console.log('Processing leaderboard data:', data);
 
-    const traders = data.map((item: any, index: number) => ({
-      rank: index + 1,
-      username: item.traders?.full_name || 'Anonymous',
-      startingBalance: parseFloat(item.starting_balance),
-      currentBalance: parseFloat(item.current_balance),
-      profitPercentage: parseFloat(item.profit_percentage),
-    }));
+    const traders = data.map((item: any, index: number) => {
+      const username =
+        (item.traders && typeof item.traders === 'object' && item.traders.full_name) ||
+        'Anonymous';
+
+      return {
+        rank: index + 1,
+        username,
+        startingBalance: parseFloat(item.starting_balance),
+        currentBalance: parseFloat(item.current_balance),
+        profitPercentage: parseFloat(item.profit_percentage),
+      };
+    });
 
     console.log('Final traders array:', traders);
     return traders;
