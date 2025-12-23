@@ -64,13 +64,14 @@ export async function getMyFXBookIntegrations(): Promise<MyFXBookIntegration[]> 
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching integrations:', error);
+      console.error('Error fetching integrations:', error.message, error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error fetching integrations:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching integrations:', errorMsg);
     return [];
   }
 }
