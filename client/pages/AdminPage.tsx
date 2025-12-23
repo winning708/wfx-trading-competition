@@ -96,10 +96,15 @@ export default function AdminPage() {
     const loadTraders = async () => {
       try {
         setIsLoadingTraders(true);
+        console.log('[AdminPage] Loading traders...');
         const data = await getLeaderboard();
+        console.log('[AdminPage] Loaded', data.length, 'traders');
         setTraders(data);
       } catch (error) {
-        console.error("Error loading traders:", error);
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        console.error("Error loading traders:", errorMsg);
+        // Don't crash, just show empty traders
+        setTraders([]);
       } finally {
         setIsLoadingTraders(false);
       }
