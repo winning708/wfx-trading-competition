@@ -59,5 +59,9 @@ export function createServer() {
   app.post("/api/payment/initiate/binance", initiateBinancePayment);
   app.post("/api/payment/initiate/bybit", initiateBybitPayment);
 
+  // Email routes
+  app.post("/api/email/send-confirmation", sendConfirmationEmail);
+  app.post("/api/email/send-receipt", sendPaymentReceipt);
+
   return app;
 }
