@@ -1,26 +1,52 @@
 import { supabase, Trader, TraderRegistration } from './supabase';
 
+// Retry logic for failed requests
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3,
+  delay = 1000
+): Promise<T> {
+  let lastError: Error | null = null;
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      if (i < maxRetries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delay * (i + 1)));
+      }
+    }
+  }
+
+  throw lastError || new Error('Request failed');
+}
+
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
-    const { data, error } = await supabase
-      .from('performance_data')
-      .select(`
-        trader_id,
-        starting_balance,
-        current_balance,
-        profit_percentage,
-        rank,
-        traders(full_name)
-      `)
-      .order('profit_percentage', { ascending: false })
-      .limit(10);
+    const data = await withRetry(async () => {
+      const { data: result, error } = await supabase
+        .from('performance_data')
+        .select(`
+          trader_id,
+          starting_balance,
+          current_balance,
+          profit_percentage,
+          rank,
+          traders(full_name)
+        `)
+        .order('profit_percentage', { ascending: false })
+        .limit(10);
 
-    if (error) {
-      console.error('Error fetching leaderboard:', error);
-      return [];
-    }
+      if (error) {
+        console.error('Supabase error fetching leaderboard:', error);
+        throw new Error(error.message);
+      }
 
-    return (data || []).map((item: any, index: number) => ({
+      return result || [];
+    }, 3, 500);
+
+    return data.map((item: any, index: number) => ({
       rank: index + 1,
       username: item.traders?.full_name || 'Anonymous',
       startingBalance: item.starting_balance,
@@ -35,25 +61,29 @@ export async function getLeaderboard(): Promise<Trader[]> {
 
 export async function registerTrader(data: TraderRegistration): Promise<boolean> {
   try {
-    // Insert trader registration
-    const { data: traderData, error: traderError } = await supabase
-      .from('traders')
-      .insert([
-        {
-          full_name: data.fullName,
-          email: data.email,
-          phone: data.phone,
-          country: data.country,
-          payment_method: data.paymentMethod,
-          entry_fee_paid: true,
-        },
-      ])
-      .select();
+    // Insert trader registration with retry logic
+    const traderData = await withRetry(async () => {
+      const { data: result, error } = await supabase
+        .from('traders')
+        .insert([
+          {
+            full_name: data.fullName,
+            email: data.email,
+            phone: data.phone,
+            country: data.country,
+            payment_method: data.paymentMethod,
+            entry_fee_paid: true,
+          },
+        ])
+        .select();
 
-    if (traderError) {
-      console.error('Error registering trader:', traderError);
-      return false;
-    }
+      if (error) {
+        console.error('Supabase error registering trader:', error);
+        throw new Error(error.message);
+      }
+
+      return result;
+    }, 3, 500);
 
     if (!traderData || traderData.length === 0) {
       console.error('No trader data returned');
@@ -62,24 +92,28 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
 
     const traderId = traderData[0].id;
 
-    // Initialize performance data
-    const { error: performanceError } = await supabase
-      .from('performance_data')
-      .insert([
-        {
-          trader_id: traderId,
-          starting_balance: 1000.00,
-          current_balance: 1000.00,
-          profit_percentage: 0,
-        },
-      ]);
+    // Initialize performance data with retry logic
+    const performanceResult = await withRetry(async () => {
+      const { error } = await supabase
+        .from('performance_data')
+        .insert([
+          {
+            trader_id: traderId,
+            starting_balance: 1000.0,
+            current_balance: 1000.0,
+            profit_percentage: 0,
+          },
+        ]);
 
-    if (performanceError) {
-      console.error('Error initializing performance data:', performanceError);
-      return false;
-    }
+      if (error) {
+        console.error('Supabase error initializing performance data:', error);
+        throw new Error(error.message);
+      }
 
-    return true;
+      return true;
+    }, 3, 500);
+
+    return performanceResult;
   } catch (error) {
     console.error('Error registering trader:', error);
     return false;
@@ -88,16 +122,20 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
 
 export async function getTraderCount(): Promise<number> {
   try {
-    const { count, error } = await supabase
-      .from('traders')
-      .select('*', { count: 'exact', head: true });
+    const result = await withRetry(async () => {
+      const { count, error } = await supabase
+        .from('traders')
+        .select('*', { count: 'exact', head: true });
 
-    if (error) {
-      console.error('Error fetching trader count:', error);
-      return 0;
-    }
+      if (error) {
+        console.error('Supabase error fetching trader count:', error);
+        throw new Error(error.message);
+      }
 
-    return count || 0;
+      return count;
+    }, 3, 500);
+
+    return result || 0;
   } catch (error) {
     console.error('Error fetching trader count:', error);
     return 0;
