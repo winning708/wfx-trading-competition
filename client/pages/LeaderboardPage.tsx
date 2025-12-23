@@ -102,6 +102,14 @@ export default function LeaderboardPage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={handleRefresh}
+                disabled={isLoading}
+                className="p-2 rounded-full hover:bg-card transition-colors disabled:opacity-50"
+                title="Refresh leaderboard"
+              >
+                <RefreshCw className={`h-5 w-5 text-primary ${isLoading ? 'animate-spin' : ''}`} />
+              </button>
               {isLive && (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-success/10">
                   <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
