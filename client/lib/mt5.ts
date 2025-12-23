@@ -290,8 +290,9 @@ export async function triggerMT5SyncIntegration(integrationId: string): Promise<
 
     // If backend returned success: false, convert to error
     if (!data.success) {
-      console.error('[MT5 Sync] Backend returned success: false:', data.message);
-      return { success: false, error: data.message || 'Sync failed' };
+      const errorMsg = data.error || data.message || 'Sync failed - unknown error';
+      console.error('[MT5 Sync] Backend returned success: false:', errorMsg);
+      return { success: false, error: errorMsg };
     }
 
     console.log('[MT5 Sync] Sync successful!');
