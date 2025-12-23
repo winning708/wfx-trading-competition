@@ -49,6 +49,7 @@ export function createServer() {
   // MT5 Sync routes
   app.post("/api/sync/mt5/trigger", handleMT5SyncAll);
   app.post("/api/sync/mt5/trigger/:integrationId", handleMT5SyncIntegration);
+  app.post("/api/sync/mt5/test", handleMT5TestConnection);
 
   // Payment routes
   app.post("/api/payment/webhooks/flutterwave", handleFlutterwaveWebhookRequest);
