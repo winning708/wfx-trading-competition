@@ -205,31 +205,35 @@ export default function AdminPage() {
     }
   };
 
-  const handleLinkMyFXBook = async (e: React.FormEvent) => {
+  const handleLinkMT4 = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedCredentialForLink || !myfxbookForm.myfxbook_account_id || !myfxbookForm.myfxbook_password) {
+    if (!selectedCredentialForLink || !mt4Form.mt4_account_id || !mt4Form.mt4_api_token || !mt4Form.mt4_server_endpoint) {
       alert("Please fill in all required fields");
       return;
     }
 
-    const result = await linkMyFXBook(
+    const result = await linkMT4Account(
       selectedCredentialForLink,
-      myfxbookForm.myfxbook_account_id,
-      myfxbookForm.myfxbook_password
+      mt4Form.mt4_account_id,
+      mt4Form.mt4_api_token,
+      mt4Form.mt4_server_endpoint,
+      mt4Form.mt4_platform
     );
 
-    if (result) {
-      setMyfxbookForm({
-        myfxbook_account_id: "",
-        myfxbook_password: "",
+    if (result.success) {
+      setMt4Form({
+        mt4_account_id: "",
+        mt4_api_token: "",
+        mt4_server_endpoint: "",
+        mt4_platform: "mt4",
       });
       setSelectedCredentialForLink("");
       setShowLinkForm(false);
       await loadMonitoring();
-      alert("✅ MyFXBook account linked successfully!");
+      alert("✅ MT4/MT5 account linked successfully!");
     } else {
-      alert("Failed to link MyFXBook account");
+      alert(`Failed to link MT4/MT5 account: ${result.error}`);
     }
   };
 
