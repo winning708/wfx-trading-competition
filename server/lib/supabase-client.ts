@@ -384,32 +384,24 @@ export async function sendConfirmationEmail(email: string): Promise<boolean> {
       .single();
 
     if (traderError || !trader) {
-      console.error('Error fetching trader:', traderError);
+      console.error('[Payment] Error fetching trader:', traderError);
       return false;
     }
 
-    // Call email service endpoint
-    const emailResponse = await fetch(
-      `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/email/send-confirmation`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: trader.email,
-          fullName: trader.full_name,
-        }),
-      }
-    );
+    // Import email service dynamically to avoid circular imports
+    const { sendConfirmationEmailToUser } = await import('./email-service');
 
-    if (!emailResponse.ok) {
-      console.error('Error sending confirmation email:', emailResponse.statusText);
+    const success = await sendConfirmationEmailToUser(trader.email, trader.full_name);
+
+    if (!success) {
+      console.error('[Payment] Failed to send confirmation email');
       return false;
     }
 
     console.log(`[Payment] Confirmation email sent to ${email}`);
     return true;
   } catch (error) {
-    console.error('Error in sendConfirmationEmail:', error);
+    console.error('[Payment] Error in sendConfirmationEmail:', error);
     return false;
   }
 }
