@@ -279,11 +279,11 @@ export default function AdminPage() {
   };
 
   const handleSyncAll = async () => {
-    if (!confirm("Sync data for all MT5 integrations?")) return;
+    if (!confirm("Sync data for all Forex Factory integrations?")) return;
 
     setIsSyncing(true);
     try {
-      const result = await triggerMT5SyncAll();
+      const result = await triggerForexFactorySyncAll();
       if (result.success) {
         await loadMonitoring();
         alert(`✅ Sync triggered for ${result.synced} integration(s)!`);
@@ -301,9 +301,9 @@ export default function AdminPage() {
   };
 
   const handleDeleteIntegration = async (integrationId: string) => {
-    if (!confirm("Delete this MT5 integration?")) return;
+    if (!confirm("Delete this Forex Factory integration?")) return;
 
-    const result = await deleteMT5Integration(integrationId);
+    const result = await deleteForexFactoryIntegration(integrationId);
     if (result.success) {
       await loadMonitoring();
       alert("Integration deleted");
