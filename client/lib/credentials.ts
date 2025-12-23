@@ -261,29 +261,35 @@ export async function removeAssignment(assignmentId: string): Promise<{ success:
 }
 
 // Delete credential
-export async function deleteCredential(credentialId: string): Promise<boolean> {
+export async function deleteCredential(credentialId: string): Promise<{ success: boolean; error?: string }> {
   try {
     // First remove all assignments
-    await supabase
+    const { error: deleteAssignError } = await supabase
       .from('credential_assignments')
       .delete()
       .eq('credential_id', credentialId);
 
+    if (deleteAssignError) {
+      console.error('Error deleting assignments:', deleteAssignError);
+    }
+
     // Then delete credential
-    const { error } = await supabase
+    const { error: deleteCredError } = await supabase
       .from('trading_credentials')
       .delete()
       .eq('id', credentialId);
 
-    if (error) {
-      console.error('Error deleting credential:', error);
-      return false;
+    if (deleteCredError) {
+      const errorMsg = deleteCredError.message || JSON.stringify(deleteCredError);
+      console.error('Error deleting credential:', errorMsg);
+      return { success: false, error: errorMsg };
     }
 
-    return true;
+    return { success: true };
   } catch (error) {
-    console.error('Error deleting credential:', error);
-    return false;
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error deleting credential:', errorMsg);
+    return { success: false, error: errorMsg };
   }
 }
 
