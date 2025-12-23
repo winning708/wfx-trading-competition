@@ -77,13 +77,10 @@ export async function getMyFXBookIntegrations(): Promise<MyFXBookIntegration[]> 
 // Get integrations with credential details
 export async function getMyFXBookIntegrationsWithDetails(): Promise<any[]> {
   try {
+    // Fetch integrations
     const { data, error } = await supabase
       .from('myfxbook_integrations')
-      .select(`
-        *,
-        credential:trading_credentials(account_username, account_number),
-        trader:credential_assignments(trader_id)
-      `)
+      .select('*')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
@@ -92,7 +89,35 @@ export async function getMyFXBookIntegrationsWithDetails(): Promise<any[]> {
       return [];
     }
 
-    return data || [];
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    // Fetch credential details for each integration
+    const credentialIds = data.map((i: any) => i.credential_id);
+    const { data: credentials, error: credError } = await supabase
+      .from('trading_credentials')
+      .select('id, account_username, account_number')
+      .in('id', credentialIds);
+
+    if (credError) {
+      console.error('Error fetching credentials:', credError);
+      // Return integrations without credential details
+      return data;
+    }
+
+    // Create a map of credentials by ID
+    const credentialMap = new Map(
+      (credentials || []).map((c: any) => [c.id, c])
+    );
+
+    // Merge credential data into integrations
+    const mergedData = data.map((integration: any) => ({
+      ...integration,
+      credential: credentialMap.get(integration.credential_id),
+    }));
+
+    return mergedData;
   } catch (error) {
     console.error('Error fetching integrations with details:', error);
     return [];
