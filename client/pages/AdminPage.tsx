@@ -204,35 +204,33 @@ export default function AdminPage() {
     }
   };
 
-  const handleLinkMT4 = async (e: React.FormEvent) => {
+  const handleLinkMT5 = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedCredentialForLink || !mt4Form.mt4_account_id || !mt4Form.mt4_api_token || !mt4Form.mt4_server_endpoint) {
+    if (!selectedCredentialForLink || !mt5Form.mt5_account_id || !mt5Form.mt5_api_token || !mt5Form.mt5_server_endpoint) {
       alert("Please fill in all required fields");
       return;
     }
 
-    const result = await linkMT4Account(
+    const result = await linkMT5Account(
       selectedCredentialForLink,
-      mt4Form.mt4_account_id,
-      mt4Form.mt4_api_token,
-      mt4Form.mt4_server_endpoint,
-      mt4Form.mt4_platform
+      mt5Form.mt5_account_id,
+      mt5Form.mt5_api_token,
+      mt5Form.mt5_server_endpoint
     );
 
     if (result.success) {
-      setMt4Form({
-        mt4_account_id: "",
-        mt4_api_token: "",
-        mt4_server_endpoint: "",
-        mt4_platform: "mt4",
+      setMt5Form({
+        mt5_account_id: "",
+        mt5_api_token: "",
+        mt5_server_endpoint: "",
       });
       setSelectedCredentialForLink("");
       setShowLinkForm(false);
       await loadMonitoring();
-      alert("✅ MT4/MT5 account linked successfully!");
+      alert("✅ MT5 account linked successfully!");
     } else {
-      alert(`Failed to link MT4/MT5 account: ${result.error}`);
+      alert(`Failed to link MT5 account: ${result.error}`);
     }
   };
 
