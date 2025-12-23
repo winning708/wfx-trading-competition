@@ -259,13 +259,14 @@ export async function updateSyncStatus(
       .eq('id', integrationId);
 
     if (error) {
-      console.error('Error updating sync status:', error);
+      console.error('Error updating sync status:', error.message, error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Error updating sync status:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error updating sync status:', errorMsg);
     return false;
   }
 }
