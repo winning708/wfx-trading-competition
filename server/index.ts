@@ -7,7 +7,8 @@ import {
   handleSyncIntegration,
   handleSyncStatus,
   handleMT5SyncAll,
-  handleMT5SyncIntegration
+  handleMT5SyncIntegration,
+  handleMT5TestConnection,
 } from "./routes/sync";
 import {
   handleFlutterwaveWebhookRequest,
