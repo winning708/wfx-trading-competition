@@ -24,26 +24,88 @@ export interface CredentialAssignment {
   credential?: TradingCredential;
 }
 
-// Upload a new trading credential
+// Get unassigned traders (traders without credentials assigned)
+async function getUnassignedTraders(): Promise<any[]> {
+  try {
+    const { data: allTraders, error: tradersError } = await supabase
+      .from('traders')
+      .select('id, full_name, email')
+      .order('registered_at', { ascending: true });
+
+    if (tradersError) {
+      console.error('Error fetching traders:', tradersError);
+      return [];
+    }
+
+    const { data: assignments, error: assignError } = await supabase
+      .from('credential_assignments')
+      .select('trader_id');
+
+    if (assignError) {
+      console.error('Error fetching assignments:', assignError);
+      return [];
+    }
+
+    const assignedTraderIds = new Set(assignments?.map((a: any) => a.trader_id) || []);
+
+    return (allTraders || []).filter((trader: any) => !assignedTraderIds.has(trader.id));
+  } catch (error) {
+    console.error('Error getting unassigned traders:', error);
+    return [];
+  }
+}
+
+// Upload a new trading credential and auto-assign to first unassigned trader
 export async function uploadCredential(
   credential: Omit<TradingCredential, 'id' | 'created_at' | 'updated_at'>
-): Promise<TradingCredential | null> {
+): Promise<{ credential: TradingCredential | null; assignedTo?: string }> {
   try {
-    const { data, error } = await supabase
+    // 1. Upload credential
+    const { data: credentialData, error: credError } = await supabase
       .from('trading_credentials')
       .insert([credential])
       .select()
       .single();
 
-    if (error) {
-      console.error('Error uploading credential:', error);
-      return null;
+    if (credError) {
+      console.error('Error uploading credential:', credError);
+      return { credential: null };
     }
 
-    return data;
+    if (!credentialData) {
+      console.error('No credential data returned');
+      return { credential: null };
+    }
+
+    // 2. Get unassigned traders
+    const unassignedTraders = await getUnassignedTraders();
+
+    if (unassignedTraders.length === 0) {
+      console.warn('No unassigned traders available');
+      return { credential: credentialData };
+    }
+
+    // 3. Assign to first unassigned trader
+    const targetTrader = unassignedTraders[0];
+    const { error: assignError } = await supabase
+      .from('credential_assignments')
+      .insert([
+        {
+          trader_id: targetTrader.id,
+          credential_id: credentialData.id,
+        },
+      ]);
+
+    if (assignError) {
+      console.error('Error assigning credential:', assignError);
+      return { credential: credentialData };
+    }
+
+    console.log(`Credential assigned to ${targetTrader.full_name} (${targetTrader.email})`);
+    return { credential: credentialData, assignedTo: targetTrader.full_name };
   } catch (error) {
     console.error('Error uploading credential:', error);
-    return null;
+    return { credential: null };
   }
 }
 
