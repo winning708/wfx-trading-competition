@@ -69,14 +69,21 @@ export async function fetchMT5AccountData(
 
     console.log(`[MT5] Full request URL: ${accountDataUrl}`);
 
-    const response = await fetch(accountDataUrl, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${apiToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    let response;
+    try {
+      response = await fetch(accountDataUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${apiToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (fetchError) {
+      const errorMsg = fetchError instanceof Error ? fetchError.message : 'Unknown network error';
+      console.error(`[MT5] Network error fetching from ${accountDataUrl}: ${errorMsg}`);
+      throw new Error(`Network error contacting MetaApi: ${errorMsg}. Possible causes:\n1. Endpoint URL is incorrect\n2. Your internet connection is down\n3. MetaApi server is unreachable`);
+    }
 
     if (!response.ok) {
       const responseText = await response.text();
