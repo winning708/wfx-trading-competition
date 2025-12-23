@@ -906,40 +906,40 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Info Box */}
               <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
-                <h3 className="font-semibold text-foreground mb-2">MT5 Integration</h3>
+                <h3 className="font-semibold text-foreground mb-2">Forex Factory Trade Explorer</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Link your trading accounts to MT5 REST API to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
+                  Link your Forex Factory Trade Explorer accounts to automatically sync trading performance data. Your trader records will be updated with real-time profit and loss metrics.
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
-                    📖 How to set up MT5 API connection
+                    📖 How to set up Forex Factory Trade Explorer connection
                   </summary>
                   <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
-                    <p><strong>1. Get MT5 Account ID</strong> - Your trading account number from JustMarkets</p>
-                    <p><strong>2. Get API Token/Password</strong> - Request from your broker or use MetaApi (metaapi.cloud)</p>
-                    <p><strong>3. Get Server Endpoint</strong> - REST API endpoint URL (e.g., https://api.broker.com)</p>
-                    <p><strong>4. Link Account</strong> - Fill in the form below and click "Link MT5"</p>
+                    <p><strong>1. Get Account Username</strong> - Your Forex Factory account username (e.g., johndoe)</p>
+                    <p><strong>2. Get API Key</strong> - Request from Forex Factory API dashboard</p>
+                    <p><strong>3. Get System ID</strong> - The specific trading system ID you want to track</p>
+                    <p><strong>4. Link Account</strong> - Fill in the form below and click "Link Account"</p>
                   </div>
                 </details>
               </div>
 
-              {/* MT5 Link Form */}
+              {/* Forex Factory Link Form */}
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-foreground">MT5 Integrations</h2>
+                <h2 className="text-xl font-semibold text-foreground">Forex Factory Integrations</h2>
                 <button
                   onClick={() => setShowLinkForm(!showLinkForm)}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Link MT5
+                  Link Account
                 </button>
               </div>
 
               {showLinkForm && (
                 <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MT5 Account</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Link Forex Factory Account</h3>
 
-                  <form onSubmit={handleLinkMT5} className="space-y-4">
+                  <form onSubmit={handleLinkForexFactory} className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
@@ -961,52 +961,52 @@ export default function AdminPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          MT5 Account ID *
+                          Forex Factory Account Username *
                         </label>
                         <Input
                           type="text"
-                          value={mt5Form.mt5_account_id}
+                          value={forexFactoryForm.ff_account_username}
                           onChange={(e) =>
-                            setMt5Form({
-                              ...mt5Form,
-                              mt5_account_id: e.target.value,
+                            setForexFactoryForm({
+                              ...forexFactoryForm,
+                              ff_account_username: e.target.value,
                             })
                           }
-                          placeholder="e.g., 1234567"
+                          placeholder="e.g., johndoe"
                         />
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          API Token/Password *
+                          API Key *
                         </label>
                         <Input
                           type="password"
-                          value={mt5Form.mt5_api_token}
+                          value={forexFactoryForm.ff_api_key}
                           onChange={(e) =>
-                            setMt5Form({
-                              ...mt5Form,
-                              mt5_api_token: e.target.value,
+                            setForexFactoryForm({
+                              ...forexFactoryForm,
+                              ff_api_key: e.target.value,
                             })
                           }
-                          placeholder="Your MT5 API token or password"
+                          placeholder="Your Forex Factory API key"
                         />
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          Server Endpoint *
+                          System ID *
                         </label>
                         <Input
-                          type="url"
-                          value={mt5Form.mt5_server_endpoint}
+                          type="text"
+                          value={forexFactoryForm.ff_system_id}
                           onChange={(e) =>
-                            setMt5Form({
-                              ...mt5Form,
-                              mt5_server_endpoint: e.target.value,
+                            setForexFactoryForm({
+                              ...forexFactoryForm,
+                              ff_system_id: e.target.value,
                             })
                           }
-                          placeholder="e.g., https://mt5.broker.com/api"
+                          placeholder="e.g., system_12345"
                         />
                       </div>
                     </div>
