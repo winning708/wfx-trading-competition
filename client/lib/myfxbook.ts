@@ -203,13 +203,14 @@ export async function getSyncHistory(
       .limit(limit);
 
     if (error) {
-      console.error('Error fetching sync history:', error);
+      console.error('Error fetching sync history:', error.message, error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error fetching sync history:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching sync history:', errorMsg);
     return [];
   }
 }
