@@ -574,10 +574,17 @@ export default function AdminPage() {
           {/* Assignments Tab */}
           {activeTab === "assignments" && (
             <div className="space-y-6">
+              {/* Info Box */}
+              <div className="rounded-lg border border-success/50 bg-success/5 p-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong className="text-foreground">ℹ️ Auto-Assignment:</strong> When you upload a new credential, it's automatically assigned to the first unassigned trader. Use this section to reassign credentials between traders if needed.
+                </p>
+              </div>
+
               {/* Assignment Form */}
               <div className="rounded-lg border border-border bg-card p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4">
-                  Assign Credential to Trader
+                  Reassign Credential to Different Trader
                 </h3>
 
                 <div className="grid md:grid-cols-3 gap-4">
