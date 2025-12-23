@@ -49,7 +49,7 @@ interface Trader {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
-    "traders" | "credentials" | "assignments"
+    "traders" | "credentials" | "assignments" | "monitoring"
   >("traders");
 
   // Traders state
@@ -74,6 +74,18 @@ export default function AdminPage() {
   const [isLoadingAssignments, setIsLoadingAssignments] = useState(false);
   const [selectedTrader, setSelectedTrader] = useState<string>("");
   const [selectedCredential, setSelectedCredential] = useState<string>("");
+
+  // Monitoring state
+  const [myfxbookIntegrations, setMyfxbookIntegrations] = useState<any[]>([]);
+  const [isLoadingMonitoring, setIsLoadingMonitoring] = useState(false);
+  const [showLinkForm, setShowLinkForm] = useState(false);
+  const [syncHistory, setSyncHistory] = useState<SyncHistory[]>([]);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [selectedCredentialForLink, setSelectedCredentialForLink] = useState<string>("");
+  const [myfxbookForm, setMyfxbookForm] = useState({
+    myfxbook_account_id: "",
+    myfxbook_password: "",
+  });
 
   // Load traders on mount
   useEffect(() => {
