@@ -2,72 +2,89 @@
 
 ## How It Works
 
-This integration uses a **direct web scraper** to fetch your trading data from Forex Factory. No API key required!
+This integration uses a **direct web scraper** to fetch your trading data from Forex Factory. 
+**No API key required!** Just your username and system ID.
 
 ## Step 1: Get Your Forex Factory Details (2 minutes)
 
-### Account Username
-- Log in to Forex Factory
-- Go to your profile
-- Copy your username (e.g., `johndoe`)
+### Your Account Username
+- Log in to **https://www.forexfactory.com**
+- Go to your **Profile** or **Settings**
+- Copy your username (e.g., `Winning708`)
+- This is what appears on the leaderboard
 
-### System ID
-- Go to **My Systems** in Forex Factory
-- Click on your trading system
-- Find the System ID from the page URL or details
-- Example: `system_12345`
+### Your System ID or Trader ID
+- Go to **Trade Explorer** in Forex Factory
+- Find your trading system
+- The System ID is in the URL or page details
+- Examples:
+  - `2001661536` (numeric trader ID)
+  - `Trader_1` (system name)
+  - `system_12345` (system ID)
 
-## Step 3: Link Your Account in Admin Panel (1 minute)
+## Step 2: Link Your Account in Admin Panel (2 minutes)
 
-1. Open **Admin Panel → Monitoring**
+1. Open **Admin Panel → Monitoring** tab
 2. Click **Link Account** button
 3. Fill in the form:
    - **Trading Credential**: Select your credential
-   - **Forex Factory Account Username**: `johndoe`
-   - **RapidAPI Key**: Paste your RapidAPI key
-   - **System ID**: `system_12345`
-4. Click **Test Connection** to verify (optional but recommended)
+   - **Forex Factory Account Username**: `Winning708`
+   - **API Key**: Can be any value (not currently used, but required)
+   - **System ID**: `2001661536`
+4. Click **Test Connection** to verify
 5. Click **Link Account**
 
-## Step 4: Sync Your Data (1 minute)
+## Step 3: Sync Your Data (1 minute)
 
 1. Click **Sync** next to your integration
-2. Wait for sync to complete
-3. Check status:
-   - ✅ Green = Success
-   - ❌ Red = Error (hover for details)
+2. Wait for sync to complete (usually 2-5 seconds)
+3. Check the status:
+   - ✅ **Green** = Success - data fetched and updated
+   - ❌ **Red** = Error (hover to see details)
 
 ## What Happens Next?
 
-- Your trading performance is synced from Forex Factory leaderboard
-- Balance and profit/loss updates automatically
-- You appear on the live leaderboard rankings
-- Historical data is preserved for audit trails
+- Your trading performance is automatically fetched from Forex Factory
+- Balance and profit/loss updates are synced to the leaderboard
+- Your account ranks appear in the live leaderboard
+- Historical data is preserved for auditing
+
+## How The Scraper Works
+
+The system automatically:
+1. Scrapes your public Forex Factory trader profile
+2. Extracts your balance, profit %, and trading stats
+3. Syncs the data to our leaderboard
+4. Updates every time you click Sync (or automatically on schedule)
+
+**Note:** The scraper uses your public Forex Factory profile, so your system must be visible on the Forex Factory leaderboard.
 
 ## Common Issues
 
 | Issue | Solution |
 |-------|----------|
-| "RapidAPI key is invalid" | Check your RapidAPI dashboard, regenerate if needed |
-| "Trader not found in leaderboard" | Verify your Forex Factory username is exact and active on the leaderboard |
-| "System ID not found" | Check the System ID is correct in Forex Factory My Systems |
-| Connection timeout | Check your internet, verify RapidAPI is reachable |
+| "Could not find trader" | Verify your Forex Factory username is exact and public on leaderboard |
+| Connection fails | Ensure Forex Factory website is accessible; try again in a moment |
+| No data returned | Check that your system is active and visible on Forex Factory Trade Explorer |
 
 ## Troubleshooting
 
-**Q: Where do I find my RapidAPI key?**
-A: Log into your RapidAPI account → Dashboard → Look for "API Key" at the top of any API page
+**Q: What if my profile is private?**
+A: The scraper needs your system to be visible on the Forex Factory leaderboard. Make sure your Trade Explorer system is public.
 
-**Q: My username isn't found?**
-A: Your Forex Factory account must have an active trading system on the leaderboard to appear in results
+**Q: Do I need an API key from Forex Factory?**
+A: No! The scraper directly accesses public data. The API Key field can contain any value.
 
-**Q: Do I need to pay for RapidAPI?**
-A: No! The free tier includes enough requests for regular syncing
+**Q: How often does it sync?**
+A: Manual sync when you click the Sync button. Contact your administrator for automatic periodic syncing.
+
+**Q: Can I use a different username?**
+A: Yes, as long as the username matches your public Forex Factory profile exactly.
 
 ## Need Help?
 
-- See [FOREX_FACTORY_SETUP.md](./FOREX_FACTORY_SETUP.md) for detailed guide
+- See [FOREX_FACTORY_SETUP.md](./FOREX_FACTORY_SETUP.md) for detailed setup guide
+- Check error messages in red status indicators (hover for details)
 - Contact your competition administrator
-- Check error messages in the sync status (red indicator)
 
 **That's it! Your Forex Factory account is now linked and syncing.** 🚀
