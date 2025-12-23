@@ -251,24 +251,24 @@ async function syncIntegration(integration: any): Promise<boolean> {
 }
 
 /**
- * Sync all active MT4/MT5 integrations
+ * Sync all active MT5 integrations
  */
-export const handleMT4SyncAll: RequestHandler = async (req, res) => {
+export const handleMT5SyncAll: RequestHandler = async (req, res) => {
   try {
-    console.log('[MT4 Sync] Starting full sync of all MT4/MT5 integrations...');
+    console.log('[MT5 Sync] Starting full sync of all MT5 integrations...');
 
-    const integrations = await getActiveMT4Integrations();
+    const integrations = await getActiveMT5Integrations();
 
     if (integrations.length === 0) {
-      console.log('[MT4 Sync] No active MT4 integrations found');
+      console.log('[MT5 Sync] No active MT5 integrations found');
       return res.json({
         success: true,
-        message: 'No active MT4 integrations to sync',
+        message: 'No active MT5 integrations to sync',
         synced: 0,
       } as SyncResponse);
     }
 
-    console.log(`[MT4 Sync] Found ${integrations.length} active MT4 integration(s)`);
+    console.log(`[MT5 Sync] Found ${integrations.length} active MT5 integration(s)`);
 
     let syncedCount = 0;
     let failedCount = 0;
@@ -277,48 +277,48 @@ export const handleMT4SyncAll: RequestHandler = async (req, res) => {
     // Process each integration
     for (const integration of integrations) {
       try {
-        const result = await syncMT4Integration(integration);
+        const result = await syncMT5Integration(integration);
 
         if (result) {
           syncedCount++;
         } else {
           failedCount++;
-          errors.push(`Failed to sync MT4 integration: ${integration.id}`);
+          errors.push(`Failed to sync MT5 integration: ${integration.id}`);
         }
       } catch (error) {
         failedCount++;
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-        errors.push(`MT4 Integration ${integration.id}: ${errorMsg}`);
-        console.error(`[MT4 Sync] Error syncing integration ${integration.id}:`, error);
+        errors.push(`MT5 Integration ${integration.id}: ${errorMsg}`);
+        console.error(`[MT5 Sync] Error syncing integration ${integration.id}:`, error);
       }
     }
 
     console.log(
-      `[MT4 Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`
+      `[MT5 Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`
     );
 
     res.json({
       success: true,
-      message: `MT4 Sync complete: ${syncedCount} success, ${failedCount} failed`,
+      message: `MT5 Sync complete: ${syncedCount} success, ${failedCount} failed`,
       synced: syncedCount,
       failed: failedCount,
       errors: errors.length > 0 ? errors : undefined,
     } as SyncResponse);
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[MT4 Sync] Error in handleMT4SyncAll:', error);
+    console.error('[MT5 Sync] Error in handleMT5SyncAll:', error);
 
     res.status(500).json({
       success: false,
-      message: `MT4 Sync failed: ${errorMsg}`,
+      message: `MT5 Sync failed: ${errorMsg}`,
     } as SyncResponse);
   }
 };
 
 /**
- * Sync a specific MT4/MT5 integration
+ * Sync a specific MT5 integration
  */
-export const handleMT4SyncIntegration: RequestHandler = async (req, res) => {
+export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
   try {
     const { integrationId } = req.params;
 
@@ -329,49 +329,48 @@ export const handleMT4SyncIntegration: RequestHandler = async (req, res) => {
       } as SyncResponse);
     }
 
-    console.log(`[MT4 Sync] Starting sync for MT4 integration: ${integrationId}`);
+    console.log(`[MT5 Sync] Starting sync for MT5 integration: ${integrationId}`);
 
-    const integrations = await getActiveMT4Integrations();
+    const integrations = await getActiveMT5Integrations();
     const integration = integrations.find((i) => i.id === integrationId);
 
     if (!integration) {
       return res.status(404).json({
         success: false,
-        message: 'MT4 Integration not found',
+        message: 'MT5 Integration not found',
       } as SyncResponse);
     }
 
-    const result = await syncMT4Integration(integration);
+    const result = await syncMT5Integration(integration);
 
     res.json({
       success: result,
-      message: result ? 'MT4 Sync successful' : 'MT4 Sync failed',
+      message: result ? 'MT5 Sync successful' : 'MT5 Sync failed',
       synced: result ? 1 : 0,
     } as SyncResponse);
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[MT4 Sync] Error in handleMT4SyncIntegration:', error);
+    console.error('[MT5 Sync] Error in handleMT5SyncIntegration:', error);
 
     res.status(500).json({
       success: false,
-      message: `MT4 Sync failed: ${errorMsg}`,
+      message: `MT5 Sync failed: ${errorMsg}`,
     } as SyncResponse);
   }
 };
 
 /**
- * Internal function to sync a single MT4/MT5 integration
+ * Internal function to sync a single MT5 integration
  */
-async function syncMT4Integration(integration: any): Promise<boolean> {
+async function syncMT5Integration(integration: any): Promise<boolean> {
   try {
     const integrationId = integration.id;
     const credentialId = integration.credential_id;
-    const mt4AccountId = integration.mt4_account_id;
-    const mt4ApiToken = integration.mt4_api_token;
-    const mt4ServerEndpoint = integration.mt4_server_endpoint;
-    const mt4Platform = integration.mt4_platform || 'mt4';
+    const mt5AccountId = integration.mt5_account_id;
+    const mt5ApiToken = integration.mt5_api_token;
+    const mt5ServerEndpoint = integration.mt5_server_endpoint;
 
-    console.log(`[MT4 Sync] Syncing integration ${integrationId}...`);
+    console.log(`[MT5 Sync] Syncing integration ${integrationId}...`);
 
     // Step 1: Log sync start
     await logSyncAttempt(integrationId, 'automatic', 'in_progress');
@@ -381,36 +380,35 @@ async function syncMT4Integration(integration: any): Promise<boolean> {
 
     if (!traderData || !traderData.traders) {
       const errorMsg = 'No trader associated with this credential';
-      console.error(`[MT4 Sync] ${errorMsg}`);
+      console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT4IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
       return false;
     }
 
     const traderId = traderData.traders.id;
     const traderName = traderData.traders.full_name;
 
-    console.log(`[MT4 Sync] Syncing for trader: ${traderName} (${traderId})`);
+    console.log(`[MT5 Sync] Syncing for trader: ${traderName} (${traderId})`);
 
-    // Step 3: Fetch account data from MT4/MT5
-    const syncResult = await syncMT4Account(
-      mt4AccountId,
-      mt4ApiToken,
-      mt4ServerEndpoint,
-      1000,
-      mt4Platform
+    // Step 3: Fetch account data from MT5
+    const syncResult = await syncMT5Account(
+      mt5AccountId,
+      mt5ApiToken,
+      mt5ServerEndpoint,
+      1000
     );
 
     if (!syncResult.success) {
-      const errorMsg = syncResult.error || 'Unknown error fetching MT4 data';
-      console.error(`[MT4 Sync] ${errorMsg}`);
+      const errorMsg = syncResult.error || 'Unknown error fetching MT5 data';
+      console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT4IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
       return false;
     }
 
     console.log(
-      `[MT4 Sync] MT4 data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`
+      `[MT5 Sync] MT5 data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`
     );
 
     // Step 4: Update performance data
@@ -422,23 +420,23 @@ async function syncMT4Integration(integration: any): Promise<boolean> {
 
     if (!updateSuccess) {
       const errorMsg = 'Failed to update performance data';
-      console.error(`[MT4 Sync] ${errorMsg}`);
+      console.error(`[MT5 Sync] ${errorMsg}`);
       await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT4IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
       return false;
     }
 
     // Step 5: Log successful sync
     await logSyncAttempt(integrationId, 'automatic', 'success', 1);
-    await updateMT4IntegrationSyncStatus(integrationId, 'success');
+    await updateMT5IntegrationSyncStatus(integrationId, 'success');
 
-    console.log(`[MT4 Sync] Successfully synced integration ${integrationId}`);
+    console.log(`[MT5 Sync] Successfully synced integration ${integrationId}`);
     return true;
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error(`[MT4 Sync] Error in syncMT4Integration:`, error);
+    console.error(`[MT5 Sync] Error in syncMT5Integration:`, error);
     await logSyncAttempt(integration.id, 'automatic', 'error', 0, errorMsg);
-    await updateMT4IntegrationSyncStatus(integration.id, 'error', errorMsg);
+    await updateMT5IntegrationSyncStatus(integration.id, 'error', errorMsg);
     return false;
   }
 }
