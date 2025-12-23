@@ -60,12 +60,19 @@ export async function fetchMT5AccountData(
 
     // Normalize endpoint URL
     let url = serverEndpoint.trim();
-    if (!url.endsWith('/')) {
-      url += '/';
-    }
 
     // Build the full account URL
-    const accountDataUrl = `${url}${accountId}`;
+    // If endpoint already contains {accountId} placeholder, replace it
+    // Otherwise append the accountId to the end
+    let accountDataUrl: string;
+
+    if (url.includes('{accountId}')) {
+      accountDataUrl = url.replace('{accountId}', accountId);
+    } else if (url.endsWith('/')) {
+      accountDataUrl = `${url}${accountId}`;
+    } else {
+      accountDataUrl = `${url}/${accountId}`;
+    }
 
     console.log(`[MT5] Full request URL: ${accountDataUrl}`);
 
