@@ -253,11 +253,13 @@ export default function AdminPage() {
         await loadMonitoring();
         alert("✅ Sync triggered! Data will be updated shortly.");
       } else {
-        alert(`Failed to trigger sync: ${result.error}`);
+        const errorMsg = result.error || 'Unknown error - check server logs';
+        alert(`❌ Sync failed:\n\n${errorMsg}\n\nCommon causes:\n- Invalid MT5 Account ID (should be trading account number, not UUID)\n- Wrong API Token or Server Endpoint\n- MT5 API is not responding`);
       }
     } catch (error) {
       console.error("Error triggering sync:", error);
-      alert("Error triggering sync");
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      alert(`❌ Error triggering sync:\n\n${errorMsg}`);
     } finally {
       setIsSyncing(false);
     }
