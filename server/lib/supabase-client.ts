@@ -26,13 +26,12 @@ export interface MyFXBookIntegrationData {
   last_sync: string | null;
 }
 
-export interface MT4IntegrationData {
+export interface MT5IntegrationData {
   id: string;
   credential_id: string;
-  mt4_account_id: string;
-  mt4_api_token: string;
-  mt4_server_endpoint: string;
-  mt4_platform: 'mt4' | 'mt5';
+  mt5_account_id: string;
+  mt5_api_token: string;
+  mt5_server_endpoint: string;
   sync_status: string;
   last_sync: string | null;
 }
