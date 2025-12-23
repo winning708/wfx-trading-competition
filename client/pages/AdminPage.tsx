@@ -207,6 +207,13 @@ export default function AdminPage() {
   const handleLinkMT5 = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log('[Admin] MT5 Form Data:', {
+      selectedCredentialForLink,
+      mt5_account_id: mt5Form.mt5_account_id,
+      mt5_api_token: mt5Form.mt5_api_token ? '***' : 'empty',
+      mt5_server_endpoint: mt5Form.mt5_server_endpoint,
+    });
+
     if (!selectedCredentialForLink || !mt5Form.mt5_account_id || !mt5Form.mt5_api_token || !mt5Form.mt5_server_endpoint) {
       alert("Please fill in all required fields");
       return;
