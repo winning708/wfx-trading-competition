@@ -1051,7 +1051,7 @@ export default function AdminPage() {
                         Credential
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        MT5 Account ID
+                        Forex Factory Account
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                         Sync Status
