@@ -1185,7 +1185,18 @@ export default function AdminPage() {
 
           {/* Payments Tab */}
           {activeTab === "payments" && (
-            <PaymentMonitoring />
+            <div className="space-y-8">
+              {/* Payment Alerts Section */}
+              <div className="rounded-lg border border-border bg-card p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  ⚠️ Failed Payment Alerts
+                </h2>
+                <PaymentAlerts />
+              </div>
+
+              {/* Payment Monitoring Dashboard */}
+              <PaymentMonitoring />
+            </div>
           )}
         </div>
       </div>
