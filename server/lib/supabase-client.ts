@@ -82,19 +82,18 @@ export async function getActiveIntegrations(): Promise<any[]> {
 }
 
 /**
- * Get all active MT4/MT5 integrations
+ * Get all active MT5 integrations
  */
-export async function getActiveMT4Integrations(): Promise<any[]> {
+export async function getActiveMT5Integrations(): Promise<any[]> {
   try {
     const { data, error } = await supabase
-      .from('mt4_integrations')
+      .from('mt5_integrations')
       .select(`
         id,
         credential_id,
-        mt4_account_id,
-        mt4_api_token,
-        mt4_server_endpoint,
-        mt4_platform,
+        mt5_account_id,
+        mt5_api_token,
+        mt5_server_endpoint,
         sync_status,
         last_sync,
         trading_credentials(id),
@@ -103,13 +102,13 @@ export async function getActiveMT4Integrations(): Promise<any[]> {
       .eq('is_active', true);
 
     if (error) {
-      console.error('Error fetching MT4 integrations:', error);
+      console.error('Error fetching MT5 integrations:', error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error in getActiveMT4Integrations:', error);
+    console.error('Error in getActiveMT5Integrations:', error);
     return [];
   }
 }
