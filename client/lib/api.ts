@@ -25,57 +25,54 @@ async function withRetry<T>(
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
     const data = await withRetry(async () => {
-      // Fetch performance_data with trader information via foreign key
+      // Fetch performance data and join with traders
       const { data: result, error } = await supabase
         .from('performance_data')
-        .select(`
-          trader_id,
-          starting_balance,
-          current_balance,
-          profit_percentage,
-          traders!inner(full_name)
-        `)
+        .select(
+          `trader_id,
+           starting_balance,
+           current_balance,
+           profit_percentage,
+           traders(full_name)`
+        )
         .order('profit_percentage', { ascending: false })
         .limit(10);
 
       if (error) {
-        console.error('Supabase select error:', error);
-        throw new Error(`Supabase error: ${error.message}`);
+        console.error('Supabase query error:', error.message, error);
+        throw new Error(`Query failed: ${error.message}`);
       }
 
-      if (!result || result.length === 0) {
-        console.warn('No performance data found in Supabase');
-      } else {
-        console.log('Successfully fetched from Supabase:', result.length, 'traders');
-      }
-
+      console.log('Raw result from Supabase:', result);
       return result || [];
     }, 3, 500);
 
-    const traders = data.map((item: any, index: number) => {
-      // Handle both object and array formats for nested data
-      let traderName = 'Anonymous';
-      if (item.traders) {
-        if (Array.isArray(item.traders) && item.traders[0]) {
-          traderName = item.traders[0].full_name || 'Anonymous';
-        } else if (typeof item.traders === 'object' && item.traders.full_name) {
-          traderName = item.traders.full_name;
-        }
+    if (!Array.isArray(data)) {
+      console.error('Expected array from Supabase, got:', typeof data);
+      return [];
+    }
+
+    const traders: Trader[] = data.map((item: any, index: number) => {
+      let username = 'Anonymous';
+
+      // Supabase returns nested objects for foreign keys
+      if (item.traders && typeof item.traders === 'object') {
+        username = item.traders.full_name || 'Anonymous';
       }
 
       return {
         rank: index + 1,
-        username: traderName,
-        startingBalance: Number(item.starting_balance),
-        currentBalance: Number(item.current_balance),
-        profitPercentage: Number(item.profit_percentage),
+        username,
+        startingBalance: parseFloat(String(item.starting_balance)) || 0,
+        currentBalance: parseFloat(String(item.current_balance)) || 0,
+        profitPercentage: parseFloat(String(item.profit_percentage)) || 0,
       };
     });
 
-    console.log('Final leaderboard:', traders);
+    console.log('Processed traders:', traders);
     return traders;
   } catch (error) {
-    console.error('Failed to fetch leaderboard:', error);
+    console.error('Error in getLeaderboard:', error);
     return [];
   }
 }
