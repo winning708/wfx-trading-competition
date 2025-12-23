@@ -239,7 +239,7 @@ export async function getAssignments(): Promise<CredentialAssignment[]> {
 }
 
 // Remove credential assignment
-export async function removeAssignment(assignmentId: string): Promise<boolean> {
+export async function removeAssignment(assignmentId: string): Promise<{ success: boolean; error?: string }> {
   try {
     const { error } = await supabase
       .from('credential_assignments')
@@ -247,14 +247,16 @@ export async function removeAssignment(assignmentId: string): Promise<boolean> {
       .eq('id', assignmentId);
 
     if (error) {
-      console.error('Error removing assignment:', error);
-      return false;
+      const errorMsg = error.message || JSON.stringify(error);
+      console.error('Error removing assignment:', errorMsg);
+      return { success: false, error: errorMsg };
     }
 
-    return true;
+    return { success: true };
   } catch (error) {
-    console.error('Error removing assignment:', error);
-    return false;
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error removing assignment:', errorMsg);
+    return { success: false, error: errorMsg };
   }
 }
 
