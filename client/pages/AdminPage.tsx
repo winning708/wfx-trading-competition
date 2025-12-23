@@ -118,6 +118,13 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  // Load monitoring data when tab changes
+  useEffect(() => {
+    if (activeTab === "monitoring") {
+      loadMonitoring();
+    }
+  }, [activeTab]);
+
   const loadCredentials = async () => {
     setIsLoadingCredentials(true);
     try {
@@ -176,6 +183,95 @@ export default function AdminPage() {
       }
     } else {
       alert("Failed to upload credential. Account number may already exist.");
+    }
+  };
+
+  const loadMonitoring = async () => {
+    setIsLoadingMonitoring(true);
+    try {
+      const integrations = await getMyFXBookIntegrationsWithDetails();
+      setMyfxbookIntegrations(integrations);
+
+      const recentSyncs = await getRecentSyncs(10);
+      setSyncHistory(recentSyncs);
+    } catch (error) {
+      console.error("Error loading monitoring data:", error);
+    } finally {
+      setIsLoadingMonitoring(false);
+    }
+  };
+
+  const handleLinkMyFXBook = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedCredentialForLink || !myfxbookForm.myfxbook_account_id || !myfxbookForm.myfxbook_password) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    const result = await linkMyFXBook(
+      selectedCredentialForLink,
+      myfxbookForm.myfxbook_account_id,
+      myfxbookForm.myfxbook_password
+    );
+
+    if (result) {
+      setMyfxbookForm({
+        myfxbook_account_id: "",
+        myfxbook_password: "",
+      });
+      setSelectedCredentialForLink("");
+      setShowLinkForm(false);
+      await loadMonitoring();
+      alert("✅ MyFXBook account linked successfully!");
+    } else {
+      alert("Failed to link MyFXBook account");
+    }
+  };
+
+  const handleManualSync = async (integrationId: string) => {
+    setIsSyncing(true);
+    try {
+      const success = await triggerManualSync(integrationId);
+      if (success) {
+        await loadMonitoring();
+        alert("✅ Sync triggered! Data will be updated shortly.");
+      } else {
+        alert("Failed to trigger sync");
+      }
+    } catch (error) {
+      console.error("Error triggering sync:", error);
+      alert("Error triggering sync");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleSyncAll = async () => {
+    if (!confirm("Sync data for all integrations?")) return;
+
+    setIsSyncing(true);
+    try {
+      const count = await triggerSyncAll();
+      await loadMonitoring();
+      alert(`✅ Sync triggered for ${count} integration(s)!`);
+    } catch (error) {
+      console.error("Error syncing all:", error);
+      alert("Error syncing");
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleDeleteIntegration = async (integrationId: string) => {
+    if (!confirm("Delete this MyFXBook integration?")) return;
+
+    const success = await deleteMyFXBookIntegration(integrationId);
+    if (success) {
+      await loadMonitoring();
+      alert("Integration deleted");
+    } else {
+      alert("Failed to delete integration");
     }
   };
 
