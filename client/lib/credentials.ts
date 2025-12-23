@@ -123,12 +123,15 @@ export async function getAllCredentials(): Promise<TradingCredential[]> {
 
     if (error) {
       console.error('Error fetching credentials:', error);
+      // Return empty array instead of throwing
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error fetching credentials:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error fetching credentials:', errorMsg);
+    // Return empty array on any error to prevent app crash
     return [];
   }
 }
