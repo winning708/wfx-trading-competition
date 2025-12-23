@@ -13,7 +13,9 @@ import {
   Activity,
   RefreshCw,
   Eye,
+  CreditCard,
 } from "lucide-react";
+import { PaymentMonitoring } from "@/components/admin/PaymentMonitoring";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
 import {
   uploadCredential,
