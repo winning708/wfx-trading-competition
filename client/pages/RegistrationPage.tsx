@@ -429,18 +429,20 @@ export default function RegistrationPage() {
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Country *
                 </label>
-                <Select value={formData.country} onValueChange={handleCountryChange}>
-                  <SelectTrigger className={errors.country ? "border-destructive" : ""}>
-                    <SelectValue placeholder="Select your country" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-48">
-                    {COUNTRIES.map((country) => (
-                      <SelectItem key={country} value={country}>
-                        {country}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  value={formData.country}
+                  onChange={(e) => handleCountryChange(e.target.value)}
+                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
+                    errors.country ? "border-destructive" : "border-input"
+                  } text-foreground`}
+                >
+                  <option value="">Select your country</option>
+                  {COUNTRIES.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
                 {errors.country && (
                   <p className="mt-1 text-sm text-destructive">
                     {errors.country}
