@@ -310,3 +310,106 @@ export async function getTraderStartingBalance(traderId: string): Promise<number
     return 1000;
   }
 }
+
+/**
+ * Update trader payment status after successful payment
+ */
+export async function updateTraderPaymentStatus(
+  email: string,
+  paymentStatus: 'completed' | 'pending' | 'failed',
+  transactionId: string,
+  paymentMethod: string
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('traders')
+      .update({
+        entry_fee_paid: paymentStatus === 'completed',
+        payment_method: paymentMethod,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('email', email);
+
+    if (error) {
+      console.error('Error updating trader payment status:', error);
+      return false;
+    }
+
+    console.log(`[Payment] Updated payment status for ${email}: ${paymentStatus}`);
+
+    // Log payment transaction
+    await logPaymentTransaction(email, transactionId, paymentMethod, paymentStatus);
+
+    return true;
+  } catch (error) {
+    console.error('Error in updateTraderPaymentStatus:', error);
+    return false;
+  }
+}
+
+/**
+ * Log payment transaction for audit trail
+ */
+async function logPaymentTransaction(
+  email: string,
+  transactionId: string,
+  paymentMethod: string,
+  status: string
+): Promise<void> {
+  try {
+    // This creates an audit log if you have a payment_transactions table
+    // For now, we'll just log to console
+    console.log('[Payment] Transaction logged:', {
+      email,
+      transactionId,
+      paymentMethod,
+      status,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Error logging transaction:', error);
+  }
+}
+
+/**
+ * Send confirmation email to trader
+ */
+export async function sendConfirmationEmail(email: string): Promise<boolean> {
+  try {
+    // Get trader details
+    const { data: trader, error: traderError } = await supabase
+      .from('traders')
+      .select('full_name, email')
+      .eq('email', email)
+      .single();
+
+    if (traderError || !trader) {
+      console.error('Error fetching trader:', traderError);
+      return false;
+    }
+
+    // Call email service endpoint
+    const emailResponse = await fetch(
+      `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/email/send-confirmation`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: trader.email,
+          fullName: trader.full_name,
+        }),
+      }
+    );
+
+    if (!emailResponse.ok) {
+      console.error('Error sending confirmation email:', emailResponse.statusText);
+      return false;
+    }
+
+    console.log(`[Payment] Confirmation email sent to ${email}`);
+    return true;
+  } catch (error) {
+    console.error('Error in sendConfirmationEmail:', error);
+    return false;
+  }
+}
