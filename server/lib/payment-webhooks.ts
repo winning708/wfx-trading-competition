@@ -303,6 +303,15 @@ export async function handleBybitWebhook(
 
     console.log('[Payment] Processing Bybit payment for:', email);
 
+    // Log the transaction
+    await logPaymentTransaction(
+      email,
+      payload.order_id,
+      'bybit',
+      'pending',
+      payload.amount || 0
+    );
+
     // Update trader payment status
     const success = await updateTraderPaymentStatus(
       email,
@@ -312,8 +321,26 @@ export async function handleBybitWebhook(
     );
 
     if (!success) {
+      // Log failure
+      await logPaymentTransaction(
+        email,
+        payload.order_id,
+        'bybit',
+        'failed',
+        payload.amount || 0,
+        'Failed to update trader status'
+      );
       return { success: false, message: 'Failed to update trader' };
     }
+
+    // Update transaction to completed
+    await logPaymentTransaction(
+      email,
+      payload.order_id,
+      'bybit',
+      'completed',
+      payload.amount || 0
+    );
 
     // Send confirmation email
     await sendConfirmationEmail(email);
