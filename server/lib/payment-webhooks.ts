@@ -321,12 +321,26 @@ export async function handleBybitWebhook(
   try {
     console.log('[Payment] Bybit webhook received:', payload.status);
 
+    const email = payload.customer?.email;
+
     if (payload.status !== 'SUCCESS') {
       console.warn('[Payment] Bybit payment not successful:', payload.status);
+
+      // Log failed payment
+      if (email) {
+        await logPaymentTransaction(
+          email,
+          payload.order_id,
+          'bybit',
+          'failed',
+          payload.amount || 0,
+          `Payment status: ${payload.status}`
+        );
+      }
+
       return { success: false, message: 'Payment not successful' };
     }
 
-    const email = payload.customer?.email;
     if (!email) {
       console.error('[Payment] No email in Bybit payload');
       return { success: false, message: 'No customer email' };
