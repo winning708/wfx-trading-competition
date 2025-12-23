@@ -45,5 +45,15 @@ export function createServer() {
   app.post("/api/sync/mt5/trigger", handleMT5SyncAll);
   app.post("/api/sync/mt5/trigger/:integrationId", handleMT5SyncIntegration);
 
+  // Payment routes
+  app.post("/api/payment/webhooks/flutterwave", handleFlutterwaveWebhookRequest);
+  app.post("/api/payment/webhooks/binance", handleBinanceWebhookRequest);
+  app.post("/api/payment/webhooks/bybit", handleBybitWebhookRequest);
+  app.get("/api/payment/success", handlePaymentSuccess);
+  app.get("/api/payment/failure", handlePaymentFailure);
+  app.post("/api/payment/initiate/flutterwave", initiateFlutterwavePayment);
+  app.post("/api/payment/initiate/binance", initiateBinancePayment);
+  app.post("/api/payment/initiate/bybit", initiateBybitPayment);
+
   return app;
 }
