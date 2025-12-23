@@ -3,18 +3,35 @@
  * Handles database operations for syncing MyFXBook data
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client using environment variables
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://cujdemfiikeoamryjwza.supabase.co';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
+let _supabaseClient: SupabaseClient | null = null;
+
 if (!SUPABASE_SERVICE_ROLE_KEY) {
-  console.warn('WARNING: SUPABASE_SERVICE_ROLE_KEY not set. Backend sync will not work.');
-  console.warn('Set SUPABASE_SERVICE_ROLE_KEY in your environment variables.');
+  console.warn('⚠️  WARNING: SUPABASE_SERVICE_ROLE_KEY not set.');
+  console.warn('⚠️  Backend MyFXBook sync will not work without this key.');
+  console.warn('⚠️  Set SUPABASE_SERVICE_ROLE_KEY in your environment variables.');
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+// Lazy initialize to avoid build errors when key is not set
+function getSupabaseClient(): SupabaseClient {
+  if (!_supabaseClient) {
+    if (!SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is not set');
+    }
+    _supabaseClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  }
+  return _supabaseClient;
+}
+
+export const supabase = {
+  from: (table: string) => getSupabaseClient().from(table),
+  rpc: (name: string, args?: any) => getSupabaseClient().rpc(name, args),
+} as SupabaseClient;
 
 export interface MyFXBookIntegrationData {
   id: string;
