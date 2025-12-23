@@ -238,16 +238,16 @@ export async function updateIntegrationSyncStatus(
 }
 
 /**
- * Update MT4/MT5 integration sync status
+ * Update MT5 integration sync status
  */
-export async function updateMT4IntegrationSyncStatus(
+export async function updateMT5IntegrationSyncStatus(
   integrationId: string,
   syncStatus: 'success' | 'error',
   errorMessage?: string
 ): Promise<boolean> {
   try {
     const { error } = await supabase
-      .from('mt4_integrations')
+      .from('mt5_integrations')
       .update({
         sync_status: syncStatus,
         last_sync: new Date().toISOString(),
@@ -257,37 +257,35 @@ export async function updateMT4IntegrationSyncStatus(
       .eq('id', integrationId);
 
     if (error) {
-      console.error('Error updating MT4 integration status:', error);
+      console.error('Error updating MT5 integration status:', error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Error in updateMT4IntegrationSyncStatus:', error);
+    console.error('Error in updateMT5IntegrationSyncStatus:', error);
     return false;
   }
 }
 
 /**
- * Create a new MT4/MT5 integration
+ * Create a new MT5 integration
  */
-export async function createMT4Integration(
+export async function createMT5Integration(
   credentialId: string,
-  mt4AccountId: string,
-  mt4ApiToken: string,
-  mt4ServerEndpoint: string,
-  mt4Platform: 'mt4' | 'mt5' = 'mt4'
+  mt5AccountId: string,
+  mt5ApiToken: string,
+  mt5ServerEndpoint: string
 ): Promise<string | null> {
   try {
     const { data, error } = await supabase
-      .from('mt4_integrations')
+      .from('mt5_integrations')
       .insert([
         {
           credential_id: credentialId,
-          mt4_account_id: mt4AccountId,
-          mt4_api_token: mt4ApiToken,
-          mt4_server_endpoint: mt4ServerEndpoint,
-          mt4_platform: mt4Platform,
+          mt5_account_id: mt5AccountId,
+          mt5_api_token: mt5ApiToken,
+          mt5_server_endpoint: mt5ServerEndpoint,
           sync_status: 'pending',
           is_active: true,
         },
@@ -296,13 +294,13 @@ export async function createMT4Integration(
       .single();
 
     if (error) {
-      console.error('Error creating MT4 integration:', error);
+      console.error('Error creating MT5 integration:', error);
       return null;
     }
 
     return data?.id || null;
   } catch (error) {
-    console.error('Error in createMT4Integration:', error);
+    console.error('Error in createMT5Integration:', error);
     return null;
   }
 }
