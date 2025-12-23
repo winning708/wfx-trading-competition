@@ -279,13 +279,14 @@ export async function deleteMyFXBookIntegration(integrationId: string): Promise<
       .eq('id', integrationId);
 
     if (error) {
-      console.error('Error deleting integration:', error);
+      console.error('Error deleting integration:', error.message, error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Error deleting integration:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error deleting integration:', errorMsg);
     return false;
   }
 }
