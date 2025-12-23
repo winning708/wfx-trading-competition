@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { registerTrader } from "@/lib/api";
 
 const COUNTRIES = [
   "Afghanistan",
@@ -337,18 +338,24 @@ export default function RegistrationPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Integrate with actual payment processor
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Register trader in Supabase
+      const success = await registerTrader({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        country: formData.country,
+        paymentMethod: selectedPayment,
+      });
 
-      // In production, redirect to payment processor
-      console.log(
-        `Processing payment with ${selectedPayment} for ${formData.email}`
-      );
-
-      setStep("success");
+      if (success) {
+        setStep("success");
+      } else {
+        console.error("Failed to register trader");
+        alert("Registration failed. Please try again.");
+      }
     } catch (error) {
       console.error("Payment error:", error);
+      alert("An error occurred during registration. Please try again.");
     } finally {
       setIsLoading(false);
     }
