@@ -256,13 +256,17 @@ export default function AdminPage() {
   };
 
   const handleSyncAll = async () => {
-    if (!confirm("Sync data for all integrations?")) return;
+    if (!confirm("Sync data for all MT4/MT5 integrations?")) return;
 
     setIsSyncing(true);
     try {
-      const count = await triggerSyncAll();
-      await loadMonitoring();
-      alert(`✅ Sync triggered for ${count} integration(s)!`);
+      const result = await triggerMT4SyncAll();
+      if (result.success) {
+        await loadMonitoring();
+        alert(`✅ Sync triggered for ${result.synced} integration(s)!`);
+      } else {
+        alert(`Sync failed: ${result.error}`);
+      }
     } catch (error) {
       console.error("Error syncing all:", error);
       alert("Error syncing");
