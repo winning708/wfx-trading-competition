@@ -859,41 +859,40 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Info Box */}
               <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
-                <h3 className="font-semibold text-foreground mb-2">MT4/MT5 Integration</h3>
+                <h3 className="font-semibold text-foreground mb-2">MT5 Integration</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Link your trading accounts to MT4/MT5 REST API to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
+                  Link your trading accounts to MT5 REST API to automatically sync performance data. Your trader records will be updated with real-time trading metrics.
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
-                    📖 How to set up MT4/MT5 API connection
+                    📖 How to set up MT5 API connection
                   </summary>
                   <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
-                    <p><strong>1. Get MT4 Account ID</strong> - Your trading account number from JustMarkets</p>
+                    <p><strong>1. Get MT5 Account ID</strong> - Your trading account number from JustMarkets</p>
                     <p><strong>2. Get API Token/Password</strong> - Request from your broker or use MetaApi (metaapi.cloud)</p>
                     <p><strong>3. Get Server Endpoint</strong> - REST API endpoint URL (e.g., https://api.broker.com)</p>
-                    <p><strong>4. Select Platform</strong> - Choose MT4 or MT5</p>
-                    <p><strong>5. Link Account</strong> - Fill in the form below and click "Link MT4/MT5"</p>
+                    <p><strong>4. Link Account</strong> - Fill in the form below and click "Link MT5"</p>
                   </div>
                 </details>
               </div>
 
-              {/* MT4 Link Form */}
+              {/* MT5 Link Form */}
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-foreground">MT4/MT5 Integrations</h2>
+                <h2 className="text-xl font-semibold text-foreground">MT5 Integrations</h2>
                 <button
                   onClick={() => setShowLinkForm(!showLinkForm)}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Link MT4/MT5
+                  Link MT5
                 </button>
               </div>
 
               {showLinkForm && (
                 <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MT4/MT5 Account</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Link MT5 Account</h3>
 
-                  <form onSubmit={handleLinkMT4} className="space-y-4">
+                  <form onSubmit={handleLinkMT5} className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
@@ -915,15 +914,15 @@ export default function AdminPage() {
 
                       <div>
                         <label className="block text-sm font-medium text-foreground mb-2">
-                          MT4 Account ID *
+                          MT5 Account ID *
                         </label>
                         <Input
                           type="text"
-                          value={mt4Form.mt4_account_id}
+                          value={mt5Form.mt5_account_id}
                           onChange={(e) =>
-                            setMt4Form({
-                              ...mt4Form,
-                              mt4_account_id: e.target.value,
+                            setMt5Form({
+                              ...mt5Form,
+                              mt5_account_id: e.target.value,
                             })
                           }
                           placeholder="e.g., 1234567"
@@ -936,14 +935,14 @@ export default function AdminPage() {
                         </label>
                         <Input
                           type="password"
-                          value={mt4Form.mt4_api_token}
+                          value={mt5Form.mt5_api_token}
                           onChange={(e) =>
-                            setMt4Form({
-                              ...mt4Form,
-                              mt4_api_token: e.target.value,
+                            setMt5Form({
+                              ...mt5Form,
+                              mt5_api_token: e.target.value,
                             })
                           }
-                          placeholder="Your MT4 API token or password"
+                          placeholder="Your MT5 API token or password"
                         />
                       </div>
 
@@ -953,34 +952,15 @@ export default function AdminPage() {
                         </label>
                         <Input
                           type="url"
-                          value={mt4Form.mt4_server_endpoint}
+                          value={mt5Form.mt5_server_endpoint}
                           onChange={(e) =>
-                            setMt4Form({
-                              ...mt4Form,
-                              mt4_server_endpoint: e.target.value,
+                            setMt5Form({
+                              ...mt5Form,
+                              mt5_server_endpoint: e.target.value,
                             })
                           }
-                          placeholder="e.g., https://mt4.broker.com/api"
+                          placeholder="e.g., https://mt5.broker.com/api"
                         />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Platform *
-                        </label>
-                        <select
-                          value={mt4Form.mt4_platform}
-                          onChange={(e) =>
-                            setMt4Form({
-                              ...mt4Form,
-                              mt4_platform: e.target.value as "mt4" | "mt5",
-                            })
-                          }
-                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                        >
-                          <option value="mt4">MT4</option>
-                          <option value="mt5">MT5</option>
-                        </select>
                       </div>
                     </div>
 
