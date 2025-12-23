@@ -229,6 +229,15 @@ export async function handleBinanceWebhook(
 
     console.log('[Payment] Processing Binance payment for:', email);
 
+    // Log the transaction
+    await logPaymentTransaction(
+      email,
+      payload.order_id,
+      'binance',
+      'pending',
+      payload.totalFee || 0
+    );
+
     // Update trader payment status
     const success = await updateTraderPaymentStatus(
       email,
@@ -238,8 +247,26 @@ export async function handleBinanceWebhook(
     );
 
     if (!success) {
+      // Log failure
+      await logPaymentTransaction(
+        email,
+        payload.order_id,
+        'binance',
+        'failed',
+        payload.totalFee || 0,
+        'Failed to update trader status'
+      );
       return { success: false, message: 'Failed to update trader' };
     }
+
+    // Update transaction to completed
+    await logPaymentTransaction(
+      email,
+      payload.order_id,
+      'binance',
+      'completed',
+      payload.totalFee || 0
+    );
 
     // Send confirmation email
     await sendConfirmationEmail(email);
