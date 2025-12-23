@@ -1077,29 +1077,39 @@ export default function AdminPage() {
                             {integration.mt5_account_id}
                           </td>
                           <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                                integration.sync_status === 'success'
-                                  ? 'bg-success/10 text-success'
-                                  : integration.sync_status === 'error'
-                                  ? 'bg-destructive/10 text-destructive'
-                                  : integration.sync_status === 'syncing'
-                                  ? 'bg-primary/10 text-primary'
-                                  : 'bg-muted text-muted-foreground'
-                              }`}
+                            <div
+                              className="group relative inline-block"
+                              title={integration.last_error ? `Error: ${integration.last_error}` : undefined}
                             >
-                              {integration.sync_status === 'syncing' && (
-                                <RefreshCw className="h-3 w-3 animate-spin" />
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium cursor-help ${
+                                  integration.sync_status === 'success'
+                                    ? 'bg-success/10 text-success'
+                                    : integration.sync_status === 'error'
+                                    ? 'bg-destructive/10 text-destructive'
+                                    : integration.sync_status === 'syncing'
+                                    ? 'bg-primary/10 text-primary'
+                                    : 'bg-muted text-muted-foreground'
+                                }`}
+                              >
+                                {integration.sync_status === 'syncing' && (
+                                  <RefreshCw className="h-3 w-3 animate-spin" />
+                                )}
+                                {integration.sync_status === 'success' && (
+                                  <Check className="h-3 w-3" />
+                                )}
+                                {integration.sync_status === 'error' && (
+                                  <AlertCircle className="h-3 w-3" />
+                                )}
+                                {integration.sync_status.charAt(0).toUpperCase() +
+                                  integration.sync_status.slice(1)}
+                              </span>
+                              {integration.sync_status === 'error' && integration.last_error && (
+                                <div className="invisible group-hover:visible absolute left-0 bottom-full mb-2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                                  {integration.last_error.substring(0, 100)}
+                                </div>
                               )}
-                              {integration.sync_status === 'success' && (
-                                <Check className="h-3 w-3" />
-                              )}
-                              {integration.sync_status === 'error' && (
-                                <AlertCircle className="h-3 w-3" />
-                              )}
-                              {integration.sync_status.charAt(0).toUpperCase() +
-                                integration.sync_status.slice(1)}
-                            </span>
+                            </div>
                           </td>
                           <td className="px-6 py-4 text-sm text-muted-foreground">
                             {integration.last_sync
