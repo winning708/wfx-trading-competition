@@ -350,15 +350,53 @@ export async function updateTraderPaymentStatus(
 /**
  * Log payment transaction for audit trail
  */
-async function logPaymentTransaction(
+export async function logPaymentTransaction(
   email: string,
   transactionId: string,
   paymentMethod: string,
-  status: string
-): Promise<void> {
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled',
+  amount?: number,
+  errorMessage?: string
+): Promise<boolean> {
   try {
-    // This creates an audit log if you have a payment_transactions table
-    // For now, we'll just log to console
+    // Get trader ID by email
+    const { data: trader, error: traderError } = await supabase
+      .from('traders')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (traderError || !trader) {
+      console.error('[Payment] Error fetching trader for logging:', traderError);
+      return false;
+    }
+
+    // Insert transaction log
+    const { error } = await supabase
+      .from('payment_transactions')
+      .insert([
+        {
+          trader_id: trader.id,
+          payment_method: paymentMethod,
+          amount: amount || 0,
+          currency: 'USD',
+          status: status,
+          reference_id: `${paymentMethod}_${transactionId}`,
+          external_reference: transactionId,
+          transaction_details: {
+            email,
+            timestamp: new Date().toISOString(),
+          },
+          error_message: errorMessage || null,
+          completed_at: status === 'completed' ? new Date().toISOString() : null,
+        },
+      ]);
+
+    if (error) {
+      console.error('[Payment] Error logging transaction:', error);
+      return false;
+    }
+
     console.log('[Payment] Transaction logged:', {
       email,
       transactionId,
@@ -366,8 +404,11 @@ async function logPaymentTransaction(
       status,
       timestamp: new Date().toISOString(),
     });
+
+    return true;
   } catch (error) {
     console.error('Error logging transaction:', error);
+    return false;
   }
 }
 
