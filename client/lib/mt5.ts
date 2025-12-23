@@ -263,6 +263,8 @@ export async function triggerMT5SyncIntegration(integrationId: string): Promise<
   error?: string;
 }> {
   try {
+    console.log(`[MT5 Sync] Triggering sync for integration: ${integrationId}`);
+
     const response = await fetch(`/api/sync/mt5/trigger/${integrationId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -270,14 +272,25 @@ export async function triggerMT5SyncIntegration(integrationId: string): Promise<
 
     const data = await response.json();
 
+    console.log('[MT5 Sync] Response:', { status: response.status, ok: response.ok, data });
+
     if (!response.ok) {
+      const errorMsg = data.message || `HTTP ${response.status}`;
+      console.error('[MT5 Sync] Request failed:', errorMsg);
+      return { success: false, error: errorMsg };
+    }
+
+    // If backend returned success: false, convert to error
+    if (!data.success) {
+      console.error('[MT5 Sync] Backend returned success: false:', data.message);
       return { success: false, error: data.message || 'Sync failed' };
     }
 
+    console.log('[MT5 Sync] Sync successful!');
     return { success: true, ...data };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error triggering MT5 sync:', error);
+    console.error('[MT5 Sync] Error triggering sync:', error);
     return { success: false, error: errorMsg };
   }
 }
