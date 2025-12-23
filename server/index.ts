@@ -9,6 +9,16 @@ import {
   handleMT5SyncAll,
   handleMT5SyncIntegration
 } from "./routes/sync";
+import {
+  handleFlutterwaveWebhookRequest,
+  handleBinanceWebhookRequest,
+  handleBybitWebhookRequest,
+  handlePaymentSuccess,
+  handlePaymentFailure,
+  initiateFlutterwavePayment,
+  initiateBinancePayment,
+  initiateBybitPayment,
+} from "./routes/payment";
 
 export function createServer() {
   const app = express();
