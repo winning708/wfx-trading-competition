@@ -189,12 +189,12 @@ export default function AdminPage() {
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
-      const integrations = await getMT4IntegrationsWithDetails();
-      setMt4Integrations(integrations);
+      const integrations = await getMT5IntegrationsWithDetails();
+      setMt5Integrations(integrations);
 
       // Load sync history from the first integration if available
       if (integrations.length > 0) {
-        const recentSyncs = await getRecentMT4Syncs(integrations[0].id, 10);
+        const recentSyncs = await getRecentMT5Syncs(integrations[0].id, 10);
         setSyncHistory(recentSyncs);
       }
     } catch (error) {
