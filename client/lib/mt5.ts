@@ -34,6 +34,13 @@ export async function linkMT5Account(
   mt5ServerEndpoint: string
 ): Promise<{ success: boolean; integration?: MT5Integration; error?: string }> {
   try {
+    console.log('[MT5] Linking account with:', {
+      credentialId,
+      mt5AccountId,
+      mt5ApiToken: mt5ApiToken ? '***' : 'empty',
+      mt5ServerEndpoint,
+    });
+
     const { data, error } = await supabase
       .from('mt5_integrations')
       .insert([
@@ -50,14 +57,15 @@ export async function linkMT5Account(
       .single();
 
     if (error) {
-      console.error('Error linking MT5 account:', error);
+      console.error('[MT5] Error linking MT5 account:', error);
       return { success: false, error: error.message };
     }
 
+    console.log('[MT5] Successfully linked account:', data);
     return { success: true, integration: data };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error linking MT5 account:', error);
+    console.error('[MT5] Error linking MT5 account:', error);
     return { success: false, error: errorMsg };
   }
 }
