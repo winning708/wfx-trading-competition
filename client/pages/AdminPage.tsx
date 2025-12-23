@@ -16,6 +16,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { PaymentMonitoring } from "@/components/admin/PaymentMonitoring";
+import { PaymentAlerts } from "@/components/admin/PaymentAlerts";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
 import {
   uploadCredential,
