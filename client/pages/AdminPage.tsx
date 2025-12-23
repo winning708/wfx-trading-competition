@@ -320,13 +320,13 @@ export default function AdminPage() {
       return;
     }
 
-    const success = await removeAssignment(assignmentId);
+    const result = await removeAssignment(assignmentId);
 
-    if (success) {
+    if (result.success) {
       await loadAssignments();
-      alert("Assignment removed");
+      alert("✅ Assignment removed");
     } else {
-      alert("Failed to remove assignment");
+      alert(`❌ Error: ${result.error || "Failed to remove assignment"}`);
     }
   };
 
