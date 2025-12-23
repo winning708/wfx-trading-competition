@@ -240,12 +240,12 @@ export default function AdminPage() {
   const handleManualSync = async (integrationId: string) => {
     setIsSyncing(true);
     try {
-      const success = await triggerManualSync(integrationId);
-      if (success) {
+      const result = await triggerMT4SyncIntegration(integrationId);
+      if (result.success) {
         await loadMonitoring();
         alert("✅ Sync triggered! Data will be updated shortly.");
       } else {
-        alert("Failed to trigger sync");
+        alert(`Failed to trigger sync: ${result.error}`);
       }
     } catch (error) {
       console.error("Error triggering sync:", error);
