@@ -203,7 +203,9 @@ export default function AdminPage() {
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
+      console.log('[AdminPage] Loading monitoring data...');
       const integrations = await getForexFactoryIntegrationsWithDetails();
+      console.log('[AdminPage] Loaded', integrations.length, 'Forex Factory integrations');
       setForexFactoryIntegrations(integrations);
 
       // Load sync history from the first integration if available
@@ -212,7 +214,11 @@ export default function AdminPage() {
         setSyncHistory(recentSyncs);
       }
     } catch (error) {
-      console.error("Error loading monitoring data:", error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("Error loading monitoring data:", errorMsg);
+      // Don't crash, just show empty data
+      setForexFactoryIntegrations([]);
+      setSyncHistory([]);
     } finally {
       setIsLoadingMonitoring(false);
     }
