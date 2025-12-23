@@ -88,7 +88,9 @@ export async function getLeaderboard(): Promise<Trader[]> {
 
       return {
         rank: index + 1,
+        id: item.trader_id || item.id,
         username,
+        email: item.email || item.traders?.email,
         startingBalance: parseFloat(String(item.starting_balance)) || 0,
         currentBalance: parseFloat(String(item.current_balance)) || 0,
         profitPercentage: parseFloat(String(item.profit_percentage)) || 0,
