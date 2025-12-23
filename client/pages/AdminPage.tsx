@@ -194,12 +194,12 @@ export default function AdminPage() {
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
-      const integrations = await getMT5IntegrationsWithDetails();
-      setMt5Integrations(integrations);
+      const integrations = await getForexFactoryIntegrationsWithDetails();
+      setForexFactoryIntegrations(integrations);
 
       // Load sync history from the first integration if available
       if (integrations.length > 0) {
-        const recentSyncs = await getRecentMT5Syncs(integrations[0].id, 10);
+        const recentSyncs = await getRecentForexFactorySyncs(integrations[0].id, 10);
         setSyncHistory(recentSyncs);
       }
     } catch (error) {
@@ -209,47 +209,59 @@ export default function AdminPage() {
     }
   };
 
-  const handleLinkMT5 = async (e: React.FormEvent) => {
+  const handleLinkForexFactory = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('[Admin] MT5 Form Data:', {
+    console.log('[Admin] Forex Factory Form Data:', {
       selectedCredentialForLink,
-      mt5_account_id: mt5Form.mt5_account_id,
-      mt5_api_token: mt5Form.mt5_api_token ? '***' : 'empty',
-      mt5_server_endpoint: mt5Form.mt5_server_endpoint,
+      ff_account_username: forexFactoryForm.ff_account_username,
+      ff_api_key: forexFactoryForm.ff_api_key ? '***' : 'empty',
+      ff_system_id: forexFactoryForm.ff_system_id,
     });
 
-    if (!selectedCredentialForLink || !mt5Form.mt5_account_id || !mt5Form.mt5_api_token || !mt5Form.mt5_server_endpoint) {
+    if (!selectedCredentialForLink || !forexFactoryForm.ff_account_username || !forexFactoryForm.ff_api_key || !forexFactoryForm.ff_system_id) {
       alert("Please fill in all required fields");
       return;
     }
 
-    const result = await linkMT5Account(
+    // Test connection first
+    const testResult = await testForexFactoryConnection(
+      forexFactoryForm.ff_account_username,
+      forexFactoryForm.ff_api_key,
+      forexFactoryForm.ff_system_id
+    );
+
+    if (!testResult.success) {
+      alert(`❌ Connection test failed: ${testResult.message}`);
+      return;
+    }
+
+    const result = await linkForexFactoryAccount(
       selectedCredentialForLink,
-      mt5Form.mt5_account_id,
-      mt5Form.mt5_api_token,
-      mt5Form.mt5_server_endpoint
+      forexFactoryForm.ff_account_username,
+      forexFactoryForm.ff_api_key,
+      forexFactoryForm.ff_system_id
     );
 
     if (result.success) {
-      setMt5Form({
-        mt5_account_id: "",
-        mt5_api_token: "",
-        mt5_server_endpoint: "",
+      setForexFactoryForm({
+        ff_account_username: "",
+        ff_api_key: "",
+        ff_system_id: "",
       });
       setSelectedCredentialForLink("");
       setShowLinkForm(false);
       await loadMonitoring();
-      alert("✅ MT5 account linked successfully!");
+      alert("✅ Forex Factory account linked successfully!");
     } else {
-      alert(`Failed to link MT5 account: ${result.error}`);
+      alert(`Failed to link Forex Factory account: ${result.error}`);
     }
   };
 
   const handleManualSync = async (integrationId: string) => {
     setIsSyncing(true);
     try {
-      const result = await triggerMT5SyncIntegration(integrationId);
+      const result = await triggerForexFactorySyncIntegration(integrationId);
       if (result.success) {
         await loadMonitoring();
         alert("✅ Sync triggered! Data will be updated shortly.");
