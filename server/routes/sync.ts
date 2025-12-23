@@ -332,9 +332,13 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
     console.log(`[MT5 Sync] Starting sync for MT5 integration: ${integrationId}`);
 
     const integrations = await getActiveMT5Integrations();
+    console.log(`[MT5 Sync] Found ${integrations.length} active integration(s)`);
+    console.log(`[MT5 Sync] Integration IDs: ${integrations.map((i) => i.id).join(', ')}`);
+
     const integration = integrations.find((i) => i.id === integrationId);
 
     if (!integration) {
+      console.error(`[MT5 Sync] Integration ${integrationId} not found in active integrations`);
       return res.status(404).json({
         success: false,
         message: 'MT5 Integration not found',
