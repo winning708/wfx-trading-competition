@@ -143,7 +143,7 @@ export async function triggerManualSync(integrationId: string): Promise<boolean>
       .single();
 
     if (historyError) {
-      console.error('Error creating sync history:', historyError);
+      console.error('Error creating sync history:', historyError.message, historyError);
       return false;
     }
 
@@ -157,7 +157,7 @@ export async function triggerManualSync(integrationId: string): Promise<boolean>
       .eq('id', integrationId);
 
     if (updateError) {
-      console.error('Error updating integration status:', updateError);
+      console.error('Error updating integration status:', updateError.message, updateError);
       return false;
     }
 
@@ -168,7 +168,8 @@ export async function triggerManualSync(integrationId: string): Promise<boolean>
     // For now, we'll just return true to indicate the sync was initiated
     return true;
   } catch (error) {
-    console.error('Error triggering manual sync:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error triggering manual sync:', errorMsg);
     return false;
   }
 }
