@@ -12,15 +12,15 @@
 
 import { RequestHandler } from 'express';
 import { syncMyFXBookAccount } from '../lib/myfxbook-client';
-import { syncMT4Account } from '../lib/mt4-client';
+import { syncMT5Account } from '../lib/mt5-client';
 import {
   getActiveIntegrations,
-  getActiveMT4Integrations,
+  getActiveMT5Integrations,
   getTraderByCredentialId,
   updatePerformanceData,
   logSyncAttempt,
   updateIntegrationSyncStatus,
-  updateMT4IntegrationSyncStatus,
+  updateMT5IntegrationSyncStatus,
   getTraderStartingBalance,
 } from '../lib/supabase-client';
 
