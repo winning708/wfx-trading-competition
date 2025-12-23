@@ -190,11 +190,14 @@ export default function AdminPage() {
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
-      const integrations = await getMyFXBookIntegrationsWithDetails();
-      setMyfxbookIntegrations(integrations);
+      const integrations = await getMT4IntegrationsWithDetails();
+      setMt4Integrations(integrations);
 
-      const recentSyncs = await getRecentSyncs(10);
-      setSyncHistory(recentSyncs);
+      // Load sync history from the first integration if available
+      if (integrations.length > 0) {
+        const recentSyncs = await getRecentMT4Syncs(integrations[0].id, 10);
+        setSyncHistory(recentSyncs);
+      }
     } catch (error) {
       console.error("Error loading monitoring data:", error);
     } finally {
