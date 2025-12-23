@@ -207,6 +207,14 @@ interface FormData {
   country: string;
 }
 
+interface PaymentMethod {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+}
+
 export default function RegistrationPage() {
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
