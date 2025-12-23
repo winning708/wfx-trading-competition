@@ -337,13 +337,13 @@ export default function AdminPage() {
       return;
     }
 
-    const success = await deleteCredential(credentialId);
+    const result = await deleteCredential(credentialId);
 
-    if (success) {
+    if (result.success) {
       await loadCredentials();
-      alert("Credential deleted");
+      alert("✅ Credential deleted");
     } else {
-      alert("Failed to delete credential");
+      alert(`❌ Error: ${result.error || "Failed to delete credential"}`);
     }
   };
 
