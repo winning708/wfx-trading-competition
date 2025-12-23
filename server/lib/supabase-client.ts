@@ -26,6 +26,17 @@ export interface MyFXBookIntegrationData {
   last_sync: string | null;
 }
 
+export interface MT4IntegrationData {
+  id: string;
+  credential_id: string;
+  mt4_account_id: string;
+  mt4_api_token: string;
+  mt4_server_endpoint: string;
+  mt4_platform: 'mt4' | 'mt5';
+  sync_status: string;
+  last_sync: string | null;
+}
+
 export interface TraderData {
   id: string;
   full_name: string;
