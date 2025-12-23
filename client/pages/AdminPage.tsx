@@ -1004,7 +1004,7 @@ export default function AdminPage() {
                         Credential
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        MT4 Account / Platform
+                        MT5 Account ID
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                         Sync Status
@@ -1024,14 +1024,14 @@ export default function AdminPage() {
                           <p className="text-muted-foreground">Loading integrations...</p>
                         </td>
                       </tr>
-                    ) : mt4Integrations.length === 0 ? (
+                    ) : mt5Integrations.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">No MT4/MT5 integrations yet</p>
+                          <p className="text-muted-foreground">No MT5 integrations yet</p>
                         </td>
                       </tr>
                     ) : (
-                      mt4Integrations.map((integration) => (
+                      mt5Integrations.map((integration) => (
                         <tr
                           key={integration.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
@@ -1039,11 +1039,8 @@ export default function AdminPage() {
                           <td className="px-6 py-4 font-mono text-sm text-foreground">
                             {integration.credential?.account_username || "N/A"}
                           </td>
-                          <td className="px-6 py-4 text-sm text-muted-foreground">
-                            <div className="font-mono">{integration.mt4_account_id}</div>
-                            <div className="text-xs text-muted-foreground uppercase">
-                              {integration.mt4_platform || "MT4"}
-                            </div>
+                          <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
+                            {integration.mt5_account_id}
                           </td>
                           <td className="px-6 py-4">
                             <span
