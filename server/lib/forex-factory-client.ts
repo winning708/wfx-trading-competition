@@ -1,6 +1,6 @@
 /**
  * Forex Factory Trade Explorer REST API Client
- * Handles communication with Forex Factory Trade Explorer accounts
+ * Uses RapidAPI's Forex Factory Scraper for real-time leaderboard data
  * 
  * Fetches trading performance data for syncing to leaderboard
  */
@@ -27,72 +27,80 @@ export interface SyncResult {
 }
 
 /**
- * Fetch account data from Forex Factory Trade Explorer
+ * RapidAPI Leaderboard Entry
+ * Response format from RapidAPI Forex Factory Scraper
+ */
+interface RapidAPILeaderboardEntry {
+  rank?: number | string;
+  explorer?: string;
+  name?: string;
+  return?: string | number;
+  pips?: string | number;
+  draws?: string | number;
+  url?: string;
+  [key: string]: any;
+}
+
+/**
+ * Fetch account data from RapidAPI Forex Factory Scraper
  * 
- * @param accountUsername - Forex Factory account username
- * @param apiKey - Forex Factory API key (if using API)
- * @param systemId - The specific trading system/account ID to track
+ * @param accountUsername - Forex Factory account username / trader name
+ * @param rapidapiKey - RapidAPI API key
+ * @param systemId - The specific trading system/account ID to track (optional filter)
  * @returns Account data or null if error
  */
 export async function fetchForexFactoryAccountData(
   accountUsername: string,
-  apiKey: string,
+  rapidapiKey: string,
   systemId: string
 ): Promise<ForexFactoryAccountData | null> {
   try {
     console.log(`[Forex Factory] ============ FETCH STARTING ============`);
     console.log(`[Forex Factory] Account Username: ${accountUsername}`);
     console.log(`[Forex Factory] System ID: ${systemId}`);
-    console.log(`[Forex Factory] API Key length: ${apiKey.length}`);
+    console.log(`[Forex Factory] RapidAPI Key length: ${rapidapiKey.length}`);
 
     // Validate inputs
-    if (!accountUsername || !apiKey || !systemId) {
-      const errorMsg = 'Missing required Forex Factory configuration: account username, API key, or system ID';
+    if (!accountUsername || !rapidapiKey || !systemId) {
+      const errorMsg = 'Missing required Forex Factory configuration: account username, RapidAPI key, or system ID';
       console.error(`[Forex Factory] ${errorMsg}`);
       throw new Error(errorMsg);
     }
 
-    // Build API request URL
-    // Forex Factory Trade Explorer API format: https://api.forexfactory.com/v1/accounts/{systemId}/stats
-    const apiUrl = `https://api.forexfactory.com/v1/accounts/${systemId}/stats`;
+    // RapidAPI Forex Factory Scraper endpoint
+    const apiUrl = 'https://forex-factory-scraper1.p.rapidapi.com/forex-leaderboard';
 
     console.log(`[Forex Factory] Making request to: ${apiUrl}`);
-    console.log(`[Forex Factory] API Key provided: ${apiKey ? 'Yes (length: ' + apiKey.length + ')' : 'No'}`);
+    console.log(`[Forex Factory] RapidAPI Key provided: ${rapidapiKey ? 'Yes (length: ' + rapidapiKey.length + ')' : 'No'}`);
 
     let response;
     try {
       response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
+          'x-rapidapi-key': rapidapiKey,
+          'x-rapidapi-host': 'forex-factory-scraper1.p.rapidapi.com',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'WFX-Trading-Bot/1.0',
         },
       });
 
       console.log(`[Forex Factory] Response status: ${response.status}`);
-      console.log(`[Forex Factory] Response headers: ${JSON.stringify(Object.fromEntries(response.headers))}`);
     } catch (fetchError) {
       const errorMsg = fetchError instanceof Error ? fetchError.message : 'Unknown network error';
       console.error(`[Forex Factory] Network error fetching from ${apiUrl}: ${errorMsg}`);
       console.error(`[Forex Factory] Common causes:`);
-      console.error(`[Forex Factory]   1. Account username or System ID is incorrect`);
-      console.error(`[Forex Factory]   2. API key is invalid or expired`);
-      console.error(`[Forex Factory]   3. Forex Factory server is unreachable`);
-      console.error(`[Forex Factory]   4. Network connectivity issue`);
+      console.error(`[Forex Factory]   1. RapidAPI key is invalid or expired`);
+      console.error(`[Forex Factory]   2. RapidAPI service is unreachable`);
+      console.error(`[Forex Factory]   3. Network connectivity issue`);
       throw new Error(`Network error: ${errorMsg}`);
     }
 
     if (!response.ok) {
       const responseText = await response.text();
 
-      // Check if response is HTML (likely an error page)
-      if (responseText.trim().startsWith('<')) {
-        const htmlPreview = responseText.substring(0, 200).replace(/\n/g, ' ');
-        console.error(`[Forex Factory] HTTP ${response.status}: Received HTML instead of JSON`);
-        console.error(`[Forex Factory] Preview: ${htmlPreview}`);
-        throw new Error(`HTTP ${response.status}: Server returned HTML. Check if system ID and API key are correct.`);
+      if (response.status === 401) {
+        console.error('[Forex Factory] HTTP 401: Invalid RapidAPI key');
+        throw new Error('Invalid RapidAPI key. Please check your key in RapidAPI dashboard.');
       }
 
       console.error(`[Forex Factory] HTTP Error ${response.status}: ${responseText.substring(0, 200)}`);
@@ -104,27 +112,20 @@ export async function fetchForexFactoryAccountData(
       data = await response.json();
     } catch (jsonError) {
       const responseText = await response.text();
-
-      if (responseText.trim().startsWith('<')) {
-        const htmlPreview = responseText.substring(0, 200).replace(/\n/g, ' ');
-        console.error(`[Forex Factory] Received HTML instead of JSON: ${htmlPreview}`);
-        throw new Error(`Invalid JSON response: Server returned HTML instead of JSON.`);
-      }
-
       console.error(`[Forex Factory] Failed to parse JSON response: ${responseText.substring(0, 200)}`);
-      throw new Error(`Invalid JSON response from Forex Factory API`);
+      throw new Error(`Invalid JSON response from RapidAPI`);
     }
 
-    // Normalize response data
-    const accountData = normalizeForexFactoryData(data, accountUsername, systemId);
+    // Search for the trader in the leaderboard data
+    const accountData = findAndNormalizeTraderData(data, accountUsername, systemId);
 
     if (!accountData) {
-      console.error('[Forex Factory] Failed to normalize account data');
-      throw new Error('Invalid account data format from Forex Factory');
+      console.error('[Forex Factory] Failed to find trader in leaderboard data');
+      throw new Error(`Trader "${accountUsername}" not found in Forex Factory leaderboard. Please verify the username is correct.`);
     }
 
     console.log(`[Forex Factory] Successfully fetched data for account: ${accountUsername}`);
-    console.log(`[Forex Factory] Balance: ${accountData.balance}, Equity: ${accountData.equity}, Profit: ${accountData.profit}`);
+    console.log(`[Forex Factory] Balance: ${accountData.balance}, Return: ${accountData.profit}%`);
     return accountData;
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
@@ -134,57 +135,82 @@ export async function fetchForexFactoryAccountData(
 }
 
 /**
- * Normalize account data from Forex Factory Trade Explorer API
- * Handles various response formats from Forex Factory
+ * Find trader in leaderboard data and normalize to our format
+ * RapidAPI returns leaderboard entries, we search for the matching trader
  * 
- * Expected Forex Factory response format:
- * {
- *   "account_id": "system_id",
- *   "username": "account_username",
- *   "balance": 10500.00,
- *   "equity": 10250.00,
- *   "profit": 250.00,
- *   "total_trades": 145,
- *   "win_rate": 0.65,
- *   "drawdown": 0.12,
- *   "currency": "USD"
- * }
+ * Expected RapidAPI response format:
+ * [
+ *   {
+ *     "rank": "1",
+ *     "explorer": "system_name",
+ *     "name": "trader_name",
+ *     "return": "45.23",
+ *     "pips": "1250",
+ *     "draws": "3",
+ *     "url": "https://www.forexfactory.com/..."
+ *   }
+ * ]
  */
-function normalizeForexFactoryData(
-  data: any,
+function findAndNormalizeTraderData(
+  leaderboardData: any,
   accountUsername: string,
   systemId: string
 ): ForexFactoryAccountData | null {
   try {
-    // Extract fields with fallbacks
-    const accountData: ForexFactoryAccountData = {
-      accountId: data.account_id || data.id || data.system_id || systemId,
-      balance: parseFloat(data.balance || data.current_balance || 0) || 1000,
-      equity: parseFloat(data.equity || data.current_balance || 0) || 1000,
-      profit: parseFloat(data.profit || data.total_profit || 0) || 0,
-      trades: parseInt(data.total_trades || data.trades || 0) || 0,
-      winRate: parseFloat(data.win_rate || data.winrate || 0) || 0,
-      drawdown: parseFloat(data.drawdown || data.max_drawdown || 0) || 0,
-      currency: data.currency || 'USD',
-    };
+    // Ensure we have an array
+    const entries: RapidAPILeaderboardEntry[] = Array.isArray(leaderboardData) ? leaderboardData : [];
 
-    // Validate required fields
-    if (!accountData.balance || accountData.balance === 0) {
-      console.warn('[Forex Factory] Warning: Balance is 0 or missing, using default');
-      accountData.balance = 1000;
+    if (entries.length === 0) {
+      console.error('[Forex Factory] Leaderboard data is empty');
+      return null;
     }
+
+    console.log(`[Forex Factory] Searching through ${entries.length} leaderboard entries`);
+
+    // Search for trader by username (case-insensitive)
+    const trader = entries.find((entry) => {
+      const entryName = (entry.name || entry.explorer || '').toLowerCase();
+      const searchName = accountUsername.toLowerCase();
+      return entryName.includes(searchName) || searchName.includes(entryName);
+    });
+
+    if (!trader) {
+      console.error(`[Forex Factory] Trader "${accountUsername}" not found in leaderboard`);
+      console.error('[Forex Factory] Available traders:', entries.slice(0, 5).map((e) => e.name || e.explorer));
+      return null;
+    }
+
+    console.log('[Forex Factory] Found trader in leaderboard:', trader.name || trader.explorer);
+
+    // Parse return percentage
+    const returnValue = parseFloat(String(trader.return || 0).replace('%', '')) || 0;
+    
+    // Parse pips
+    const pips = parseInt(String(trader.pips || 0)) || 0;
+
+    // Create account data object
+    const accountData: ForexFactoryAccountData = {
+      accountId: systemId,
+      balance: 10000 + (returnValue * 100), // Estimate balance from return percentage
+      equity: 10000 + (returnValue * 100),
+      profit: returnValue * 100,
+      trades: pips > 0 ? Math.max(1, Math.floor(Math.abs(pips) / 50)) : 0,
+      winRate: 0.5, // Default win rate
+      drawdown: 0, // RapidAPI doesn't provide drawdown
+      currency: 'USD',
+    };
 
     console.log('[Forex Factory] Normalized account data:', accountData);
     return accountData;
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error(`[Forex Factory] Error normalizing account data: ${errorMsg}`);
+    console.error(`[Forex Factory] Error normalizing trader data: ${errorMsg}`);
     return null;
   }
 }
 
 /**
- * Calculate profit percentage from Forex Factory data
+ * Calculate profit percentage from balance data
  * @param balance - Current account balance
  * @param startBalance - Starting balance
  * @returns Profit percentage
@@ -200,18 +226,18 @@ export function calculateProfitPercentage(
 /**
  * Sync account data from Forex Factory and return formatted result
  * @param accountUsername - Forex Factory account username
- * @param apiKey - Forex Factory API key
+ * @param rapidapiKey - RapidAPI key
  * @param systemId - Trading system ID to sync
  * @param expectedStartBalance - Expected starting balance for validation
  * @returns SyncResult with balance and profit data
  */
 export async function syncForexFactoryAccount(
   accountUsername: string,
-  apiKey: string,
+  rapidapiKey: string,
   systemId: string,
-  expectedStartBalance: number = 1000
+  expectedStartBalance: number = 10000
 ): Promise<SyncResult> {
-  const accountData = await fetchForexFactoryAccountData(accountUsername, apiKey, systemId);
+  const accountData = await fetchForexFactoryAccountData(accountUsername, rapidapiKey, systemId);
 
   if (!accountData) {
     return {
@@ -240,37 +266,37 @@ export async function syncForexFactoryAccount(
 }
 
 /**
- * Test Forex Factory connection
- * Verifies that the API key and credentials are valid
+ * Test Forex Factory connection with RapidAPI
+ * Verifies that the RapidAPI key is valid and can reach the service
  * @param accountUsername - Forex Factory account username
- * @param apiKey - Forex Factory API key
+ * @param rapidapiKey - RapidAPI key
  * @param systemId - Trading system ID to verify
  * @returns { success: boolean; message?: string }
  */
 export async function testForexFactoryConnection(
   accountUsername: string,
-  apiKey: string,
+  rapidapiKey: string,
   systemId: string
 ): Promise<{ success: boolean; message?: string }> {
   try {
     console.log(`[Forex Factory] Testing connection for account: ${accountUsername}`);
     console.log(`[Forex Factory] Using system ID: ${systemId}`);
 
-    const accountData = await fetchForexFactoryAccountData(accountUsername, apiKey, systemId);
+    const accountData = await fetchForexFactoryAccountData(accountUsername, rapidapiKey, systemId);
 
     if (!accountData) {
       console.error('[Forex Factory] Connection test failed: invalid account data');
       return {
         success: false,
-        message: 'Could not fetch account data. Possible causes:\n1. Invalid Forex Factory account username\n2. API key is expired or invalid\n3. System ID does not exist\n4. Forex Factory service is unavailable'
+        message: 'Could not fetch account data. Possible causes:\n1. Invalid Forex Factory account username\n2. RapidAPI key is expired or invalid\n3. Trader not found in leaderboard\n4. RapidAPI service is unavailable'
       };
     }
 
     console.log(`[Forex Factory] Connection test successful for account: ${accountUsername}`);
-    console.log(`[Forex Factory] Account data: Balance=${accountData.balance}, Equity=${accountData.equity}, Trades=${accountData.trades}`);
+    console.log(`[Forex Factory] Account data: Balance=${accountData.balance}, Profit=${accountData.profit}%`);
     return {
       success: true,
-      message: `Successfully connected! Account ${accountUsername} has balance: ${accountData.balance} ${accountData.currency}`
+      message: `Successfully connected! Trader "${accountUsername}" found with return: ${accountData.profit.toFixed(2)}%`
     };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
