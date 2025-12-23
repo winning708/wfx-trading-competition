@@ -275,11 +275,13 @@ export default function AdminPage() {
         await loadMonitoring();
         alert(`✅ Sync triggered for ${result.synced} integration(s)!`);
       } else {
-        alert(`Sync failed: ${result.error}`);
+        const errorMsg = result.error || 'Unknown error';
+        alert(`❌ Sync failed:\n\n${errorMsg}`);
       }
     } catch (error) {
       console.error("Error syncing all:", error);
-      alert("Error syncing");
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      alert(`❌ Error syncing:\n\n${errorMsg}`);
     } finally {
       setIsSyncing(false);
     }
