@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
-import { Trophy, TrendingUp, Clock } from "lucide-react";
+import { Trophy, TrendingUp, Clock, RefreshCw } from "lucide-react";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
+import { testSupabaseConnection } from "@/lib/test";
 
 interface Trader {
   rank: number;
@@ -17,6 +18,12 @@ export default function LeaderboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [traderCount, setTraderCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<{
+    connected: boolean;
+    traderCount: number;
+    performanceDataCount: number;
+    error?: string;
+  } | null>(null);
 
   useEffect(() => {
     // Fetch leaderboard data on component mount
@@ -25,11 +32,26 @@ export default function LeaderboardPage() {
         setIsLoading(true);
         setError(null);
 
+        // Test connection first
+        const status = await testSupabaseConnection();
+        setConnectionStatus(status);
+
+        console.log('Connection status:', status);
+
+        if (!status.connected) {
+          setError(`Connection error: ${status.error}`);
+          return;
+        }
+
         const data = await getLeaderboard();
         setLeaderboard(data);
 
         const count = await getTraderCount();
         setTraderCount(count);
+
+        if (data.length === 0) {
+          console.warn('No traders found in database');
+        }
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : 'Failed to load leaderboard';
         console.error("Error fetching leaderboard:", error);
@@ -46,6 +68,22 @@ export default function LeaderboardPage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await getLeaderboard();
+      setLeaderboard(data);
+      const count = await getTraderCount();
+      setTraderCount(count);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Failed to refresh';
+      setError(errorMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
