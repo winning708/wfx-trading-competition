@@ -132,10 +132,15 @@ export default function AdminPage() {
   const loadCredentials = async () => {
     setIsLoadingCredentials(true);
     try {
+      console.log('[AdminPage] Loading credentials...');
       const data = await getAllCredentials();
+      console.log('[AdminPage] Loaded', data.length, 'credentials');
       setCredentials(data);
     } catch (error) {
-      console.error("Error loading credentials:", error);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("Error loading credentials:", errorMsg, error);
+      // Don't re-throw, just show empty credentials
+      setCredentials([]);
     } finally {
       setIsLoadingCredentials(false);
     }
