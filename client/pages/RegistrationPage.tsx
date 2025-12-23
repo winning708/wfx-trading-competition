@@ -215,15 +215,47 @@ interface PaymentMethod {
   color: string;
 }
 
+const PAYMENT_METHODS: PaymentMethod[] = [
+  {
+    id: "stripe",
+    name: "Stripe",
+    description: "Credit/Debit Card (Visa, Mastercard, Amex)",
+    icon: "💳",
+    color: "from-blue-600 to-blue-700",
+  },
+  {
+    id: "paystack",
+    name: "Paystack",
+    description: "African payments platform",
+    icon: "🏦",
+    color: "from-blue-500 to-indigo-600",
+  },
+  {
+    id: "flutterwave",
+    name: "Flutterwave",
+    description: "Cards, Mobile Money, Bank Transfer",
+    icon: "💰",
+    color: "from-red-500 to-orange-600",
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    description: "PayPal Account or Cards",
+    icon: "🔵",
+    color: "from-blue-700 to-indigo-800",
+  },
+];
+
 export default function RegistrationPage() {
+  const [step, setStep] = useState<"form" | "payment" | "success">("form");
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     phone: "",
     country: "",
   });
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
   const validateForm = (): boolean => {
