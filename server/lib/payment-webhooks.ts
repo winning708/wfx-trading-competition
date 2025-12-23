@@ -233,12 +233,26 @@ export async function handleBinanceWebhook(
   try {
     console.log('[Payment] Binance webhook received:', payload.status);
 
+    const email = payload.customer?.email;
+
     if (payload.status !== 'COMPLETED') {
       console.warn('[Payment] Binance payment not completed:', payload.status);
+
+      // Log failed payment
+      if (email) {
+        await logPaymentTransaction(
+          email,
+          payload.order_id,
+          'binance',
+          'failed',
+          payload.totalFee || 0,
+          `Payment status: ${payload.status}`
+        );
+      }
+
       return { success: false, message: 'Payment not completed' };
     }
 
-    const email = payload.customer?.email;
     if (!email) {
       console.error('[Payment] No email in Binance payload');
       return { success: false, message: 'No customer email' };
