@@ -253,11 +253,11 @@ export default function AdminPage() {
   };
 
   const handleSyncAll = async () => {
-    if (!confirm("Sync data for all MT4/MT5 integrations?")) return;
+    if (!confirm("Sync data for all MT5 integrations?")) return;
 
     setIsSyncing(true);
     try {
-      const result = await triggerMT4SyncAll();
+      const result = await triggerMT5SyncAll();
       if (result.success) {
         await loadMonitoring();
         alert(`✅ Sync triggered for ${result.synced} integration(s)!`);
