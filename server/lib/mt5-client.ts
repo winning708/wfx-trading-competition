@@ -36,10 +36,10 @@ export interface SyncResult {
  * 1. MetaApi (metaapi.cloud) - token-based
  * 2. Custom broker REST API - various formats
  * 3. WebSocket bridge endpoint
- * 
+ *
  * @param accountId - MT5 Account ID
  * @param apiToken - API token or password depending on provider
- * @param serverEndpoint - REST API endpoint URL (e.g., https://mt5.broker.com/api)
+ * @param serverEndpoint - REST API endpoint URL (e.g., https://api.metaapi.cloud/v1/accounts)
  * @returns Account data or null if error
  */
 export async function fetchMT5AccountData(
@@ -49,6 +49,14 @@ export async function fetchMT5AccountData(
 ): Promise<MT5AccountData | null> {
   try {
     console.log(`[MT5] Fetching data for account: ${accountId}`);
+    console.log(`[MT5] Using endpoint: ${serverEndpoint}`);
+
+    // Validate endpoint is not a configuration page
+    if (serverEndpoint.includes('/configure-trading-account-credentials/')) {
+      const errorMsg = 'Invalid endpoint: You are using a MetaApi configuration page URL instead of the API endpoint. Use https://api.metaapi.cloud/v1/accounts instead.';
+      console.error(`[MT5] ${errorMsg}`);
+      throw new Error(errorMsg);
+    }
 
     // Normalize endpoint URL
     let url = serverEndpoint.trim();
@@ -56,8 +64,10 @@ export async function fetchMT5AccountData(
       url += '/';
     }
 
-    // Different API endpoint formats based on provider
-    const accountDataUrl = `${url}accounts/${accountId}`;
+    // Build the full account URL
+    const accountDataUrl = `${url}${accountId}`;
+
+    console.log(`[MT5] Full request URL: ${accountDataUrl}`);
 
     const response = await fetch(accountDataUrl, {
       method: 'GET',
@@ -70,6 +80,14 @@ export async function fetchMT5AccountData(
 
     if (!response.ok) {
       const responseText = await response.text();
+
+      // Check if response is HTML (likely a 404 or error page)
+      if (responseText.trim().startsWith('<')) {
+        const htmlPreview = responseText.substring(0, 200).replace(/\n/g, ' ');
+        console.error(`[MT5] HTTP ${response.status}: Received HTML instead of JSON: ${htmlPreview}`);
+        throw new Error(`HTTP ${response.status} (likely wrong endpoint). Server returned HTML. Check if the endpoint URL is correct.`);
+      }
+
       console.error(`[MT5] HTTP Error ${response.status}: ${responseText.substring(0, 200)}`);
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -79,6 +97,14 @@ export async function fetchMT5AccountData(
       data = await response.json();
     } catch (jsonError) {
       const responseText = await response.text();
+
+      // Check if response is HTML
+      if (responseText.trim().startsWith('<')) {
+        const htmlPreview = responseText.substring(0, 200).replace(/\n/g, ' ');
+        console.error(`[MT5] Received HTML instead of JSON: ${htmlPreview}`);
+        throw new Error(`Invalid JSON response: Server returned HTML. This usually means:\n1. Wrong endpoint URL\n2. Account ID not recognized\n3. API credentials expired\n\nReceived: ${responseText.substring(0, 100)}`);
+      }
+
       console.error(`[MT5] Failed to parse JSON response: ${responseText.substring(0, 200)}`);
       throw new Error(`Invalid JSON response from MT5 API. Server returned: ${responseText.substring(0, 100)}`);
     }
