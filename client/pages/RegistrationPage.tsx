@@ -361,7 +361,11 @@ export default function RegistrationPage() {
     }
   };
 
-  if (isSuccess) {
+  if (step === "success") {
+    const selectedPaymentMethod = PAYMENT_METHODS.find(
+      (m) => m.id === selectedPayment
+    );
+
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -374,7 +378,7 @@ export default function RegistrationPage() {
             </div>
 
             <h2 className="mb-2 text-center text-2xl font-bold text-foreground">
-              Registration Successful!
+              Registration Complete!
             </h2>
             <p className="mb-6 text-center text-muted-foreground">
               Welcome to the WFX Trading Competition, {formData.fullName}!
@@ -389,6 +393,12 @@ export default function RegistrationPage() {
                 <p className="text-sm text-muted-foreground">Country</p>
                 <p className="font-medium text-foreground">{formData.country}</p>
               </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Payment Method</p>
+                <p className="font-medium text-foreground">
+                  {selectedPaymentMethod?.name}
+                </p>
+              </div>
             </div>
 
             <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
@@ -401,12 +411,139 @@ export default function RegistrationPage() {
               with your account details and trading instructions.
             </p>
 
-            <button
-              onClick={() => setIsSuccess(false)}
-              className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            <a
+              href="/"
+              className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Back to Home
-            </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Payment Methods Step
+  if (step === "payment") {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+
+        <div className="flex items-center justify-center px-4 py-20 md:py-32">
+          <div className="w-full max-w-2xl">
+            {/* Page Title */}
+            <div className="mb-12 text-center">
+              <h1 className="mb-4 text-4xl md:text-5xl font-bold text-foreground">
+                Choose Payment Method
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Select how you'd like to pay your $15 entry fee
+              </p>
+            </div>
+
+            {/* Payment Methods */}
+            <div className="grid md:grid-cols-2 gap-4 mb-8">
+              {PAYMENT_METHODS.map((method) => (
+                <button
+                  key={method.id}
+                  onClick={() => handlePaymentSelect(method.id)}
+                  className={`relative rounded-lg border-2 p-6 transition-all ${
+                    selectedPayment === method.id
+                      ? "border-primary bg-primary/10"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="absolute top-3 right-3">
+                    <div
+                      className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPayment === method.id
+                          ? "border-primary bg-primary"
+                          : "border-border"
+                      }`}
+                    >
+                      {selectedPayment === method.id && (
+                        <div className="h-3 w-3 bg-primary-foreground rounded-full" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="text-left">
+                    <div className="text-4xl mb-3">{method.icon}</div>
+                    <h3 className="text-lg font-semibold text-foreground mb-1">
+                      {method.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {method.description}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Order Summary */}
+            <div className="rounded-lg border border-border bg-card p-6 mb-8">
+              <div className="mb-4">
+                <h3 className="font-semibold text-foreground mb-4">
+                  Registration Summary
+                </h3>
+              </div>
+
+              <div className="space-y-3 mb-4 pb-4 border-b border-border">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    Competition Entry Fee
+                  </span>
+                  <span className="font-medium text-foreground">$15.00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tax (0%)</span>
+                  <span className="font-medium text-foreground">$0.00</span>
+                </div>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-lg font-semibold text-foreground">
+                  Total
+                </span>
+                <span className="text-2xl font-bold text-primary">$15.00</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <button
+                onClick={handlePaymentSubmit}
+                disabled={!selectedPayment || isLoading}
+                className={`w-full h-12 rounded-lg text-base font-semibold transition-colors ${
+                  selectedPayment && !isLoading
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+                }`}
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                    Processing...
+                  </span>
+                ) : (
+                  `Pay $15 with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
+                )}
+              </button>
+
+              <button
+                onClick={() => {
+                  setStep("form");
+                  setSelectedPayment(null);
+                }}
+                className="w-full h-12 rounded-lg border-2 border-border text-base font-semibold text-foreground hover:bg-card/50 transition-colors"
+              >
+                Back to Form
+              </button>
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground mt-6">
+              🔒 Your payment information is secure and encrypted
+            </p>
           </div>
         </div>
       </div>
