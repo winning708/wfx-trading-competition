@@ -209,7 +209,7 @@ export async function logSyncAttempt(
 }
 
 /**
- * Update integration sync status
+ * Update integration sync status (MyFXBook)
  */
 export async function updateIntegrationSyncStatus(
   integrationId: string,
@@ -236,6 +236,76 @@ export async function updateIntegrationSyncStatus(
   } catch (error) {
     console.error('Error in updateIntegrationSyncStatus:', error);
     return false;
+  }
+}
+
+/**
+ * Update MT4/MT5 integration sync status
+ */
+export async function updateMT4IntegrationSyncStatus(
+  integrationId: string,
+  syncStatus: 'success' | 'error',
+  errorMessage?: string
+): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('mt4_integrations')
+      .update({
+        sync_status: syncStatus,
+        last_sync: new Date().toISOString(),
+        last_error: errorMessage || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', integrationId);
+
+    if (error) {
+      console.error('Error updating MT4 integration status:', error);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error in updateMT4IntegrationSyncStatus:', error);
+    return false;
+  }
+}
+
+/**
+ * Create a new MT4/MT5 integration
+ */
+export async function createMT4Integration(
+  credentialId: string,
+  mt4AccountId: string,
+  mt4ApiToken: string,
+  mt4ServerEndpoint: string,
+  mt4Platform: 'mt4' | 'mt5' = 'mt4'
+): Promise<string | null> {
+  try {
+    const { data, error } = await supabase
+      .from('mt4_integrations')
+      .insert([
+        {
+          credential_id: credentialId,
+          mt4_account_id: mt4AccountId,
+          mt4_api_token: mt4ApiToken,
+          mt4_server_endpoint: mt4ServerEndpoint,
+          mt4_platform: mt4Platform,
+          sync_status: 'pending',
+          is_active: true,
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating MT4 integration:', error);
+      return null;
+    }
+
+    return data?.id || null;
+  } catch (error) {
+    console.error('Error in createMT4Integration:', error);
+    return null;
   }
 }
 
