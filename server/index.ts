@@ -31,9 +31,9 @@ export function createServer() {
   app.post("/api/sync/trigger/:integrationId", handleSyncIntegration);
   app.get("/api/sync/status", handleSyncStatus);
 
-  // MT4/MT5 Sync routes
-  app.post("/api/sync/mt4/trigger", handleMT4SyncAll);
-  app.post("/api/sync/mt4/trigger/:integrationId", handleMT4SyncIntegration);
+  // MT5 Sync routes
+  app.post("/api/sync/mt5/trigger", handleMT5SyncAll);
+  app.post("/api/sync/mt5/trigger/:integrationId", handleMT5SyncIntegration);
 
   return app;
 }
