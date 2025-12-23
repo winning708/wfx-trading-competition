@@ -301,6 +301,13 @@ export default function AdminPage() {
       return;
     }
 
+    // Validate UUID format (basic check)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(selectedTrader)) {
+      alert(`❌ Error: Invalid trader ID format. Selected ID: "${selectedTrader}". Please refresh and try again.`);
+      return;
+    }
+
     const result = await assignCredentialToTrader(
       selectedTrader,
       selectedCredential
