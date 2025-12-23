@@ -1087,7 +1087,7 @@ export default function AdminPage() {
                             {integration.credential?.account_username || "N/A"}
                           </td>
                           <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
-                            {integration.mt5_account_id}
+                            {integration.ff_account_username}
                           </td>
                           <td className="px-6 py-4">
                             <div
