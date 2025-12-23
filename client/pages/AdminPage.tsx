@@ -350,9 +350,14 @@ export default function AdminPage() {
           {activeTab === "credentials" && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-foreground">
-                  Trading Account Credentials
-                </h2>
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Trading Account Credentials
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Upload credentials and they will be automatically assigned to unregistered traders
+                  </p>
+                </div>
                 <button
                   onClick={() => setShowCredentialForm(!showCredentialForm)}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -365,9 +370,12 @@ export default function AdminPage() {
               {/* Credential Form */}
               {showCredentialForm && (
                 <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
                     Upload New Trading Credential
                   </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    When uploaded, this credential will be automatically assigned to the first unassigned trader
+                  </p>
 
                   <form onSubmit={handleUploadCredential} className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
