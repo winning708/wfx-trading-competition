@@ -36,6 +36,18 @@ export interface MT5IntegrationData {
   last_sync: string | null;
 }
 
+export interface ForexFactoryIntegrationData {
+  id: string;
+  credential_id: string;
+  ff_account_username: string;
+  ff_api_key: string;
+  ff_system_id: string;
+  sync_status: string;
+  last_sync: string | null;
+  is_active?: boolean;
+  last_error?: string;
+}
+
 export interface TraderData {
   id: string;
   full_name: string;
