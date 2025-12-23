@@ -139,8 +139,25 @@ export async function handleFlutterwaveWebhook(
 
     const { data } = payload;
 
+    // Extract email early for failed payment logging
+    const emailMatch = data.tx_ref?.match(/trader_(.+?)_\d+$/);
+    const email = emailMatch ? emailMatch[1] : null;
+
     if (data.status !== 'successful') {
       console.warn('[Payment] Flutterwave payment not successful:', data.status);
+
+      // Log failed payment
+      if (email) {
+        await logPaymentTransaction(
+          email,
+          data.id,
+          'flutterwave',
+          'failed',
+          data.amount || 0,
+          `Payment status: ${data.status}`
+        );
+      }
+
       return { success: false, message: 'Payment not successful' };
     }
 
