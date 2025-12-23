@@ -1,12 +1,12 @@
 /**
- * MyFXBook & MT4/MT5 Sync Route Handler
- * API endpoint to manually trigger MyFXBook and MT4/MT5 data syncs
+ * MyFXBook & MT5 Sync Route Handler
+ * API endpoint to manually trigger MyFXBook and MT5 data syncs
  *
  * Endpoints:
- * - POST /api/sync/trigger - Trigger sync for all integrations
- * - POST /api/sync/trigger/:integrationId - Trigger sync for specific integration
- * - POST /api/sync/mt4/trigger - Trigger MT4/MT5 sync for all integrations
- * - POST /api/sync/mt4/trigger/:integrationId - Trigger MT4/MT5 sync for specific integration
+ * - POST /api/sync/trigger - Trigger sync for all MyFXBook integrations
+ * - POST /api/sync/trigger/:integrationId - Trigger sync for specific MyFXBook integration
+ * - POST /api/sync/mt5/trigger - Trigger MT5 sync for all integrations
+ * - POST /api/sync/mt5/trigger/:integrationId - Trigger MT5 sync for specific integration
  * - GET /api/sync/status - Get sync status
  */
 
