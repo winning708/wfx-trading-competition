@@ -58,7 +58,7 @@ async function getUnassignedTraders(): Promise<any[]> {
 // Upload a new trading credential and auto-assign to first unassigned trader
 export async function uploadCredential(
   credential: Omit<TradingCredential, 'id' | 'created_at' | 'updated_at'>
-): Promise<{ credential: TradingCredential | null; assignedTo?: string }> {
+): Promise<{ credential: TradingCredential | null; assignedTo?: string; error?: string }> {
   try {
     // 1. Upload credential
     const { data: credentialData, error: credError } = await supabase
@@ -68,13 +68,15 @@ export async function uploadCredential(
       .single();
 
     if (credError) {
-      console.error('Error uploading credential:', credError);
-      return { credential: null };
+      const errorMsg = credError.message || JSON.stringify(credError);
+      console.error('Error uploading credential:', errorMsg);
+      return { credential: null, error: errorMsg };
     }
 
     if (!credentialData) {
-      console.error('No credential data returned');
-      return { credential: null };
+      const msg = 'No credential data returned from database';
+      console.error(msg);
+      return { credential: null, error: msg };
     }
 
     // 2. Get unassigned traders
@@ -97,15 +99,17 @@ export async function uploadCredential(
       ]);
 
     if (assignError) {
-      console.error('Error assigning credential:', assignError);
+      const errorMsg = assignError.message || JSON.stringify(assignError);
+      console.error('Error assigning credential:', errorMsg);
       return { credential: credentialData };
     }
 
     console.log(`Credential assigned to ${targetTrader.full_name} (${targetTrader.email})`);
     return { credential: credentialData, assignedTo: targetTrader.full_name };
   } catch (error) {
-    console.error('Error uploading credential:', error);
-    return { credential: null };
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Error uploading credential:', errorMsg);
+    return { credential: null, error: errorMsg };
   }
 }
 
