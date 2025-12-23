@@ -174,6 +174,14 @@ export default function LeaderboardPage() {
               </p>
             </div>
           )}
+
+          {connectionStatus && import.meta.env.DEV && (
+            <div className="mb-8 rounded-lg border border-border bg-card/30 p-4">
+              <p className="text-xs text-muted-foreground font-mono">
+                <strong>Debug Info:</strong> Connected: {connectionStatus.connected ? '✓' : '✗'} | Traders: {connectionStatus.traderCount} | Performance Data: {connectionStatus.performanceDataCount}
+              </p>
+            </div>
+          )}
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full">
               <thead>
