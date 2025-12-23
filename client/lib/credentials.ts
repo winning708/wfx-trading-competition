@@ -122,21 +122,27 @@ export async function uploadCredential(
 // Get all trading credentials
 export async function getAllCredentials(): Promise<TradingCredential[]> {
   try {
+    console.log('[getAllCredentials] Starting fetch...');
     const { data, error } = await supabase
       .from('trading_credentials')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching credentials:', error);
+      console.error('[getAllCredentials] Supabase error:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+      });
       // Return empty array instead of throwing
       return [];
     }
 
+    console.log('[getAllCredentials] Successfully fetched', (data || []).length, 'credentials');
     return data || [];
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Error fetching credentials:', errorMsg);
+    console.error('[getAllCredentials] Exception caught:', errorMsg, error);
     // Return empty array on any error to prevent app crash
     return [];
   }
