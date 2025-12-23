@@ -276,14 +276,14 @@ export default function AdminPage() {
   };
 
   const handleDeleteIntegration = async (integrationId: string) => {
-    if (!confirm("Delete this MyFXBook integration?")) return;
+    if (!confirm("Delete this MT4/MT5 integration?")) return;
 
-    const success = await deleteMyFXBookIntegration(integrationId);
-    if (success) {
+    const result = await deleteMT4Integration(integrationId);
+    if (result.success) {
       await loadMonitoring();
       alert("Integration deleted");
     } else {
-      alert("Failed to delete integration");
+      alert(`Failed to delete integration: ${result.error}`);
     }
   };
 
