@@ -10,6 +10,9 @@ import {
   Key,
   Users,
   Upload,
+  Activity,
+  RefreshCw,
+  Eye,
 } from "lucide-react";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
 import {
@@ -22,6 +25,17 @@ import {
   TradingCredential,
   CredentialAssignment,
 } from "@/lib/credentials";
+import {
+  linkMyFXBook,
+  getMyFXBookIntegrationsWithDetails,
+  triggerManualSync,
+  triggerSyncAll,
+  getSyncHistory,
+  getRecentSyncs,
+  deleteMyFXBookIntegration,
+  MyFXBookIntegration,
+  SyncHistory,
+} from "@/lib/myfxbook";
 
 interface Trader {
   rank: number;
