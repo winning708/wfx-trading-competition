@@ -273,9 +273,9 @@ export default function AdminPage() {
   };
 
   const handleDeleteIntegration = async (integrationId: string) => {
-    if (!confirm("Delete this MT4/MT5 integration?")) return;
+    if (!confirm("Delete this MT5 integration?")) return;
 
-    const result = await deleteMT4Integration(integrationId);
+    const result = await deleteMT5Integration(integrationId);
     if (result.success) {
       await loadMonitoring();
       alert("Integration deleted");
