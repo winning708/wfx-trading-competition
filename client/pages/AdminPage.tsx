@@ -300,18 +300,18 @@ export default function AdminPage() {
       return;
     }
 
-    const success = await assignCredentialToTrader(
+    const result = await assignCredentialToTrader(
       selectedTrader,
       selectedCredential
     );
 
-    if (success) {
+    if (result.success) {
       setSelectedTrader("");
       setSelectedCredential("");
       await loadAssignments();
-      alert("Credential assigned successfully!");
+      alert("✅ Credential assigned successfully!");
     } else {
-      alert("Failed to assign credential");
+      alert(`❌ Error: ${result.error || "Failed to assign credential"}`);
     }
   };
 
