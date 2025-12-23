@@ -29,15 +29,16 @@ import {
   CredentialAssignment,
 } from "@/lib/credentials";
 import {
-  linkMT5Account,
-  getMT5IntegrationsWithDetails,
-  triggerMT5SyncIntegration,
-  triggerMT5SyncAll,
-  getRecentMT5Syncs,
-  deleteMT5Integration,
-  MT5Integration,
+  linkForexFactoryAccount,
+  getForexFactoryIntegrationsWithDetails,
+  triggerForexFactorySyncIntegration,
+  triggerForexFactorySyncAll,
+  getRecentForexFactorySyncs,
+  deleteForexFactoryIntegration,
+  testForexFactoryConnection,
+  ForexFactoryIntegration,
   SyncHistoryRecord,
-} from "@/lib/mt5";
+} from "@/lib/forex-factory";
 
 interface Trader {
   rank: number;
