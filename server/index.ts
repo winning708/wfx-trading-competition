@@ -29,6 +29,12 @@ import {
   sendPaymentReceipt,
   sendCredentialsEmail,
 } from "./routes/email";
+import {
+  getPendingPayments,
+  approvePayment,
+  rejectPayment,
+  notifyAdminPayment,
+} from "./routes/admin";
 
 export function createServer() {
   const app = express();
