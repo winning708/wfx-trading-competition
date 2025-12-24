@@ -207,7 +207,7 @@ export default function AdminPage() {
           nigerian_account_name: settings.nigerian_account_name || "",
           nigerian_account_number: settings.nigerian_account_number || "",
           nigerian_swift_code: settings.nigerian_swift_code || "",
-          binance_wallet_address: settings.binance_wallet_address || "",
+          binance_pay_id: settings.binance_pay_id || "",
           binance_network: settings.binance_network || "BNB",
           bybit_wallet_address: settings.bybit_wallet_address || "",
           bybit_network: settings.bybit_network || "BTC",
