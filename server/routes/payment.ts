@@ -304,7 +304,15 @@ export const confirmManualPayment: RequestHandler = async (req, res) => {
       ref
     });
   } catch (error) {
-    console.error('[Payment] Error in confirmManualPayment:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Payment] Error in confirmManualPayment:', errorMessage);
+    if (error instanceof Error && error.stack) {
+      console.error('[Payment] Stack trace:', error.stack);
+    }
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error - check server logs for details',
+      error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+    });
   }
 };
