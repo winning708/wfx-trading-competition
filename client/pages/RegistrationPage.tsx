@@ -562,9 +562,12 @@ export default function RegistrationPage() {
 
             {/* Action Buttons */}
             <div className="space-y-4">
-              {manualPaymentData.method === 'flutterwave' && (
+              {console.log('[Manual Payment] Method:', manualPaymentData.method, 'Expected: flutterwave')}
+
+              {manualPaymentData.method === 'flutterwave' ? (
                 <button
                   onClick={() => {
+                    console.log('[Manual Payment] Clicked: I\'ve Paid via Flutterwave');
                     setStep("success");
                     setLoadingMessage('');
                   }}
@@ -573,15 +576,20 @@ export default function RegistrationPage() {
                   <ExternalLink className="h-4 w-4" />
                   I've Paid via Flutterwave
                 </button>
-              )}
-
-              {(manualPaymentData.method === 'binance' || manualPaymentData.method === 'bybit') && (
+              ) : manualPaymentData.method === 'binance' || manualPaymentData.method === 'bybit' ? (
                 <button
-                  onClick={() => setStep("success")}
+                  onClick={() => {
+                    console.log('[Manual Payment] Clicked: I\'ve Sent the Payment');
+                    setStep("success");
+                  }}
                   className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
                 >
                   I've Sent the Payment
                 </button>
+              ) : (
+                <div className="w-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600">
+                  Error: Unknown payment method: {manualPaymentData.method}
+                </div>
               )}
 
               <button
