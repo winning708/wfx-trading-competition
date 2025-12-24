@@ -80,3 +80,37 @@ export const sendPaymentReceipt: RequestHandler = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+/**
+ * Send Trading Credentials Email
+ * POST /api/email/send-credentials
+ * Body: { traderId }
+ */
+export const sendCredentialsEmail: RequestHandler = async (req, res) => {
+  try {
+    const { traderId } = req.body;
+
+    if (!traderId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Trader ID is required',
+      });
+    }
+
+    console.log('[Email] Sending credentials email for trader:', traderId);
+
+    const success = await sendCredentialsEmailToTrader(traderId);
+
+    if (!success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to send credentials email',
+      });
+    }
+
+    res.json({ success: true, message: 'Credentials email sent' });
+  } catch (error) {
+    console.error('[Email] Error in sendCredentialsEmail:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
