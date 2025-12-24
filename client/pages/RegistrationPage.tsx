@@ -4,8 +4,9 @@ import { Check, ExternalLink, Copy } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { registerTrader, initiatePayment } from "@/lib/api";
+import { registerTrader, initiatePayment, getPaymentSettings } from "@/lib/api";
 import { getCurrencyInfoForCountry } from "@/lib/currency";
+import type { AdminPaymentSettings } from "@/lib/api";
 
 const COUNTRIES = [
   "Afghanistan",
