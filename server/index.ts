@@ -22,6 +22,7 @@ import {
   initiateFlutterwavePayment,
   initiateBinancePayment,
   initiateBybitPayment,
+  confirmManualPayment,
 } from "./routes/payment";
 import {
   sendConfirmationEmail,
