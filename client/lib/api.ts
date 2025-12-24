@@ -107,7 +107,51 @@ export async function getLeaderboard(): Promise<Trader[]> {
 
 export async function registerTrader(data: TraderRegistration): Promise<boolean> {
   try {
-    // Insert trader registration with retry logic
+    console.log('[registerTrader] Attempting to register trader:', { email: data.email, fullName: data.fullName });
+
+    // First, check if trader already exists with this email
+    const { data: existingTraders, error: checkError } = await supabase
+      .from('traders')
+      .select('id, email, entry_fee_paid')
+      .eq('email', data.email);
+
+    if (checkError) {
+      console.error('[registerTrader] Error checking for existing trader:', checkError);
+      throw new Error(`Failed to check existing trader: ${checkError.message}`);
+    }
+
+    if (existingTraders && existingTraders.length > 0) {
+      const existingTrader = existingTraders[0];
+      console.log('[registerTrader] Trader already exists:', { email: data.email, id: existingTrader.id, entry_fee_paid: existingTrader.entry_fee_paid });
+
+      // If they already registered and paid, just return success
+      if (existingTrader.entry_fee_paid) {
+        console.log('[registerTrader] ✅ Trader already registered and paid, returning success');
+        return true;
+      }
+
+      // If they exist but haven't paid, update their payment status
+      console.log('[registerTrader] Updating existing trader payment status');
+      const { error: updateError } = await supabase
+        .from('traders')
+        .update({
+          entry_fee_paid: true,
+          payment_method: data.paymentMethod,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingTrader.id);
+
+      if (updateError) {
+        console.error('[registerTrader] Error updating trader:', updateError);
+        throw new Error(`Failed to update trader: ${updateError.message}`);
+      }
+
+      console.log('[registerTrader] ✅ Trader payment status updated');
+      return true;
+    }
+
+    // Trader doesn't exist, create new one
+    console.log('[registerTrader] Creating new trader');
     const traderData = await withRetry(async () => {
       const { data: result, error } = await supabase
         .from('traders')
@@ -124,7 +168,7 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
         .select();
 
       if (error) {
-        console.error('Supabase error registering trader:', error);
+        console.error('[registerTrader] Supabase error inserting trader:', error);
         throw new Error(error.message);
       }
 
@@ -132,11 +176,12 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
     }, 3, 500);
 
     if (!traderData || traderData.length === 0) {
-      console.error('No trader data returned');
+      console.error('[registerTrader] No trader data returned from insert');
       return false;
     }
 
     const traderId = traderData[0].id;
+    console.log('[registerTrader] ✅ New trader created:', { id: traderId, email: data.email });
 
     // Initialize performance data with retry logic
     const performanceResult = await withRetry(async () => {
@@ -152,16 +197,17 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
         ]);
 
       if (error) {
-        console.error('Supabase error initializing performance data:', error);
+        console.error('[registerTrader] Supabase error initializing performance data:', error);
         throw new Error(error.message);
       }
 
       return true;
     }, 3, 500);
 
+    console.log('[registerTrader] ✅ Registration complete, performance data initialized');
     return performanceResult;
   } catch (error) {
-    console.error('Error registering trader:', error);
+    console.error('[registerTrader] ❌ Error registering trader:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
