@@ -372,6 +372,7 @@ export default function RegistrationPage() {
     try {
       // Initiate payment with selected gateway
       console.log('[Registration] 📡 Initiating payment...');
+      setLoadingMessage('Initiating payment...');
       const paymentResult = await initiatePayment(
         selectedPayment,
         formData.email,
@@ -382,12 +383,13 @@ export default function RegistrationPage() {
       if (!paymentResult.success) {
         console.error("[Registration] ❌ Payment initiation failed:", paymentResult.message);
         setIsLoading(false);
+        setLoadingMessage('');
         alert("Failed to initiate payment. Please try again.");
         return;
       }
 
       console.log('[Registration] ✅ Payment initiation successful');
-      setLoadingMessage('Registering trader...');
+      setLoadingMessage('Registering trader account...');
 
       // Register trader in Supabase BEFORE payment processing
       const registerSuccess = await registerTrader({
@@ -401,6 +403,7 @@ export default function RegistrationPage() {
       if (!registerSuccess) {
         console.error("[Registration] ❌ Failed to register trader");
         setIsLoading(false);
+        setLoadingMessage('');
         alert("Registration failed. Please try again.");
         return;
       }
@@ -409,6 +412,7 @@ export default function RegistrationPage() {
 
       // Save email to localStorage for dashboard access
       localStorage.setItem("trader_email", formData.email);
+      setLoadingMessage('');
 
       // Handle different payment methods
       if (selectedPayment === 'flutterwave' && 'public_key' in paymentResult.paymentData!) {
