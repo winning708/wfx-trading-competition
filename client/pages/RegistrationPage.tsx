@@ -570,50 +570,104 @@ export default function RegistrationPage() {
               {manualPaymentData.method === 'bank-transfer' && (
                 <div className="space-y-4">
                   <div className="bg-card rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted-foreground mb-2">Bank Name:</p>
+                    <p className="text-sm text-muted-foreground mb-2">Payment Type:</p>
                     <p className="text-base font-semibold text-foreground">{manualPaymentData.bankName}</p>
                   </div>
 
-                  <div className="bg-card rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted-foreground mb-2">Account Name:</p>
-                    <p className="text-base font-semibold text-foreground">{manualPaymentData.accountName}</p>
-                  </div>
+                  {manualPaymentData.bankName === 'Crypto Payment' ? (
+                    <>
+                      {/* Crypto Wallets Display */}
+                      <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                        <p className="text-sm text-muted-foreground mb-3">Send payment to either wallet below:</p>
 
-                  <div className="bg-card rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted-foreground mb-2">Account Number:</p>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
-                        {manualPaymentData.accountNumber}
-                      </code>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                          alert('Account number copied!');
-                        }}
-                        className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
-                      >
-                        <Copy size={14} /> Copy
-                      </button>
-                    </div>
-                  </div>
+                        {manualPaymentData.accountNumber && (
+                          <div className="mb-3">
+                            <p className="text-sm font-semibold text-foreground mb-2">💰 Binance Wallet:</p>
+                            <div className="flex items-center gap-2">
+                              <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-xs text-foreground break-all">
+                                {manualPaymentData.accountNumber}
+                              </code>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
+                                  alert('Binance wallet copied!');
+                                }}
+                                className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
+                              >
+                                <Copy size={14} /> Copy
+                              </button>
+                            </div>
+                          </div>
+                        )}
 
-                  <div className="bg-card rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted-foreground mb-2">SWIFT Code:</p>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
-                        {manualPaymentData.swiftCode}
-                      </code>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(manualPaymentData.swiftCode || '');
-                          alert('SWIFT code copied!');
-                        }}
-                        className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
-                      >
-                        <Copy size={14} /> Copy
-                      </button>
-                    </div>
-                  </div>
+                        {manualPaymentData.swiftCode && (
+                          <div>
+                            <p className="text-sm font-semibold text-foreground mb-2">💱 Bybit Wallet:</p>
+                            <div className="flex items-center gap-2">
+                              <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-xs text-foreground break-all">
+                                {manualPaymentData.swiftCode}
+                              </code>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(manualPaymentData.swiftCode || '');
+                                  alert('Bybit wallet copied!');
+                                }}
+                                className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
+                              >
+                                <Copy size={14} /> Copy
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Bank Account Display */}
+                      <div className="bg-card rounded-lg p-4 border border-border">
+                        <p className="text-sm text-muted-foreground mb-2">Account Name:</p>
+                        <p className="text-base font-semibold text-foreground">{manualPaymentData.accountName}</p>
+                      </div>
+
+                      <div className="bg-card rounded-lg p-4 border border-border">
+                        <p className="text-sm text-muted-foreground mb-2">Account Number:</p>
+                        <div className="flex items-center gap-2">
+                          <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                            {manualPaymentData.accountNumber}
+                          </code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
+                              alert('Account number copied!');
+                            }}
+                            className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
+                          >
+                            <Copy size={14} /> Copy
+                          </button>
+                        </div>
+                      </div>
+
+                      {manualPaymentData.swiftCode && (
+                        <div className="bg-card rounded-lg p-4 border border-border">
+                          <p className="text-sm text-muted-foreground mb-2">SWIFT Code:</p>
+                          <div className="flex items-center gap-2">
+                            <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                              {manualPaymentData.swiftCode}
+                            </code>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(manualPaymentData.swiftCode || '');
+                                alert('SWIFT code copied!');
+                              }}
+                              className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
+                            >
+                              <Copy size={14} /> Copy
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
 
                   {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
                     <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
