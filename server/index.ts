@@ -90,6 +90,8 @@ export function createServer() {
   app.post("/api/admin/payments/:traderId/approve", approvePayment);
   app.post("/api/admin/payments/:traderId/reject", rejectPayment);
   app.post("/api/admin/notify-payment", notifyAdminPayment);
+  app.get("/api/admin/payment-settings", getPaymentSettings);
+  app.post("/api/admin/payment-settings", updatePaymentSettings);
 
   return app;
 }
