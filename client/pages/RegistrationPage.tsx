@@ -381,10 +381,13 @@ export default function RegistrationPage() {
       return;
     }
 
+    console.log('[Registration] 🎬 Payment submission started for:', selectedPayment);
     setIsLoading(true);
+    setLoadingMessage('Preparing payment...');
 
     try {
       // Initiate payment with selected gateway
+      console.log('[Registration] 📡 Initiating payment...');
       const paymentResult = await initiatePayment(
         selectedPayment,
         formData.email,
@@ -393,11 +396,14 @@ export default function RegistrationPage() {
       );
 
       if (!paymentResult.success) {
-        console.error("Payment initiation failed:", paymentResult.message);
-        alert("Failed to initiate payment. Please try again.");
+        console.error("[Registration] ❌ Payment initiation failed:", paymentResult.message);
         setIsLoading(false);
+        alert("Failed to initiate payment. Please try again.");
         return;
       }
+
+      console.log('[Registration] ✅ Payment initiation successful');
+      setLoadingMessage('Registering trader...');
 
       // Register trader in Supabase BEFORE payment processing
       const registerSuccess = await registerTrader({
@@ -409,11 +415,13 @@ export default function RegistrationPage() {
       });
 
       if (!registerSuccess) {
-        console.error("Failed to register trader");
-        alert("Registration failed. Please try again.");
+        console.error("[Registration] ❌ Failed to register trader");
         setIsLoading(false);
+        alert("Registration failed. Please try again.");
         return;
       }
+
+      console.log('[Registration] ✅ Trader registered successfully');
 
       // Save email to localStorage for dashboard access
       localStorage.setItem("trader_email", formData.email);
