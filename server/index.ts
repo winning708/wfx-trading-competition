@@ -70,6 +70,7 @@ export function createServer() {
   app.post("/api/payment/initiate/flutterwave", initiateFlutterwavePayment);
   app.post("/api/payment/initiate/binance", initiateBinancePayment);
   app.post("/api/payment/initiate/bybit", initiateBybitPayment);
+  app.post("/api/payment/confirm-manual", confirmManualPayment);
 
   // Email routes
   app.post("/api/email/send-confirmation", sendConfirmationEmail);
