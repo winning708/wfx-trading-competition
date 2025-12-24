@@ -59,23 +59,20 @@ FLUTTERWAVE_SECRET_HASH=[PASTE_YOUR_WEBHOOK_SECRET_HASH_HERE]
 
 ---
 
-## 🔗 BINANCE PAY (Optional - Crypto Payments)
+## 🔗 BINANCE PAY (Manual Payment Method)
 
-**Status:** ⚪ OPTIONAL - Only if you want crypto payments
+**Status:** ✅ OPTIONAL - Using Merchant ID only (no API needed)
 
 ### How to Get It:
 1. Go to https://pay.binance.com
-2. Merchant Dashboard → API Management
-3. Create an API Key
-4. Copy API Key and Secret Key
+2. Merchant Dashboard → Copy your **Merchant ID**
 
 ### Paste Here:
 ```
-BINANCE_API_KEY=[PASTE_YOUR_BINANCE_API_KEY_HERE]
-BINANCE_SECRET_KEY=[PASTE_YOUR_BINANCE_SECRET_KEY_HERE]
 BINANCE_MERCHANT_ID=[PASTE_YOUR_MERCHANT_ID_HERE]
-BINANCE_WEBHOOK_SECRET=[PASTE_YOUR_WEBHOOK_SECRET_HERE]
 ```
+
+**Note:** Users will see your Merchant ID in the checkout and can pay directly. You'll get an email notification when they complete payment.
 
 ---
 
