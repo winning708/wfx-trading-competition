@@ -562,28 +562,18 @@ export default function RegistrationPage() {
 
             {/* Action Buttons */}
             <div className="space-y-4 mt-8">
-              {console.log('[Manual Payment] Method:', manualPaymentData.method, 'Expected: flutterwave')}
+              {console.log('[Manual Payment] Method:', manualPaymentData.method)}
 
-              {manualPaymentData.method === 'flutterwave' ? (
+              {manualPaymentData.method === 'bank-transfer' ? (
                 <button
                   onClick={() => {
-                    console.log('[Manual Payment] Clicked: I\'ve Paid via Flutterwave');
+                    console.log('[Manual Payment] Clicked: I\'ve Sent the Bank Transfer');
                     setStep("success");
                     setLoadingMessage('');
                   }}
                   className="w-full h-12 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
-                  ✅ I've Paid via Flutterwave
-                </button>
-              ) : manualPaymentData.method === 'binance' || manualPaymentData.method === 'bybit' ? (
-                <button
-                  onClick={() => {
-                    console.log('[Manual Payment] Clicked: I\'ve Sent the Payment');
-                    setStep("success");
-                  }}
-                  className="w-full h-12 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
-                >
-                  ✅ I've Sent the Payment
+                  ✅ I've Sent the Bank Transfer
                 </button>
               ) : (
                 <div className="w-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 font-semibold">
