@@ -187,3 +187,64 @@ export async function getTraderCount(): Promise<number> {
     return 0;
   }
 }
+
+export interface PaymentInitiationResponse {
+  success: boolean;
+  paymentData?: {
+    public_key: string;
+    email: string;
+    amount: number;
+    fullName: string;
+    txRef: string;
+    currency: string;
+    redirect_url: string;
+    cancelUrl: string;
+  } | {
+    type: 'manual';
+    method: string;
+    merchantId?: string;
+    walletAddress?: string;
+    orderRef: string;
+    email: string;
+    amount: number;
+    fullName: string;
+    currency: string;
+    instructions: string;
+    confirmUrl: string;
+  };
+  message?: string;
+}
+
+export async function initiatePayment(
+  paymentMethod: string,
+  email: string,
+  amount: number,
+  fullName: string
+): Promise<PaymentInitiationResponse> {
+  try {
+    const endpoint = paymentMethod === 'flutterwave'
+      ? '/api/payment/initiate/flutterwave'
+      : paymentMethod === 'binance'
+      ? '/api/payment/initiate/binance'
+      : '/api/payment/initiate/bybit';
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, amount, fullName }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json() as PaymentInitiationResponse;
+    return data;
+  } catch (error) {
+    console.error('Error initiating payment:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to initiate payment',
+    };
+  }
+}
