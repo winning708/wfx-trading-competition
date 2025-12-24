@@ -421,15 +421,21 @@ export default function RegistrationPage() {
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Your demo account will be activated shortly. You'll receive an email
-              with your trading credentials and account details.
+              Proceed to payment. Your trading credentials will be displayed
+              immediately after payment confirmation.
             </p>
 
             <button
-              onClick={() => navigate("/leaderboard")}
-              className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              onClick={() => navigate("/dashboard")}
+              className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors mb-3"
             >
-              Go to Leaderboard
+              Proceed to Payment
+            </button>
+            <button
+              onClick={() => navigate("/leaderboard")}
+              className="block w-full rounded-lg border border-border px-4 py-3 text-center text-sm font-semibold text-foreground hover:bg-secondary transition-colors"
+            >
+              View Leaderboard
             </button>
           </div>
         </div>
