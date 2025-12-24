@@ -1344,6 +1344,87 @@ export default function AdminPage() {
           {/* Payments Tab */}
           {activeTab === "payments" && (
             <div className="space-y-8">
+              {/* Pending Payments for Approval */}
+              <div className="rounded-lg border border-border bg-card p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  ⏳ Pending Payment Approvals
+                </h2>
+
+                {isLoadingPendingPayments ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading pending payments...</p>
+                  </div>
+                ) : pendingPayments.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No pending payments at this time</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {pendingPayments.map((payment) => (
+                      <div
+                        key={payment.id}
+                        className="border border-border rounded-lg p-4 hover:bg-card/50 transition-colors"
+                      >
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Name</p>
+                            <p className="font-medium text-foreground">{payment.full_name}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Email</p>
+                            <p className="font-medium text-foreground break-all text-sm">{payment.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Country</p>
+                            <p className="font-medium text-foreground">{payment.country}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Payment Method</p>
+                            <p className="font-medium text-foreground capitalize">{payment.payment_method}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 pb-4 border-b border-border">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Amount</p>
+                            <p className="font-medium text-foreground">$15 USD</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Registered</p>
+                            <p className="font-medium text-foreground text-sm">
+                              {new Date(payment.registered_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Status</p>
+                            <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded inline-block text-sm">
+                              Pending
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3 justify-end">
+                          <button
+                            onClick={() => handleApprovePayment(payment.id, payment.full_name)}
+                            className="px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
+                          >
+                            <Check size={18} />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => handleRejectPayment(payment.id, payment.full_name)}
+                            className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors flex items-center gap-2"
+                          >
+                            <AlertCircle size={18} />
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Payment Confirmation Section */}
               <div className="rounded-lg border border-border bg-card p-6">
                 <h2 className="text-xl font-semibold text-foreground mb-4">
