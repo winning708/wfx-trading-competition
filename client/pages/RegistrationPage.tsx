@@ -475,64 +475,6 @@ export default function RegistrationPage() {
     }
   };
 
-  // Loading Screen (for Flutterwave modal initialization)
-  if (isLoading && selectedPayment === 'flutterwave') {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <div className="flex items-center justify-center px-4 py-20 md:py-32">
-          <div className="w-full max-w-md">
-            <div className="rounded-lg border border-border bg-card p-8 text-center">
-              <div className="mb-6 flex justify-center">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
-              </div>
-
-              <h2 className="mb-2 text-2xl font-bold text-foreground">
-                Opening Payment Gateway
-              </h2>
-
-              <p className="mb-6 text-muted-foreground">
-                {loadingMessage || 'Initializing Flutterwave payment modal...'}
-              </p>
-
-              <div className="space-y-2 rounded-lg bg-card/50 border border-border/50 p-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="text-xs">1️⃣</div>
-                  <span>Preparing payment details</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-xs">2️⃣</div>
-                  <span>Loading Flutterwave securely</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-xs">3️⃣</div>
-                  <span>Opening payment modal</span>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <p className="text-xs text-amber-700 dark:text-amber-300">
-                  💡 If the modal doesn't appear in 5 seconds, check your internet connection or try disabling ad blockers.
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  setIsLoading(false);
-                  setStep("payment");
-                  setSelectedPayment(null);
-                }}
-                className="mt-6 w-full px-4 py-2 text-sm rounded-lg border border-border text-foreground hover:bg-card/50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // Manual Payment Instructions Step
   if (step === "manual-payment" && manualPaymentData) {
     const selectedPaymentMethod = PAYMENT_METHODS.find(
