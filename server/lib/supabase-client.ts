@@ -549,3 +549,73 @@ export async function sendConfirmationEmail(email: string): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Send trading credentials email to a trader
+ * Fetches the assigned credential details and sends them to the trader's email
+ */
+export async function sendCredentialsEmailToTrader(
+  traderId: string
+): Promise<boolean> {
+  try {
+    // Fetch trader details
+    const { data: trader, error: traderError } = await supabase
+      .from('traders')
+      .select('id, full_name, email')
+      .eq('id', traderId)
+      .single();
+
+    if (traderError || !trader) {
+      console.error('[Credentials Email] Failed to fetch trader:', traderError);
+      return false;
+    }
+
+    // Fetch assigned credential details
+    const { data: assignment, error: assignmentError } = await supabase
+      .from('credential_assignments')
+      .select('credential_id')
+      .eq('trader_id', traderId)
+      .single();
+
+    if (assignmentError || !assignment) {
+      console.error('[Credentials Email] Failed to fetch credential assignment:', assignmentError);
+      return false;
+    }
+
+    // Fetch credential details
+    const { data: credential, error: credentialError } = await supabase
+      .from('trading_credentials')
+      .select('account_username, account_password, account_number, broker')
+      .eq('id', assignment.credential_id)
+      .single();
+
+    if (credentialError || !credential) {
+      console.error('[Credentials Email] Failed to fetch credential:', credentialError);
+      return false;
+    }
+
+    // Dynamically import the email service
+    const { sendTradingCredentialsEmail } = await import('./email-service.js');
+
+    // Send the credentials email
+    const success = await sendTradingCredentialsEmail(
+      trader.email,
+      trader.full_name,
+      credential.account_username,
+      credential.account_password,
+      credential.account_number,
+      credential.broker || 'JustMarkets'
+    );
+
+    if (success) {
+      console.log('[Credentials Email] Email sent successfully to:', trader.email);
+    } else {
+      console.warn('[Credentials Email] Failed to send email to:', trader.email);
+    }
+
+    return success;
+  } catch (error) {
+    console.error('[Credentials Email] Error:', error);
+    return false;
+  }
+}
