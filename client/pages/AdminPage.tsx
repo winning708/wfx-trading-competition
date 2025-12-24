@@ -104,6 +104,10 @@ export default function AdminPage() {
   const [uploadErrors, setUploadErrors] = useState<string[]>([]);
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
+  // Payment approval state
+  const [pendingPayments, setPendingPayments] = useState<any[]>([]);
+  const [isLoadingPendingPayments, setIsLoadingPendingPayments] = useState(false);
+
   // Load traders on mount
   useEffect(() => {
     const loadTraders = async () => {
