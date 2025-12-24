@@ -210,7 +210,7 @@ export const initiateBinancePayment: RequestHandler = async (req, res) => {
 };
 
 /**
- * Create Bybit Payment
+ * Create Bybit Payment (Manual - USDT TRC-20 Wallet Only)
  * POST /api/payment/initiate/bybit
  * Body: { email, amount, fullName }
  */
@@ -222,26 +222,27 @@ export const initiateBybitPayment: RequestHandler = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
-    const merchantId = process.env.BYBIT_MERCHANT_ID;
-    const apiKey = process.env.BYBIT_API_KEY;
+    const usdtWallet = process.env.BYBIT_USDT_WALLET_ADDRESS;
 
-    if (!merchantId || !apiKey) {
-      return res.status(500).json({ success: false, message: 'Payment not configured' });
+    if (!usdtWallet) {
+      return res.status(500).json({ success: false, message: 'Bybit payment not configured' });
     }
 
-    // Generate unique order ID
-    const orderId = `order_${Date.now()}`;
+    // Generate unique order reference
+    const orderRef = `bybit_${email}_${Date.now()}`;
 
     const paymentData = {
-      merchantId,
-      orderId,
+      type: 'manual',
+      method: 'bybit',
+      walletAddress: usdtWallet,
+      orderRef,
       email,
       amount,
       fullName,
       currency: 'USDT',
-      chainId: 'TRON', // TRC20
-      returnUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/payment/success?method=bybit&ref=${orderId}`,
-      cancelUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/payment/failure?method=bybit&ref=${orderId}`,
+      network: 'TRC-20',
+      instructions: `Send ${amount} USDT (TRC-20) to wallet: ${usdtWallet}`,
+      confirmUrl: `${process.env.BACKEND_URL || 'http://localhost:5173'}/api/payment/confirm-manual?ref=${orderRef}`,
     };
 
     res.json({ success: true, paymentData });
