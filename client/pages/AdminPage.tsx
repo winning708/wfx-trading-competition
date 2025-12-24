@@ -39,6 +39,12 @@ import {
   ForexFactoryIntegration,
   SyncHistoryRecord,
 } from "@/lib/forex-factory";
+import {
+  parseForexFactoryCSV,
+  uploadForexFactoryTraderData,
+  generateCSVTemplate,
+  ForexFactoryTraderData,
+} from "@/lib/forex-factory-manual";
 
 interface Trader {
   rank: number;
