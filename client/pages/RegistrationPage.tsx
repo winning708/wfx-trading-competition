@@ -242,6 +242,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
 ];
 
 export default function RegistrationPage() {
+  const navigate = useNavigate();
   const [step, setStep] = useState<"form" | "payment" | "success">("form");
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
