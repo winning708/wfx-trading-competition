@@ -420,15 +420,15 @@ export default function RegistrationPage() {
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
               Your demo account will be activated shortly. You'll receive an email
-              with your account details and trading instructions.
+              with your trading credentials and account details.
             </p>
 
-            <a
-              href="/"
+            <button
+              onClick={() => navigate("/leaderboard")}
               className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              Back to Home
-            </a>
+              Go to Leaderboard
+            </button>
           </div>
         </div>
       </div>
