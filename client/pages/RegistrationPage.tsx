@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { Input } from "@/components/ui/input";
