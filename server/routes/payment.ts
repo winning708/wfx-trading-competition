@@ -251,3 +251,60 @@ export const initiateBybitPayment: RequestHandler = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+/**
+ * Confirm Manual Payment (for Binance & Bybit manual transfers)
+ * POST /api/payment/confirm-manual
+ * Body: { ref, method, email, txHash, amount }
+ */
+export const confirmManualPayment: RequestHandler = async (req, res) => {
+  try {
+    const { ref, method, email, txHash, amount } = req.body;
+
+    if (!ref || !method || !email) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    console.log('[Payment] Manual payment confirmation:', { method, email, ref });
+
+    // Log the transaction
+    await import('../lib/payment-webhooks').then(async (module) => {
+      const { logPaymentTransaction } = await import('../lib/supabase-client');
+
+      await logPaymentTransaction(
+        email,
+        ref,
+        method,
+        'completed',
+        amount || 0,
+        `Manual ${method} transfer - ${txHash ? `TxHash: ${txHash}` : 'Payment confirmed'}`
+      );
+    });
+
+    // Update trader payment status
+    const { updateTraderPaymentStatus, sendConfirmationEmail } = await import('../lib/supabase-client');
+
+    const success = await updateTraderPaymentStatus(
+      email,
+      'completed',
+      ref,
+      method
+    );
+
+    if (!success) {
+      return res.status(500).json({ success: false, message: 'Failed to update payment status' });
+    }
+
+    // Send confirmation email
+    await sendConfirmationEmail(email);
+
+    res.json({
+      success: true,
+      message: 'Payment confirmed successfully',
+      ref
+    });
+  } catch (error) {
+    console.error('[Payment] Error in confirmManualPayment:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
