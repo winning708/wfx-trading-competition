@@ -31,10 +31,10 @@ RESEND_API_KEY=re_5uzTUbXE_9DAFScadBWszUXrED2mnDE7v
 
 ### Email Sender Address:
 ```
-EMAIL_FROM=noreply@wfxtrading.com
+EMAIL_FROM=onboarding@resend.dev
 ```
 
-**Note:** Make sure `noreply@wfxtrading.com` is verified in your Resend dashboard
+**Note:** Use the Resend test domain above for quick testing. Once you verify your domain (wfxtrading.com) in Resend dashboard, you can change this to `noreply@wfxtrading.com`
 
 ---
 
