@@ -83,5 +83,11 @@ export function createServer() {
   app.post("/api/email/send-receipt", sendPaymentReceipt);
   app.post("/api/email/send-credentials", sendCredentialsEmail);
 
+  // Admin routes
+  app.get("/api/admin/payments/pending", getPendingPayments);
+  app.post("/api/admin/payments/:traderId/approve", approvePayment);
+  app.post("/api/admin/payments/:traderId/reject", rejectPayment);
+  app.post("/api/admin/notify-payment", notifyAdminPayment);
+
   return app;
 }
