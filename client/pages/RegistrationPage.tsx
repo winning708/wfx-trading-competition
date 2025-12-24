@@ -364,25 +364,6 @@ export default function RegistrationPage() {
     setLoadingMessage('Preparing payment...');
 
     try {
-      // Initiate payment with selected gateway
-      console.log('[Registration] 📡 Initiating payment...');
-      setLoadingMessage('Initiating payment...');
-      const paymentResult = await initiatePayment(
-        selectedPayment,
-        formData.email,
-        15,
-        formData.fullName
-      );
-
-      if (!paymentResult.success) {
-        console.error("[Registration] ❌ Payment initiation failed:", paymentResult.message);
-        setIsLoading(false);
-        setLoadingMessage('');
-        alert("Failed to initiate payment. Please try again.");
-        return;
-      }
-
-      console.log('[Registration] ✅ Payment initiation successful');
       setLoadingMessage('Registering trader account...');
 
       // Register trader in Supabase BEFORE payment processing
