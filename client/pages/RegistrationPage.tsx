@@ -800,7 +800,7 @@ export default function RegistrationPage() {
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                      Processing payment...
+                      {loadingMessage || 'Processing payment...'}
                     </span>
                   ) : (
                     `Pay $15 with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
