@@ -561,7 +561,7 @@ export default function RegistrationPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-4">
+            <div className="space-y-4 mt-8">
               {console.log('[Manual Payment] Method:', manualPaymentData.method, 'Expected: flutterwave')}
 
               {manualPaymentData.method === 'flutterwave' ? (
@@ -571,10 +571,9 @@ export default function RegistrationPage() {
                     setStep("success");
                     setLoadingMessage('');
                   }}
-                  className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-12 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
-                  <ExternalLink className="h-4 w-4" />
-                  I've Paid via Flutterwave
+                  ✅ I've Paid via Flutterwave
                 </button>
               ) : manualPaymentData.method === 'binance' || manualPaymentData.method === 'bybit' ? (
                 <button
@@ -582,13 +581,13 @@ export default function RegistrationPage() {
                     console.log('[Manual Payment] Clicked: I\'ve Sent the Payment');
                     setStep("success");
                   }}
-                  className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                  className="w-full h-12 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
-                  I've Sent the Payment
+                  ✅ I've Sent the Payment
                 </button>
               ) : (
-                <div className="w-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600">
-                  Error: Unknown payment method: {manualPaymentData.method}
+                <div className="w-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 font-semibold">
+                  ⚠️ Error: Unknown payment method: {manualPaymentData.method}
                 </div>
               )}
 
