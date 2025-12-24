@@ -1516,24 +1516,24 @@ export default function AdminPage() {
 
                     {/* Binance Section */}
                     <div className="space-y-4 border-t border-border pt-6">
-                      <h3 className="text-lg font-semibold text-foreground">₿ Binance Wallet</h3>
+                      <h3 className="text-lg font-semibold text-foreground">₿ Binance Pay</h3>
                       <p className="text-sm text-muted-foreground">These details will be shown to international users</p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-foreground mb-2">
-                            Wallet Address *
+                            Binance Pay ID *
                           </label>
                           <Input
                             type="text"
-                            value={paymentSettingsForm.binance_wallet_address}
+                            value={paymentSettingsForm.binance_pay_id}
                             onChange={(e) =>
                               setPaymentSettingsForm({
                                 ...paymentSettingsForm,
-                                binance_wallet_address: e.target.value,
+                                binance_pay_id: e.target.value,
                               })
                             }
-                            placeholder="Your Binance wallet address"
+                            placeholder="Your Binance Pay ID"
                           />
                         </div>
 
