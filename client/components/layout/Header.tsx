@@ -40,6 +40,14 @@ export default function Header() {
             >
               Leaderboard
             </Link>
+            {hasCredentials && (
+              <Link
+                to="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
             <Link
               to="/rules"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
