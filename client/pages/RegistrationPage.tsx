@@ -641,12 +641,26 @@ export default function RegistrationPage() {
             {/* Action Buttons */}
             <div className="space-y-4">
               {manualPaymentData.method === 'flutterwave' && (
-                <button
-                  onClick={() => setStep("success")}
-                  className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                <a
+                  href={`https://checkout.flutterwave.com/pay/${process.env.VITE_FLUTTERWAVE_LINK_ID || ''}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Complete Payment on Flutterwave
+                  Open Flutterwave Payment (Opens in New Tab)
+                </a>
+              )}
+
+              {manualPaymentData.method === 'flutterwave' && (
+                <button
+                  onClick={() => {
+                    setStep("success");
+                    setLoadingMessage('');
+                  }}
+                  className="w-full h-12 rounded-lg border-2 border-green-500/50 bg-green-500/10 text-green-600 dark:text-green-400 font-semibold hover:bg-green-500/20 transition-colors"
+                >
+                  ✅ I've Completed the Payment
                 </button>
               )}
 
