@@ -210,17 +210,17 @@ export const updatePaymentSettings: RequestHandler = async (req, res) => {
       nigerian_account_name,
       nigerian_account_number,
       nigerian_swift_code,
-      binance_wallet_address,
+      binance_pay_id,
       binance_network,
       bybit_wallet_address,
       bybit_network,
     } = req.body;
 
     // Validate required fields
-    if (!nigerian_account_number || !binance_wallet_address || !bybit_wallet_address) {
+    if (!nigerian_account_number || !binance_pay_id || !bybit_wallet_address) {
       return res.status(400).json({
         success: false,
-        message: 'Nigerian account number, Binance wallet, and Bybit wallet are required',
+        message: 'Nigerian account number, Binance Pay ID, and Bybit wallet are required',
       });
     }
 
@@ -243,7 +243,7 @@ export const updatePaymentSettings: RequestHandler = async (req, res) => {
           nigerian_account_name,
           nigerian_account_number,
           nigerian_swift_code,
-          binance_wallet_address,
+          binance_pay_id,
           binance_network,
           bybit_wallet_address,
           bybit_network,
@@ -261,7 +261,7 @@ export const updatePaymentSettings: RequestHandler = async (req, res) => {
           nigerian_account_name,
           nigerian_account_number,
           nigerian_swift_code,
-          binance_wallet_address,
+          binance_pay_id,
           binance_network,
           bybit_wallet_address,
           bybit_network,
