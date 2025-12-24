@@ -352,3 +352,28 @@ export async function updatePaymentSettings(
     };
   }
 }
+
+/**
+ * Delete a trader
+ */
+export async function deleteTrader(traderId: string): Promise<{ success: boolean; message?: string }> {
+  try {
+    const response = await fetch(`/api/admin/traders/${traderId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error deleting trader:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to delete trader',
+    };
+  }
+}
