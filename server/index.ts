@@ -34,6 +34,7 @@ import {
   approvePayment,
   rejectPayment,
   notifyAdminPayment,
+  deleteTrader,
   getPaymentSettings,
   updatePaymentSettings,
 } from "./routes/admin";
