@@ -102,8 +102,13 @@ export const handlePaymentSuccess: RequestHandler = async (req, res) => {
 
     console.log('[Payment] Payment success callback:', { method, ref });
 
-    // Redirect to success page
-    res.redirect(`/?payment=success&method=${method}&ref=${ref}`);
+    // Extract email from transaction reference and redirect to dashboard
+    // Format: trader_email@domain.com_timestamp
+    const emailMatch = (ref as string)?.match(/^trader_(.+?)_\d+$/);
+    const email = emailMatch ? emailMatch[1] : '';
+
+    // Redirect to dashboard with payment success info
+    res.redirect(`/dashboard?payment=success&method=${method}&ref=${ref}&email=${encodeURIComponent(email)}`);
   } catch (error) {
     console.error('[Payment] Error in payment success:', error);
     res.redirect('/?payment=error');
