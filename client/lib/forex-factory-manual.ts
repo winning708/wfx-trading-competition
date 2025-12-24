@@ -98,61 +98,50 @@ export async function uploadForexFactoryTraderData(
       }
 
       // 2. Find trader by username or name
+      // First, fetch all traders (simpler approach to avoid filter issues)
+      const { data: allTraders, error: allTradersError } = await supabase
+        .from('traders')
+        .select('id, full_name, current_balance');
+
+      if (allTradersError) {
+        const msg = `Failed to fetch traders: ${allTradersError.message}`;
+        console.error(`[Forex Factory Upload] ${msg}`);
+        errors.push(msg);
+        continue;
+      }
+
       let targetTrader = null;
 
-      // Try to find by Forex Factory username first
-      const { data: tradersByUsername } = await supabase
-        .from('traders')
-        .select('id, full_name, current_balance')
-        .ilike('full_name', `%${normalizedUsername}%`)
-        .limit(1);
+      if (allTraders && allTraders.length > 0) {
+        // Try exact case-insensitive match on full name first
+        targetTrader = allTraders.find(t =>
+          t.full_name.toLowerCase() === normalizedName.toLowerCase()
+        );
 
-      if (tradersByUsername && tradersByUsername.length > 0) {
-        targetTrader = tradersByUsername[0];
-        console.log(`[Forex Factory Upload] Found trader by username: "${targetTrader.full_name}"`);
-      }
-
-      // If not found by username, try by full name
-      if (!targetTrader) {
-        const { data: tradersByName } = await supabase
-          .from('traders')
-          .select('id, full_name, current_balance')
-          .ilike('full_name', `%${normalizedName}%`)
-          .limit(1);
-
-        if (tradersByName && tradersByName.length > 0) {
-          targetTrader = tradersByName[0];
-          console.log(`[Forex Factory Upload] Found trader by name: "${targetTrader.full_name}"`);
+        // If not found, try partial match on username
+        if (!targetTrader) {
+          targetTrader = allTraders.find(t =>
+            t.full_name.toLowerCase().includes(normalizedUsername.toLowerCase())
+          );
         }
-      }
 
-      // If still not found, try exact match (case-insensitive) on full name
-      if (!targetTrader) {
-        const { data: exactMatch } = await supabase
-          .from('traders')
-          .select('id, full_name, current_balance')
-          .eq('full_name', normalizedName)
-          .limit(1);
-
-        if (exactMatch && exactMatch.length > 0) {
-          targetTrader = exactMatch[0];
-          console.log(`[Forex Factory Upload] Found trader by exact match: "${targetTrader.full_name}"`);
+        // If not found, try partial match on full name
+        if (!targetTrader) {
+          targetTrader = allTraders.find(t =>
+            t.full_name.toLowerCase().includes(normalizedName.toLowerCase())
+          );
         }
       }
 
       if (!targetTrader) {
-        // Log available traders for debugging
-        const { data: allTraders } = await supabase
-          .from('traders')
-          .select('id, full_name')
-          .limit(20);
-
         const traderList = allTraders?.map(t => `"${t.full_name}"`).join(', ') || 'none';
-        const msg = `Trader "${normalizedName}" not found in system. Available traders: ${traderList}. Please create trader first.`;
+        const msg = `Trader "${normalizedName}" not found in system. Available traders: ${traderList}`;
         console.warn(`[Forex Factory Upload] ${msg}`);
         errors.push(msg);
         continue;
       }
+
+      console.log(`[Forex Factory Upload] ✓ Found trader: "${targetTrader.full_name}"`)
 
       console.log(`[Forex Factory Upload] Found trader: ${targetTrader.full_name}`);
 
