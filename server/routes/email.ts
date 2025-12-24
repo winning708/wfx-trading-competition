@@ -104,13 +104,21 @@ export const sendCredentialsEmail: RequestHandler = async (req, res) => {
     if (!success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to send credentials email',
+        message: 'Failed to send credentials email. Check server logs for details.',
       });
     }
 
-    res.json({ success: true, message: 'Credentials email sent' });
+    res.json({ success: true, message: 'Credentials email sent successfully' });
   } catch (error) {
-    console.error('[Email] Error in sendCredentialsEmail:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Email] Error in sendCredentialsEmail:', errorMessage);
+    if (error instanceof Error && error.stack) {
+      console.error('[Email] Stack trace:', error.stack);
+    }
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error - check server logs for details',
+      error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+    });
   }
 };
