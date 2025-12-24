@@ -595,7 +595,7 @@ export async function sendCredentialsEmailToTrader(
     }
 
     // Dynamically import the email service
-    const { sendTradingCredentialsEmail } = await import('./email-service.js');
+    const { sendTradingCredentialsEmail } = await import('./email-service');
 
     // Send the credentials email
     const success = await sendTradingCredentialsEmail(
@@ -615,7 +615,9 @@ export async function sendCredentialsEmailToTrader(
 
     return success;
   } catch (error) {
-    console.error('[Credentials Email] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Credentials Email] Error:', errorMessage);
+    console.error('[Credentials Email] Full error details:', JSON.stringify(error, null, 2));
     return false;
   }
 }
