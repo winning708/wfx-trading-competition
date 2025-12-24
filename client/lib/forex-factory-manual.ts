@@ -77,7 +77,11 @@ export async function uploadForexFactoryTraderData(
 
   for (const trader of traders) {
     try {
-      console.log(`[Forex Factory Upload] Processing trader: ${trader.trader_name}`);
+      // Normalize names - trim whitespace and handle special cases
+      const normalizedUsername = trader.trader_username.trim();
+      const normalizedName = trader.trader_name.trim();
+
+      console.log(`[Forex Factory Upload] Processing trader: "${normalizedName}" (username: "${normalizedUsername}")`);
 
       // 1. Try to find or create trading_credentials record with Forex Factory info
       const { data: credData, error: credError } = await supabase
@@ -95,33 +99,56 @@ export async function uploadForexFactoryTraderData(
 
       // 2. Find trader by username or name
       let targetTrader = null;
-      
-      // Try to find by Forex Factory username
+
+      // Try to find by Forex Factory username first
       const { data: tradersByUsername } = await supabase
         .from('traders')
         .select('id, full_name, current_balance')
-        .ilike('full_name', `%${trader.trader_username}%`)
+        .ilike('full_name', `%${normalizedUsername}%`)
         .limit(1);
 
       if (tradersByUsername && tradersByUsername.length > 0) {
         targetTrader = tradersByUsername[0];
+        console.log(`[Forex Factory Upload] Found trader by username: "${targetTrader.full_name}"`);
       }
 
-      // If not found, try by full name
+      // If not found by username, try by full name
       if (!targetTrader) {
         const { data: tradersByName } = await supabase
           .from('traders')
           .select('id, full_name, current_balance')
-          .ilike('full_name', `%${trader.trader_name}%`)
+          .ilike('full_name', `%${normalizedName}%`)
           .limit(1);
 
         if (tradersByName && tradersByName.length > 0) {
           targetTrader = tradersByName[0];
+          console.log(`[Forex Factory Upload] Found trader by name: "${targetTrader.full_name}"`);
+        }
+      }
+
+      // If still not found, try exact match (case-insensitive) on full name
+      if (!targetTrader) {
+        const { data: exactMatch } = await supabase
+          .from('traders')
+          .select('id, full_name, current_balance')
+          .eq('full_name', normalizedName)
+          .limit(1);
+
+        if (exactMatch && exactMatch.length > 0) {
+          targetTrader = exactMatch[0];
+          console.log(`[Forex Factory Upload] Found trader by exact match: "${targetTrader.full_name}"`);
         }
       }
 
       if (!targetTrader) {
-        const msg = `Trader "${trader.trader_name}" not found in system. Please create trader first.`;
+        // Log available traders for debugging
+        const { data: allTraders } = await supabase
+          .from('traders')
+          .select('id, full_name')
+          .limit(20);
+
+        const traderList = allTraders?.map(t => `"${t.full_name}"`).join(', ') || 'none';
+        const msg = `Trader "${normalizedName}" not found in system. Available traders: ${traderList}. Please create trader first.`;
         console.warn(`[Forex Factory Upload] ${msg}`);
         errors.push(msg);
         continue;
