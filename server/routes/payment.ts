@@ -282,7 +282,7 @@ export const confirmManualPayment: RequestHandler = async (req, res) => {
     });
 
     // Update trader payment status
-    const { updateTraderPaymentStatus, sendConfirmationEmail } = await import('../lib/supabase-client');
+    const { updateTraderPaymentStatus } = await import('../lib/supabase-client');
 
     const success = await updateTraderPaymentStatus(
       email,
@@ -295,13 +295,14 @@ export const confirmManualPayment: RequestHandler = async (req, res) => {
       return res.status(500).json({ success: false, message: 'Failed to update payment status' });
     }
 
-    // Send confirmation email
-    await sendConfirmationEmail(email);
+    // NOTE: Email sending disabled - credentials are shown on dashboard instead
+    // Users will see their credentials immediately after payment on the dashboard
 
     res.json({
       success: true,
       message: 'Payment confirmed successfully',
-      ref
+      ref,
+      redirectUrl: `/dashboard?payment=success&ref=${ref}&email=${encodeURIComponent(email)}`
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
