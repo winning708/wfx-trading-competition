@@ -390,77 +390,28 @@ export default function RegistrationPage() {
       setLoadingMessage('');
 
       // Handle different payment methods
-      console.log('[Registration] Payment result:', {
-        success: paymentResult.success,
-        hasPaymentData: !!paymentResult.paymentData,
-        paymentDataKeys: paymentResult.paymentData ? Object.keys(paymentResult.paymentData) : [],
-        selectedPayment,
-      });
+      if (selectedPayment === 'bank-transfer') {
+        // For Bank Transfer, show bank details
+        console.log('[Registration] Processing bank transfer payment');
+        const currencyInfo = getCurrencyInfoForCountry(formData.country);
 
-      if (selectedPayment === 'flutterwave') {
-        // For Flutterwave, show manual payment instructions
-        console.log('[Registration] Processing Flutterwave payment');
-
-        if (!paymentResult.paymentData) {
-          console.error('[Registration] ❌ No payment data returned for Flutterwave');
-          setIsLoading(false);
-          alert('Payment gateway error. Please try again.');
-          return;
-        }
-
-        const flutterwaveData = paymentResult.paymentData as any;
-        console.log('[Registration] Flutterwave data:', {
-          email: flutterwaveData.email,
-          amount: flutterwaveData.amount,
-          currency: flutterwaveData.currency,
-          txRef: flutterwaveData.txRef,
-          hasPublicKey: 'public_key' in flutterwaveData,
-        });
-
-        // Show manual payment instructions for Flutterwave
         setManualPaymentData({
-          method: 'flutterwave',
+          method: 'bank-transfer',
           email: formData.email,
           amount: 15,
           fullName: formData.fullName,
-          instructions: 'To complete your payment, click the button below to open Flutterwave\'s secure payment page. You can pay with your card, mobile money, USSD, or bank transfer.',
-          orderRef: flutterwaveData.txRef || 'pending',
+          instructions: 'Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.',
+          orderRef: `WFX-${Date.now()}`,
           currency: 'USD',
+          bankName: 'Wise (Transfer Wise)',
+          accountName: 'WFX Trading',
+          accountNumber: '****-****-****',
+          swiftCode: 'TRWIBEB1XXX',
+          country: formData.country,
+          convertedAmount: currencyInfo.amount,
+          currencyCode: currencyInfo.code,
         });
-        console.log('[Registration] ✅ Flutterwave manual payment data set, switching to manual-payment step');
-        setIsLoading(false);
-        setStep("manual-payment");
-      } else if (selectedPayment === 'binance' || selectedPayment === 'bybit') {
-        // For Binance and Bybit (manual payments)
-        console.log('[Registration] Processing', selectedPayment, 'payment');
-
-        if (!paymentResult.paymentData) {
-          console.error('[Registration] ❌ No payment data returned for', selectedPayment);
-          setIsLoading(false);
-          alert('Payment gateway error. Please try again.');
-          return;
-        }
-
-        const data = paymentResult.paymentData as any;
-        console.log('[Registration]', selectedPayment, 'data:', {
-          method: data.method,
-          orderRef: data.orderRef,
-          hasMerchantId: !!data.merchantId,
-          hasWalletAddress: !!data.walletAddress,
-        });
-
-        setManualPaymentData({
-          method: selectedPayment,
-          email: formData.email,
-          amount: 15,
-          fullName: formData.fullName,
-          instructions: data.instructions,
-          orderRef: data.orderRef,
-          merchantId: data.merchantId,
-          walletAddress: data.walletAddress,
-          currency: data.currency,
-        });
-        console.log('[Registration] ✅', selectedPayment, 'manual payment data set');
+        console.log('[Registration] ✅ Bank transfer data set, switching to manual-payment step');
         setIsLoading(false);
         setStep("manual-payment");
       } else {
