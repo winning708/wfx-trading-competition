@@ -627,20 +627,20 @@ export default function RegistrationPage() {
             </div>
 
             <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
-              <p className="text-sm text-muted-foreground mb-2">Entry Fee Paid</p>
-              <p className="text-2xl font-bold text-success">$15.00 USD</p>
+              <p className="text-sm text-muted-foreground mb-2">Payment Status</p>
+              <p className="text-2xl font-bold text-success">Processing...</p>
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Proceed to payment. Your trading credentials will be displayed
-              immediately after payment confirmation.
+              Your payment is being processed. Your trading credentials will be displayed
+              on your dashboard as soon as your payment is confirmed.
             </p>
 
             <button
               onClick={() => navigate("/dashboard")}
               className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors mb-3"
             >
-              Proceed to Payment
+              Go to Dashboard →
             </button>
             <button
               onClick={() => navigate("/leaderboard")}
