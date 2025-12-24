@@ -245,6 +245,54 @@ export default function AdminPage() {
     }
   };
 
+  const handleApprovePayment = async (traderId: string, fullName: string) => {
+    if (!window.confirm(`Approve payment for ${fullName}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/payments/${traderId}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert(`✅ Payment approved for ${fullName}`);
+        await loadPendingPayments();
+      } else {
+        alert(`❌ Error: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`❌ Error approving payment: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  const handleRejectPayment = async (traderId: string, fullName: string) => {
+    const reason = window.prompt(`Reject payment for ${fullName}? (Reason will be noted)`);
+    if (reason === null) {
+      return; // User cancelled
+    }
+
+    try {
+      const response = await fetch(`/api/admin/payments/${traderId}/reject`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert(`✅ Payment rejected for ${fullName}`);
+        await loadPendingPayments();
+      } else {
+        alert(`❌ Error: ${data.message}`);
+      }
+    } catch (error) {
+      alert(`❌ Error rejecting payment: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
