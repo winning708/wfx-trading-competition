@@ -342,7 +342,7 @@ export default function AdminPage() {
   const handleSavePaymentSettings = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!paymentSettingsForm.nigerian_account_number || !paymentSettingsForm.binance_wallet_address || !paymentSettingsForm.bybit_wallet_address) {
+    if (!paymentSettingsForm.nigerian_account_number || !paymentSettingsForm.binance_pay_id || !paymentSettingsForm.bybit_wallet_address) {
       alert("Please fill in all required payment account details");
       return;
     }
