@@ -32,6 +32,7 @@ import {
 import {
   getPaymentSettings,
   updatePaymentSettings,
+  deleteTrader,
   AdminPaymentSettings,
 } from "@/lib/api";
 import {
