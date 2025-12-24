@@ -319,3 +319,147 @@ export async function sendPaymentReceiptEmail(
     html,
   });
 }
+
+/**
+ * Send admin notification about new payment
+ */
+interface AdminNotificationPayload {
+  traderId: string;
+  email: string;
+  fullName: string;
+  amount: number;
+  currency: string;
+  country: string;
+  paymentMethod: string;
+  dashboardUrl: string;
+}
+
+export async function sendAdminNotification(payload: AdminNotificationPayload): Promise<boolean> {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) {
+    console.warn('[Email] Admin email not configured');
+    return false;
+  }
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #667eea; color: white; padding: 20px; text-align: center; border-radius: 8px; }
+          .content { padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-top: 20px; }
+          .info-box { background: #f0f4ff; padding: 15px; border-left: 4px solid #667eea; margin: 10px 0; }
+          .btn { display: inline-block; background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🔔 New Payment Submitted</h1>
+          </div>
+
+          <div class="content">
+            <p><strong>A new trader has submitted a payment:</strong></p>
+
+            <div class="info-box">
+              <p><strong>Trader Name:</strong> ${payload.fullName}</p>
+              <p><strong>Email:</strong> ${payload.email}</p>
+              <p><strong>Country:</strong> ${payload.country}</p>
+              <p><strong>Amount:</strong> $${payload.amount} ${payload.currency}</p>
+              <p><strong>Payment Method:</strong> ${payload.paymentMethod}</p>
+              <p><strong>Trader ID:</strong> ${payload.traderId}</p>
+            </div>
+
+            <p>Please review and approve/reject this payment in your admin dashboard:</p>
+            <p><a href="${payload.dashboardUrl}" class="btn">Review Payment →</a></p>
+
+            <p>The trader is waiting for approval before they can start trading.</p>
+          </div>
+
+          <div class="footer">
+            <p>&copy; 2025 WFX TRADING SHOWDOWN. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  return sendEmailViaResend({
+    to: adminEmail,
+    subject: `🔔 New Payment from ${payload.fullName} - Requires Approval`,
+    html,
+  });
+}
+
+/**
+ * Send approval email to trader
+ */
+export async function sendApprovalEmail(
+  email: string,
+  fullName: string
+): Promise<boolean> {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 8px; }
+          .content { padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin-top: 20px; }
+          .success-box { background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+          .success-box h3 { color: #155724; margin-top: 0; }
+          .btn { display: inline-block; background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✅ Payment Approved!</h1>
+          </div>
+
+          <div class="content">
+            <p>Hi ${fullName},</p>
+
+            <div class="success-box">
+              <h3>Great News!</h3>
+              <p>Your payment has been <strong>approved</strong> and your registration is now confirmed for the WFX TRADING SHOWDOWN.</p>
+            </div>
+
+            <h3>What's Next?</h3>
+            <ol>
+              <li>Your trading credentials will be available on your dashboard shortly</li>
+              <li>Log in to access your demo account with $1,000 trading capital</li>
+              <li>Start trading and compete on the leaderboard</li>
+            </ol>
+
+            <p><a href="https://wfxtrading.com/dashboard" class="btn">Go to Your Dashboard →</a></p>
+
+            <h3>Good Luck! 🚀</h3>
+            <p>We're excited to see you compete in the WFX TRADING SHOWDOWN. Remember to trade smart and manage your risk wisely.</p>
+
+            <p>If you have any questions or need support, please contact us at support@wfxtrading.com</p>
+
+            <p><strong>WFX Trading Team</strong></p>
+          </div>
+
+          <div class="footer">
+            <p>&copy; 2025 WFX TRADING SHOWDOWN. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  return sendEmailViaResend({
+    to: email,
+    subject: '✅ Your Payment is Approved - Ready to Trade!',
+    html,
+  });
+}
