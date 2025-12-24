@@ -1009,14 +1009,23 @@ export default function RegistrationPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">
-                      WFX Trading Competition Entry Fee
+                      WFX TRADING SHOWDOWN Entry Fee
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Includes $1,000 demo trading capital
+                      Entry fee: {(() => {
+                        const currencyInfo = getCurrencyInfoForCountry(formData.country);
+                        return formData.country ? `${currencyInfo.display} ($15 USD)` : '$15 USD'
+                      })()} - Includes $1,000 demo trading capital
                     </p>
                   </div>
                   <div className="text-right">
+                    <div className="text-xs text-muted-foreground mb-1">USD</div>
                     <p className="text-3xl font-bold text-primary">$15</p>
+                    {formData.country && formData.country !== 'United States' && (
+                      <p className="text-sm font-semibold text-primary mt-2">
+                        {getCurrencyInfoForCountry(formData.country).display}
+                      </p>
+                    )}
                     <p className="text-xs text-muted-foreground mt-1">One-time</p>
                   </div>
                 </div>
