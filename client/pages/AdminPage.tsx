@@ -742,18 +742,21 @@ export default function AdminPage() {
                       <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
                         Profit %
                       </th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {isLoadingTraders ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center">
+                        <td colSpan={6} className="px-6 py-8 text-center">
                           <p className="text-muted-foreground">Loading traders...</p>
                         </td>
                       </tr>
                     ) : traders.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center">
+                        <td colSpan={6} className="px-6 py-8 text-center">
                           <p className="text-muted-foreground">No traders registered yet</p>
                         </td>
                       </tr>
@@ -786,6 +789,15 @@ export default function AdminPage() {
                               {trader.profitPercentage >= 0 ? "+" : ""}
                               {trader.profitPercentage.toFixed(2)}%
                             </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => handleDeleteTrader(trader)}
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))
