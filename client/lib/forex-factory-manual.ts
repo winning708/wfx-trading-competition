@@ -152,15 +152,13 @@ export async function uploadForexFactoryTraderData(
       const profitPercent = (profitAmount / startingBalance) * 100;
 
       const { error: updateError } = await supabase
-        .from('leaderboard_performance')
+        .from('performance_data')
         .upsert([
           {
             trader_id: targetTrader.id,
             starting_balance: startingBalance,
             current_balance: currentBalance,
-            profit_amount: profitAmount,
-            profit_percent: profitPercent || trader.profit_percent,
-            data_source: 'forex_factory_manual',
+            profit_percentage: profitPercent || trader.profit_percent,
             last_updated: new Date().toISOString(),
           },
         ], { onConflict: 'trader_id' });
