@@ -163,6 +163,7 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
             country: data.country,
             payment_method: data.paymentMethod,
             entry_fee_paid: true,
+            payment_status: 'pending',
           },
         ])
         .select();
