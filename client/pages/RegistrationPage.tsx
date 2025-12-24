@@ -436,6 +436,156 @@ export default function RegistrationPage() {
     }
   };
 
+  // Manual Payment Instructions Step
+  if (step === "manual-payment" && manualPaymentData) {
+    const selectedPaymentMethod = PAYMENT_METHODS.find(
+      (m) => m.id === manualPaymentData.method
+    );
+
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+
+        <div className="flex items-center justify-center px-4 py-20 md:py-32">
+          <div className="w-full max-w-2xl">
+            {/* Page Title */}
+            <div className="mb-12 text-center">
+              <h1 className="mb-4 text-4xl md:text-5xl font-bold text-foreground">
+                Complete Your Payment
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                {manualPaymentData.method === 'flutterwave'
+                  ? 'Click the button below to complete your payment securely'
+                  : 'Follow the instructions below to send your payment'}
+              </p>
+            </div>
+
+            {/* Payment Method Info */}
+            <div className="mb-8 rounded-lg border border-border bg-card p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="text-5xl">{selectedPaymentMethod?.icon}</div>
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {selectedPaymentMethod?.name}
+                  </h2>
+                  <p className="text-muted-foreground">
+                    {selectedPaymentMethod?.description}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-6 border-t border-border">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Amount</span>
+                  <span className="font-bold text-foreground">${manualPaymentData.amount} {manualPaymentData.currency}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Reference</span>
+                  <span className="font-mono text-sm text-foreground break-all">{manualPaymentData.orderRef}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Instructions */}
+            <div className="mb-8 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 p-6">
+              <h3 className="font-bold text-foreground mb-4">📋 Payment Instructions</h3>
+              <p className="text-muted-foreground mb-6">
+                {manualPaymentData.instructions}
+              </p>
+
+              {manualPaymentData.method === 'binance' && manualPaymentData.merchantId && (
+                <div className="bg-card rounded-lg p-4 border border-border">
+                  <p className="text-sm text-muted-foreground mb-2">Merchant ID:</p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                      {manualPaymentData.merchantId}
+                    </code>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(manualPaymentData.merchantId || '');
+                      }}
+                      className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {manualPaymentData.method === 'bybit' && manualPaymentData.walletAddress && (
+                <div className="bg-card rounded-lg p-4 border border-border">
+                  <p className="text-sm text-muted-foreground mb-2">TRC-20 Wallet Address:</p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                      {manualPaymentData.walletAddress}
+                    </code>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(manualPaymentData.walletAddress || '');
+                      }}
+                      className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 p-4 bg-background rounded-lg border border-border">
+                <p className="text-sm text-muted-foreground mb-2">⏱️ How long does it take?</p>
+                <p className="text-muted-foreground">
+                  {manualPaymentData.method === 'flutterwave'
+                    ? 'Your payment is processed instantly'
+                    : 'Payment confirmation typically takes 5-30 minutes'}
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              {manualPaymentData.method === 'flutterwave' && (
+                <button
+                  onClick={() => setStep("success")}
+                  className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Complete Payment on Flutterwave
+                </button>
+              )}
+
+              {(manualPaymentData.method === 'binance' || manualPaymentData.method === 'bybit') && (
+                <button
+                  onClick={() => setStep("success")}
+                  className="w-full h-12 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                >
+                  I've Sent the Payment
+                </button>
+              )}
+
+              <button
+                onClick={() => {
+                  setStep("payment");
+                  setSelectedPayment(null);
+                  setManualPaymentData(null);
+                }}
+                className="w-full h-12 rounded-lg border-2 border-border text-foreground font-semibold hover:bg-card/50 transition-colors"
+              >
+                Back to Payment Methods
+              </button>
+            </div>
+
+            <div className="mt-8 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
+              <p className="text-sm text-blue-600 dark:text-blue-400">
+                ℹ️ After you've sent the payment, your trading credentials will be available on your dashboard.
+                If you don't see them after 30 minutes, please contact support.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (step === "success") {
     const selectedPaymentMethod = PAYMENT_METHODS.find(
       (m) => m.id === selectedPayment
