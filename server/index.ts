@@ -26,6 +26,7 @@ import {
 import {
   sendConfirmationEmail,
   sendPaymentReceipt,
+  sendCredentialsEmail,
 } from "./routes/email";
 
 export function createServer() {
