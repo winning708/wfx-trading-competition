@@ -484,9 +484,11 @@ export default function RegistrationPage() {
 
   // Manual Payment Instructions Step
   if (step === "manual-payment" && manualPaymentData) {
+    console.log('[Registration] 🎯 Rendering manual-payment step for method:', manualPaymentData.method);
     const selectedPaymentMethod = PAYMENT_METHODS.find(
       (m) => m.id === manualPaymentData.method
     );
+    console.log('[Registration] Selected payment method:', selectedPaymentMethod?.name);
 
     return (
       <div className="min-h-screen bg-background">
