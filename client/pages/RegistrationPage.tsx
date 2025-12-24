@@ -454,6 +454,7 @@ export default function RegistrationPage() {
           };
 
           console.log('[Flutterwave] Opening payment modal with config:', paymentConfig);
+          setIsLoading(false);
           FW(paymentConfig);
         } catch (err) {
           console.error('[Flutterwave] Error opening payment modal:', err);
@@ -481,6 +482,7 @@ export default function RegistrationPage() {
       console.error("Payment error:", error);
       alert("An error occurred during payment. Please try again.");
       setIsLoading(false);
+      setStep("payment");
     }
   };
 
