@@ -73,6 +73,7 @@ export function createServer() {
   // Email routes
   app.post("/api/email/send-confirmation", sendConfirmationEmail);
   app.post("/api/email/send-receipt", sendPaymentReceipt);
+  app.post("/api/email/send-credentials", sendCredentialsEmail);
 
   return app;
 }
