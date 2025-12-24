@@ -1643,15 +1643,15 @@ export default function AdminPage() {
 
                     {/* Crypto Wallets Info */}
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground mb-3">💱 International Crypto Wallets</h3>
+                      <h3 className="text-sm font-semibold text-foreground mb-3">💱 International Payment Methods</h3>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="text-sm border border-border rounded-lg p-3">
-                          <p className="text-muted-foreground">Binance</p>
-                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.binance_wallet_address || "—"}</p>
+                          <p className="text-muted-foreground">Binance Pay ID</p>
+                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.binance_pay_id || "—"}</p>
                           <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.binance_network || "—"}</p>
                         </div>
                         <div className="text-sm border border-border rounded-lg p-3">
-                          <p className="text-muted-foreground">Bybit</p>
+                          <p className="text-muted-foreground">Bybit Wallet</p>
                           <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.bybit_wallet_address || "—"}</p>
                           <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.bybit_network || "—"}</p>
                         </div>
