@@ -295,3 +295,60 @@ export async function initiatePayment(
     };
   }
 }
+
+export interface AdminPaymentSettings {
+  id?: string;
+  nigerian_bank_name?: string;
+  nigerian_account_name?: string;
+  nigerian_account_number?: string;
+  nigerian_swift_code?: string;
+  binance_wallet_address?: string;
+  binance_network?: string;
+  bybit_wallet_address?: string;
+  bybit_network?: string;
+}
+
+/**
+ * Get admin payment settings (bank account, crypto wallets, etc.)
+ */
+export async function getPaymentSettings(): Promise<AdminPaymentSettings | null> {
+  try {
+    const response = await fetch('/api/admin/payment-settings');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const data = await response.json();
+    return data.settings || null;
+  } catch (error) {
+    console.error('Error fetching payment settings:', error);
+    return null;
+  }
+}
+
+/**
+ * Update admin payment settings
+ */
+export async function updatePaymentSettings(
+  settings: AdminPaymentSettings
+): Promise<{ success: boolean; message?: string; settings?: AdminPaymentSettings }> {
+  try {
+    const response = await fetch('/api/admin/payment-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating payment settings:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to update payment settings',
+    };
+  }
+}
