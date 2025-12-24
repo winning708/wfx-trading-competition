@@ -578,11 +578,11 @@ export default function RegistrationPage() {
                     <>
                       {/* Crypto Wallets Display */}
                       <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
-                        <p className="text-sm text-muted-foreground mb-3">Send payment to either wallet below:</p>
+                        <p className="text-sm text-muted-foreground mb-3">Send payment to one of the options below:</p>
 
                         {manualPaymentData.accountNumber && (
                           <div className="mb-3">
-                            <p className="text-sm font-semibold text-foreground mb-2">💰 Binance Wallet:</p>
+                            <p className="text-sm font-semibold text-foreground mb-2">₿ Binance Pay ID:</p>
                             <div className="flex items-center gap-2">
                               <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-xs text-foreground break-all">
                                 {manualPaymentData.accountNumber}
@@ -590,7 +590,7 @@ export default function RegistrationPage() {
                               <button
                                 onClick={() => {
                                   navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                                  alert('Binance wallet copied!');
+                                  alert('Binance Pay ID copied!');
                                 }}
                                 className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
                               >
