@@ -21,8 +21,8 @@ export default function Header() {
               <TrendingUp className="h-8 w-8 text-primary" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-foreground">WFX</span>
-              <span className="text-xs text-muted-foreground">Trading</span>
+              <span className="text-lg font-bold text-foreground">WFX TRADING</span>
+              <span className="text-xs text-muted-foreground">SHOWDOWN</span>
             </div>
           </Link>
 
