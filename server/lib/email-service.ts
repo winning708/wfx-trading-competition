@@ -134,6 +134,103 @@ export async function sendConfirmationEmailToUser(
 }
 
 /**
+ * Send trading credentials email
+ */
+export async function sendTradingCredentialsEmail(
+  email: string,
+  fullName: string,
+  accountUsername: string,
+  accountPassword: string,
+  accountNumber: string,
+  broker: string = 'JustMarkets'
+): Promise<boolean> {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 8px; }
+          .credentials { padding: 20px; border: 2px solid #667eea; border-radius: 8px; margin-top: 20px; background: #f0f4ff; }
+          .credential-row { margin: 15px 0; padding: 12px; background: white; border-radius: 5px; border-left: 4px solid #667eea; }
+          .label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+          .value { font-size: 14px; font-weight: bold; color: #333; font-family: 'Courier New', monospace; word-break: break-all; }
+          .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 5px; margin: 20px 0; font-size: 12px; }
+          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+          .btn { display: inline-block; background: #667eea; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎯 Your Trading Credentials</h1>
+          </div>
+
+          <div class="credentials">
+            <p>Hi ${fullName},</p>
+
+            <p>Your trading account has been assigned! Below are your credentials to access your demo trading account on ${broker}.</p>
+
+            <div class="credential-row">
+              <div class="label">Account Number</div>
+              <div class="value">${accountNumber}</div>
+            </div>
+
+            <div class="credential-row">
+              <div class="label">Username</div>
+              <div class="value">${accountUsername}</div>
+            </div>
+
+            <div class="credential-row">
+              <div class="label">Password</div>
+              <div class="value">${accountPassword}</div>
+            </div>
+
+            <div class="credential-row">
+              <div class="label">Broker</div>
+              <div class="value">${broker}</div>
+            </div>
+
+            <div class="warning">
+              <strong>⚠️ Security Notice:</strong> Keep your credentials safe and confidential. Never share your password with anyone. If you suspect unauthorized access, change your password immediately.
+            </div>
+
+            <h3>How to Get Started:</h3>
+            <ol>
+              <li>Download MT4 or MT5 from your broker's website</li>
+              <li>Launch the platform and select your broker (${broker})</li>
+              <li>Click "Login" and enter your credentials above</li>
+              <li>Start trading and monitor your progress on the leaderboard</li>
+            </ol>
+
+            <p><a href="https://wfxtrading.com/leaderboard" class="btn">View Leaderboard</a></p>
+
+            <h3>Support</h3>
+            <p>If you need help setting up your account, please contact our support team at support@wfxtrading.com</p>
+
+            <p>Good luck with your trading!</p>
+            <p><strong>WFX Trading Team</strong></p>
+          </div>
+
+          <div class="footer">
+            <p>&copy; 2025 WFX Trading Competition. All rights reserved.</p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  return sendEmailViaSendGrid({
+    to: email,
+    subject: '🎯 Your Trading Credentials - WFX Trading Competition',
+    html,
+  });
+}
+
+/**
  * Send payment receipt email
  */
 export async function sendPaymentReceiptEmail(
