@@ -715,10 +715,13 @@ export default function RegistrationPage() {
               <p className="text-lg text-muted-foreground">
                 Select how you'd like to pay your $15 entry fee
               </p>
+              <p className="text-sm text-amber-600 dark:text-amber-400 mt-4">
+                ℹ️ All payment methods are securely processed
+              </p>
             </div>
 
             {/* Payment Methods */}
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
               {PAYMENT_METHODS.map((method) => (
                 <button
                   key={method.id}
