@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
 import { TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const [hasCredentials, setHasCredentials] = useState(false);
+
+  useEffect(() => {
+    // Check if user is registered (has email in localStorage)
+    const email = localStorage.getItem("trader_email");
+    setHasCredentials(!!email);
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
