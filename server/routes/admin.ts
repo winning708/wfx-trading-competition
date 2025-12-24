@@ -173,6 +173,61 @@ export const notifyAdminPayment: RequestHandler = async (req, res) => {
 };
 
 /**
+ * Delete Trader
+ * DELETE /api/admin/traders/:traderId
+ */
+export const deleteTrader: RequestHandler = async (req, res) => {
+  try {
+    const { traderId } = req.params;
+
+    if (!traderId) {
+      return res.status(400).json({ success: false, message: 'Trader ID is required' });
+    }
+
+    // Get trader details first
+    const { data: trader, error: fetchError } = await supabase
+      .from('traders')
+      .select('*')
+      .eq('id', traderId)
+      .single();
+
+    if (fetchError || !trader) {
+      console.error('[Admin] Error fetching trader:', fetchError);
+      return res.status(404).json({ success: false, message: 'Trader not found' });
+    }
+
+    // Delete associated performance data first
+    await supabase
+      .from('performance_data')
+      .delete()
+      .eq('trader_id', traderId);
+
+    // Delete associated credential assignments
+    await supabase
+      .from('credential_assignments')
+      .delete()
+      .eq('trader_id', traderId);
+
+    // Delete the trader
+    const { error: deleteError } = await supabase
+      .from('traders')
+      .delete()
+      .eq('id', traderId);
+
+    if (deleteError) {
+      console.error('[Admin] Error deleting trader:', deleteError);
+      return res.status(500).json({ success: false, message: 'Failed to delete trader' });
+    }
+
+    console.log('[Admin] ✅ Trader deleted:', { id: traderId, email: trader.email, name: trader.full_name });
+    res.json({ success: true, message: `Trader ${trader.full_name} has been deleted` });
+  } catch (error) {
+    console.error('[Admin] Error in deleteTrader:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
  * Get Admin Payment Settings
  * GET /api/admin/payment-settings
  */
