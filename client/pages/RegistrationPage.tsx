@@ -389,6 +389,28 @@ export default function RegistrationPage() {
       localStorage.setItem("trader_email", formData.email);
       setLoadingMessage('');
 
+      // Notify admin about new payment
+      console.log('[Registration] Notifying admin about new payment...');
+      try {
+        const currencyInfo = getCurrencyInfoForCountry(formData.country);
+        await fetch('/api/admin/notify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            traderId: registerSuccess ? 'pending' : 'unknown',
+            email: formData.email,
+            fullName: formData.fullName,
+            amount: 15,
+            currency: 'USD',
+            country: formData.country,
+            paymentMethod: 'bank-transfer',
+          }),
+        });
+      } catch (notifyError) {
+        console.warn('[Registration] Warning: Could not notify admin:', notifyError);
+        // Don't fail the registration if notification fails
+      }
+
       // Handle different payment methods
       if (selectedPayment === 'bank-transfer') {
         // For Bank Transfer, show bank details
