@@ -790,24 +790,26 @@ export default function RegistrationPage() {
 
             {/* Action Buttons */}
             <div className="space-y-4">
-              <button
-                onClick={handlePaymentSubmit}
-                disabled={!selectedPayment || isLoading}
-                className={`w-full h-12 rounded-lg text-base font-semibold transition-colors ${
-                  selectedPayment && !isLoading
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
-                }`}
-              >
-                {isLoading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                    Processing...
-                  </span>
-                ) : (
-                  `Pay $15 with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
-                )}
-              </button>
+              <form onSubmit={handlePaymentSubmit}>
+                <button
+                  type="submit"
+                  disabled={!selectedPayment || isLoading}
+                  className={`w-full h-12 rounded-lg text-base font-semibold transition-colors ${
+                    selectedPayment && !isLoading
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+                  }`}
+                >
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                      Processing payment...
+                    </span>
+                  ) : (
+                    `Pay $15 with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
+                  )}
+                </button>
+              </form>
 
               <button
                 onClick={() => {
