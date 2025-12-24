@@ -97,6 +97,12 @@ export default function AdminPage() {
     ff_system_id: "",
   });
 
+  // Bulk upload state
+  const [csvInput, setCSVInput] = useState("");
+  const [isUploadingBulk, setIsUploadingBulk] = useState(false);
+  const [uploadErrors, setUploadErrors] = useState<string[]>([]);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
   // Load traders on mount
   useEffect(() => {
     const loadTraders = async () => {
