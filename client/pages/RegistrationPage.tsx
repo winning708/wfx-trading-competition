@@ -857,6 +857,8 @@ export default function RegistrationPage() {
     );
   }
 
+  console.log('[Registration] 📝 Rendering form step. Current state:', { step, hasManualPaymentData: !!manualPaymentData, isLoading });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
