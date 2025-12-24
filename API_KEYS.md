@@ -76,22 +76,26 @@ BINANCE_MERCHANT_ID=[PASTE_YOUR_MERCHANT_ID_HERE]
 
 ---
 
-## 🟡 BYBIT (Optional - Crypto Payments)
+## 🟡 BYBIT (Manual Payment Method - USDT)
 
-**Status:** ⚪ OPTIONAL - Only if you want crypto payments
+**Status:** ✅ OPTIONAL - Using TRC-20 wallet address only (no API needed)
 
 ### How to Get It:
-1. Go to https://merchant.bybit.com
-2. API Management → Create API Key
-3. Webhook Management → Copy Webhook Secret
+1. Open your Bybit wallet
+2. Select **USDT** (TRC-20 network)
+3. Copy your **Deposit Address**
 
 ### Paste Here:
 ```
-BYBIT_API_KEY=[PASTE_YOUR_BYBIT_API_KEY_HERE]
-BYBIT_SECRET_KEY=[PASTE_YOUR_BYBIT_SECRET_KEY_HERE]
-BYBIT_MERCHANT_ID=[PASTE_YOUR_MERCHANT_ID_HERE]
-BYBIT_WEBHOOK_SECRET=[PASTE_YOUR_WEBHOOK_SECRET_HERE]
+BYBIT_USDT_WALLET_ADDRESS=[PASTE_YOUR_TRC20_USDT_WALLET_ADDRESS_HERE]
 ```
+
+**Example:**
+```
+BYBIT_USDT_WALLET_ADDRESS=TBWEPBZeA2LKMRYp3FxEL8mME7VVjMUvD3
+```
+
+**Note:** Users will see your wallet address in checkout. When they send USDT to this address, you'll get an email notification with transaction details.
 
 ---
 
