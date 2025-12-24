@@ -1085,8 +1085,11 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Integrations List */}
+              {/* Upload History */}
               <div className="rounded-lg border border-border bg-card overflow-x-auto">
+                <div className="px-6 py-4 border-b border-border">
+                  <h3 className="text-lg font-semibold text-foreground">📋 Recent Uploads</h3>
+                </div>
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
@@ -1097,10 +1100,10 @@ export default function AdminPage() {
                         Forex Factory Account
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        Sync Status
+                        Status
                       </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        Last Sync
+                        Last Updated
                       </th>
                       <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
                         Actions
