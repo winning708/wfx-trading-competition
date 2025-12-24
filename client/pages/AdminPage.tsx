@@ -339,6 +339,32 @@ export default function AdminPage() {
     }
   };
 
+  const handleSavePaymentSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!paymentSettingsForm.nigerian_account_number || !paymentSettingsForm.binance_wallet_address || !paymentSettingsForm.bybit_wallet_address) {
+      alert("Please fill in all required payment account details");
+      return;
+    }
+
+    setIsSavingPaymentSettings(true);
+    try {
+      const result = await updatePaymentSettings(paymentSettingsForm);
+
+      if (result.success) {
+        setPaymentSettings(result.settings || null);
+        setShowPaymentSettingsForm(false);
+        alert("✅ Payment settings updated successfully!");
+      } else {
+        alert(`❌ Error: ${result.message || "Failed to update payment settings"}`);
+      }
+    } catch (error) {
+      alert(`❌ Error saving payment settings: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setIsSavingPaymentSettings(false);
+    }
+  };
+
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
