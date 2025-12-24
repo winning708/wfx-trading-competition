@@ -30,6 +30,11 @@ import {
   CredentialAssignment,
 } from "@/lib/credentials";
 import {
+  getPaymentSettings,
+  updatePaymentSettings,
+  AdminPaymentSettings,
+} from "@/lib/api";
+import {
   linkForexFactoryAccount,
   getForexFactoryIntegrationsWithDetails,
   triggerForexFactorySyncIntegration,
