@@ -217,6 +217,18 @@ interface PaymentMethod {
   color: string;
 }
 
+interface ManualPaymentData {
+  method: string;
+  email: string;
+  amount: number;
+  fullName: string;
+  instructions: string;
+  orderRef: string;
+  merchantId?: string;
+  walletAddress?: string;
+  currency: string;
+}
+
 const PAYMENT_METHODS: PaymentMethod[] = [
   {
     id: "binance",
@@ -243,7 +255,7 @@ const PAYMENT_METHODS: PaymentMethod[] = [
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"form" | "payment" | "success">("form");
+  const [step, setStep] = useState<"form" | "payment" | "manual-payment" | "success">("form");
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
@@ -253,6 +265,7 @@ export default function RegistrationPage() {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [manualPaymentData, setManualPaymentData] = useState<ManualPaymentData | null>(null);
 
   // Redirect to leaderboard after 3 seconds when registration is complete
   useEffect(() => {
