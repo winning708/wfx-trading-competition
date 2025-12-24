@@ -355,6 +355,7 @@ export default function RegistrationPage() {
 
   const handlePaymentSelect = (paymentId: string) => {
     setSelectedPayment(paymentId);
+    setLoadingMessage('');
   };
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
