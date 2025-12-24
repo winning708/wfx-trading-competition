@@ -34,6 +34,8 @@ import {
   approvePayment,
   rejectPayment,
   notifyAdminPayment,
+  getPaymentSettings,
+  updatePaymentSettings,
 } from "./routes/admin";
 
 export function createServer() {
