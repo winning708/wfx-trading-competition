@@ -1416,6 +1416,256 @@ export default function AdminPage() {
           {/* Payments Tab */}
           {activeTab === "payments" && (
             <div className="space-y-8">
+              {/* Payment Account Settings */}
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground mb-1">
+                      💰 Payment Account Settings
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Configure your bank account for Nigerian payments and crypto wallets for international payments
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowPaymentSettingsForm(!showPaymentSettingsForm)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    {showPaymentSettingsForm ? "Cancel" : "Edit Settings"}
+                  </button>
+                </div>
+
+                {showPaymentSettingsForm ? (
+                  <form onSubmit={handleSavePaymentSettings} className="space-y-6">
+                    {/* Nigerian Bank Account Section */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-foreground">🇳🇬 Nigerian Bank Account</h3>
+                      <p className="text-sm text-muted-foreground">These details will be shown to users from Nigeria</p>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Bank Name
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.nigerian_bank_name}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                nigerian_bank_name: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., GTBank, Access Bank"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Account Name
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.nigerian_account_name}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                nigerian_account_name: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., WFX Trading"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Account Number *
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.nigerian_account_number}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                nigerian_account_number: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., 0123456789"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            SWIFT Code
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.nigerian_swift_code}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                nigerian_swift_code: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., GTBINGLA"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Binance Section */}
+                    <div className="space-y-4 border-t border-border pt-6">
+                      <h3 className="text-lg font-semibold text-foreground">₿ Binance Wallet</h3>
+                      <p className="text-sm text-muted-foreground">These details will be shown to international users</p>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Wallet Address *
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.binance_wallet_address}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                binance_wallet_address: e.target.value,
+                              })
+                            }
+                            placeholder="Your Binance wallet address"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Network
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.binance_network}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                binance_network: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., BNB, Ethereum"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bybit Section */}
+                    <div className="space-y-4 border-t border-border pt-6">
+                      <h3 className="text-lg font-semibold text-foreground">Bybit Wallet</h3>
+                      <p className="text-sm text-muted-foreground">These details will be shown to international users</p>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Wallet Address *
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.bybit_wallet_address}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                bybit_wallet_address: e.target.value,
+                              })
+                            }
+                            placeholder="Your Bybit wallet address"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Network
+                          </label>
+                          <Input
+                            type="text"
+                            value={paymentSettingsForm.bybit_network}
+                            onChange={(e) =>
+                              setPaymentSettingsForm({
+                                ...paymentSettingsForm,
+                                bybit_network: e.target.value,
+                              })
+                            }
+                            placeholder="e.g., Bitcoin, Ethereum"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 justify-end border-t border-border pt-6">
+                      <button
+                        type="button"
+                        onClick={() => setShowPaymentSettingsForm(false)}
+                        className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSavingPaymentSettings}
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                      >
+                        {isSavingPaymentSettings ? "Saving..." : "Save Settings"}
+                      </button>
+                    </div>
+                  </form>
+                ) : paymentSettings ? (
+                  <div className="space-y-6">
+                    {/* Nigerian Account Info */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3">🇳🇬 Nigerian Account</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="text-sm">
+                          <p className="text-muted-foreground">Bank</p>
+                          <p className="font-medium text-foreground">{paymentSettings.nigerian_bank_name || "—"}</p>
+                        </div>
+                        <div className="text-sm">
+                          <p className="text-muted-foreground">Account Name</p>
+                          <p className="font-medium text-foreground">{paymentSettings.nigerian_account_name || "—"}</p>
+                        </div>
+                        <div className="text-sm">
+                          <p className="text-muted-foreground">Account Number</p>
+                          <p className="font-medium text-foreground font-mono">{paymentSettings.nigerian_account_number || "—"}</p>
+                        </div>
+                        <div className="text-sm">
+                          <p className="text-muted-foreground">SWIFT</p>
+                          <p className="font-medium text-foreground font-mono">{paymentSettings.nigerian_swift_code || "—"}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Crypto Wallets Info */}
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground mb-3">💱 International Crypto Wallets</h3>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="text-sm border border-border rounded-lg p-3">
+                          <p className="text-muted-foreground">Binance</p>
+                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.binance_wallet_address || "—"}</p>
+                          <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.binance_network || "—"}</p>
+                        </div>
+                        <div className="text-sm border border-border rounded-lg p-3">
+                          <p className="text-muted-foreground">Bybit</p>
+                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.bybit_wallet_address || "—"}</p>
+                          <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.bybit_network || "—"}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No payment settings configured yet</p>
+                    <p className="text-sm text-muted-foreground mt-2">Click "Edit Settings" to add your payment details</p>
+                  </div>
+                )}
+              </div>
+
               {/* Pending Payments for Approval */}
               <div className="rounded-lg border border-border bg-card p-6">
                 <h2 className="text-xl font-semibold text-foreground mb-4">
