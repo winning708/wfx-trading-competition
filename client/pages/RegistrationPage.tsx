@@ -753,7 +753,9 @@ export default function RegistrationPage() {
 
             {/* Payment Methods */}
             <div className="grid md:grid-cols-3 gap-4 mb-8">
-              {PAYMENT_METHODS.map((method) => (
+              {PAYMENT_METHODS.map((method) => {
+                const currencyInfo = getCurrencyInfoForCountry(formData.country);
+                return (
                 <button
                   key={method.id}
                   onClick={() => handlePaymentSelect(method.id)}
@@ -785,9 +787,15 @@ export default function RegistrationPage() {
                     <p className="text-sm text-muted-foreground">
                       {method.description}
                     </p>
+                    {formData.country && (
+                      <p className="text-sm font-semibold text-primary mt-2">
+                        {currencyInfo.display}
+                      </p>
+                    )}
                   </div>
                 </button>
-              ))}
+                );
+              })}
             </div>
 
             {/* Selected Method Info */}
