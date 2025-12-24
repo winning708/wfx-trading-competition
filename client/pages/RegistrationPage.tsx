@@ -360,6 +360,8 @@ export default function RegistrationPage() {
       });
 
       if (success) {
+        // Save email to localStorage for dashboard access
+        localStorage.setItem("trader_email", formData.email);
         setStep("success");
       } else {
         console.error("Failed to register trader");
