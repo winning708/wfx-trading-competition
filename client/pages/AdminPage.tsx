@@ -176,6 +176,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (activeTab === "payments") {
       loadPendingPayments();
+      loadPaymentSettings();
     }
   }, [activeTab]);
 
