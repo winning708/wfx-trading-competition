@@ -302,7 +302,7 @@ export interface AdminPaymentSettings {
   nigerian_account_name?: string;
   nigerian_account_number?: string;
   nigerian_swift_code?: string;
-  binance_wallet_address?: string;
+  binance_pay_id?: string;
   binance_network?: string;
   bybit_wallet_address?: string;
   bybit_network?: string;
