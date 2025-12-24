@@ -682,7 +682,7 @@ export default function RegistrationPage() {
               Registration Complete!
             </h2>
             <p className="mb-6 text-center text-muted-foreground">
-              Welcome to the WFX Trading Competition, {formData.fullName}!
+              Welcome to WFX TRADING SHOWDOWN, {formData.fullName}!
             </p>
 
             <div className="mb-8 space-y-4 rounded-lg border border-border bg-card/50 p-4">
