@@ -121,13 +121,48 @@ BACKEND_URL=https://yourdomain.com
 
 ---
 
+## 📝 How Manual Payments Work
+
+### **Binance (Manual)**
+1. User sees your Merchant ID in checkout
+2. User pays to Binance directly (outside the platform)
+3. You receive payment notification from Binance
+4. You manually confirm in the admin dashboard → payment is processed
+
+### **Bybit USDT (Manual)**
+1. User sees your TRC-20 wallet address in checkout
+2. User sends USDT to your wallet (on TRON network)
+3. You verify the transaction on BlockScout
+4. You manually confirm in the admin dashboard → payment is processed
+5. **Optional:** You can provide the transaction hash for extra security
+
+### **Flutterwave (Automated)**
+- User clicks "Pay with Flutterwave"
+- Payment is processed automatically
+- You get instant email notification
+- No manual confirmation needed ✅
+
+---
+
 ## 📝 Next Steps
 
 Once you've pasted all your API keys above:
 
-1. **Tell me when you're done** - I'll move them to the actual system
-2. **We'll test the email** - Send a test email via Resend
-3. **We'll test payments** - Test the payment flow with Flutterwave
+1. **Update your `.env` file** with:
+   - `RESEND_API_KEY` = Your Resend API key
+   - `FLUTTERWAVE_PUBLIC_KEY` = Your Flutterwave public key
+   - `FLUTTERWAVE_SECRET_KEY` = Your Flutterwave secret key
+   - `FLUTTERWAVE_SECRET_HASH` = Your Flutterwave webhook hash
+   - `BINANCE_MERCHANT_ID` = Your Binance Merchant ID (if using)
+   - `BYBIT_USDT_WALLET_ADDRESS` = Your TRC-20 USDT wallet address (if using)
+
+2. **Tell me when done** - I'll set up the admin dashboard for payment confirmation
+
+3. **We'll test everything**:
+   - Test Resend email sending
+   - Test Flutterwave payments
+   - Set up admin confirmation system for manual payments
+
 4. **Go live** - Deploy to production!
 
 ---
