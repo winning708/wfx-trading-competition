@@ -196,6 +196,30 @@ export default function AdminPage() {
     }
   };
 
+  const loadPaymentSettings = async () => {
+    setIsLoadingPaymentSettings(true);
+    try {
+      const settings = await getPaymentSettings();
+      if (settings) {
+        setPaymentSettings(settings);
+        setPaymentSettingsForm({
+          nigerian_bank_name: settings.nigerian_bank_name || "",
+          nigerian_account_name: settings.nigerian_account_name || "",
+          nigerian_account_number: settings.nigerian_account_number || "",
+          nigerian_swift_code: settings.nigerian_swift_code || "",
+          binance_wallet_address: settings.binance_wallet_address || "",
+          binance_network: settings.binance_network || "BNB",
+          bybit_wallet_address: settings.bybit_wallet_address || "",
+          bybit_network: settings.bybit_network || "BTC",
+        });
+      }
+    } catch (error) {
+      console.error("Error loading payment settings:", error);
+    } finally {
+      setIsLoadingPaymentSettings(false);
+    }
+  };
+
   const loadCredentials = async () => {
     setIsLoadingCredentials(true);
     try {
