@@ -52,9 +52,9 @@ EMAIL_FROM=noreply@wfxtrading.com
 
 ### Paste Here:
 ```
-FLUTTERWAVE_PUBLIC_KEY=FLWPUBK_[FLWPUBK-84a33abb9577491b5bc7e1ce856de21a-X]
-FLUTTERWAVE_SECRET_KEY=FLWSECK_[FLWSECK-1036173a3165024b79ebf88a283d8fa7-19b4f9050d7vt-X]
-FLUTTERWAVE_SECRET_HASH=[wfx-contest-showdown-competition]
+FLUTTERWAVE_PUBLIC_KEY=FLWPUBK_84a33abb9577491b5bc7e1ce856de21a
+FLUTTERWAVE_SECRET_KEY=FLWSECK_1036173a3165024b79ebf88a283d8fa7
+FLUTTERWAVE_SECRET_HASH=wfx-contest-showdown-competition
 ```
 
 ---
@@ -69,7 +69,7 @@ FLUTTERWAVE_SECRET_HASH=[wfx-contest-showdown-competition]
 
 ### Paste Here:
 ```
-BINANCE_MERCHANT_ID=[48947748]
+BINANCE_MERCHANT_ID=48947748
 ```
 
 **Note:** Users will see your Merchant ID in the checkout and can pay directly. You'll get an email notification when they complete payment.
@@ -87,7 +87,7 @@ BINANCE_MERCHANT_ID=[48947748]
 
 ### Paste Here:
 ```
-BYBIT_USDT_WALLET_ADDRESS=[TH9F2BfgD6C7gM5Jxo8gM3EpxU42kRUJm5]
+BYBIT_USDT_WALLET_ADDRESS=TH9F2BfgD6C7gM5Jxo8gM3EpxU42kRUJm5
 ```
 
 **Example:**
