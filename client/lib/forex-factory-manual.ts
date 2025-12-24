@@ -101,7 +101,7 @@ export async function uploadForexFactoryTraderData(
       // First, fetch all traders (simpler approach to avoid filter issues)
       const { data: allTraders, error: allTradersError } = await supabase
         .from('traders')
-        .select('id, full_name, current_balance');
+        .select('id, full_name');
 
       if (allTradersError) {
         const msg = `Failed to fetch traders: ${allTradersError.message}`;
