@@ -593,20 +593,23 @@ export default function RegistrationPage() {
 
               <button
                 onClick={() => {
+                  console.log('[Manual Payment] Clicked: Back to Payment Methods');
                   setStep("payment");
                   setSelectedPayment(null);
                   setManualPaymentData(null);
                 }}
-                className="w-full h-12 rounded-lg border-2 border-border text-foreground font-semibold hover:bg-card/50 transition-colors"
+                className="w-full h-10 rounded-lg border-2 border-border text-foreground font-semibold hover:bg-card/50 transition-colors"
               >
-                Back to Payment Methods
+                ← Back to Payment Methods
               </button>
             </div>
 
             <div className="mt-8 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
-              <p className="text-sm text-blue-600 dark:text-blue-400">
-                ℹ️ After you've sent the payment, your trading credentials will be available on your dashboard.
-                If you don't see them after 30 minutes, please contact support.
+              <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                ℹ️ After payment is confirmed, your trading credentials will be available on your dashboard.
+              </p>
+              <p className="text-xs text-blue-600/80 dark:text-blue-400/80">
+                If you don't see the green "I've Paid" button above, please scroll down on this page.
               </p>
             </div>
           </div>
