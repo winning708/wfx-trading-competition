@@ -399,19 +399,64 @@ export default function RegistrationPage() {
 
       // Handle different payment methods
       if (selectedPayment === 'flutterwave' && 'public_key' in paymentResult.paymentData!) {
-        // For Flutterwave, open payment modal
-        // The payment data contains public_key and other details for Flutterwave integration
-        // Store the payment data and show instruction to complete payment
-        setManualPaymentData({
-          method: 'flutterwave',
-          email: formData.email,
-          amount: 15,
-          fullName: formData.fullName,
-          instructions: 'Complete your payment using Flutterwave',
-          orderRef: (paymentResult.paymentData as any).txRef,
-          currency: 'USD',
-        });
-        setStep("manual-payment");
+        // For Flutterwave, open payment modal using their SDK
+        const flutterwaveData = paymentResult.paymentData as any;
+
+        // Declare the Flutterwave type
+        declare global {
+          interface Window {
+            FlutterwaveCheckout: any;
+          }
+        }
+
+        if (window.FlutterwaveCheckout) {
+          window.FlutterwaveCheckout({
+            public_key: flutterwaveData.public_key,
+            tx_ref: flutterwaveData.txRef,
+            amount: flutterwaveData.amount,
+            currency: flutterwaveData.currency,
+            payment_options: 'card,mobilemoney,ussd,payattitude',
+            customer: {
+              email: flutterwaveData.email,
+              name: flutterwaveData.fullName,
+            },
+            customizations: {
+              title: 'WFX Trading Competition Entry Fee',
+              description: 'Complete payment to register for the WFX Trading Competition',
+              logo: 'https://wfxtrading.com/logo.png',
+            },
+            callback: async (response: any) => {
+              console.log('Flutterwave response:', response);
+
+              // Close the modal
+              window.FlutterwaveCheckout({});
+
+              if (response.status === 'successful') {
+                // Payment successful - show success screen
+                setIsLoading(false);
+                setStep("success");
+              } else if (response.status === 'cancelled') {
+                alert('Payment was cancelled. Please try again.');
+                setIsLoading(false);
+                setStep("payment");
+                setSelectedPayment(null);
+              } else {
+                alert('Payment failed. Please try again.');
+                setIsLoading(false);
+                setStep("payment");
+                setSelectedPayment(null);
+              }
+            },
+            onclose: () => {
+              // Modal closed without payment
+              console.log('Flutterwave modal closed');
+            },
+          });
+        } else {
+          console.error('Flutterwave SDK not loaded');
+          alert('Payment gateway not available. Please refresh and try again.');
+          setIsLoading(false);
+        }
       } else {
         // For Binance and Bybit (manual payments)
         const data = paymentResult.paymentData as any;
@@ -426,12 +471,12 @@ export default function RegistrationPage() {
           walletAddress: data.walletAddress,
           currency: data.currency,
         });
+        setIsLoading(false);
         setStep("manual-payment");
       }
     } catch (error) {
       console.error("Payment error:", error);
       alert("An error occurred during payment. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
