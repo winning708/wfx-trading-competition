@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ExternalLink } from "lucide-react";
+import { Check, ExternalLink, Copy } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { registerTrader, initiatePayment } from "@/lib/api";
+import { getCurrencyInfoForCountry } from "@/lib/currency";
 
 const COUNTRIES = [
   "Afghanistan",
@@ -227,29 +228,22 @@ interface ManualPaymentData {
   merchantId?: string;
   walletAddress?: string;
   currency: string;
+  bankName?: string;
+  accountName?: string;
+  accountNumber?: string;
+  swiftCode?: string;
+  country?: string;
+  convertedAmount?: number;
+  currencyCode?: string;
 }
 
 const PAYMENT_METHODS: PaymentMethod[] = [
   {
-    id: "binance",
-    name: "Binance Pay",
-    description: "Cryptocurrency payment with Binance",
-    icon: "🔶",
-    color: "from-yellow-500 to-yellow-600",
-  },
-  {
-    id: "bybit",
-    name: "Bybit Pay",
-    description: "Crypto payments via Bybit platform",
-    icon: "⚡",
-    color: "from-cyan-500 to-blue-600",
-  },
-  {
-    id: "flutterwave",
-    name: "Flutterwave",
-    description: "Cards, Mobile Money, Bank Transfer",
-    icon: "💰",
-    color: "from-red-500 to-orange-600",
+    id: "bank-transfer",
+    name: "Bank Transfer",
+    description: "Direct bank account transfer",
+    icon: "🏦",
+    color: "from-blue-500 to-blue-600",
   },
 ];
 
