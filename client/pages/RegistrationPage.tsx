@@ -266,6 +266,7 @@ export default function RegistrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [manualPaymentData, setManualPaymentData] = useState<ManualPaymentData | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
 
   // Redirect to leaderboard after 3 seconds when registration is complete
   useEffect(() => {
