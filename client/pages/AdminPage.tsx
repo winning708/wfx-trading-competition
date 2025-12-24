@@ -926,37 +926,25 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Info Box */}
               <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
-                <h3 className="font-semibold text-foreground mb-2">Forex Factory Trade Explorer</h3>
+                <h3 className="font-semibold text-foreground mb-2">📊 Forex Factory Manual Data Upload</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Link your Forex Factory Trade Explorer accounts to automatically sync trading performance data. Your trader records will be updated with real-time profit and loss metrics.
+                  Upload your top Forex Factory traders daily. Copy the top 10 traders from Forex Factory Trade Explorer and paste the data below to update the leaderboard.
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
-                    📖 How to set up Forex Factory Trade Explorer connection (powered by RapidAPI)
+                    📖 How to upload Forex Factory trader data
                   </summary>
-                  <div className="mt-3 space-y-3 ml-2 border-l-2 border-primary/30 pl-3">
-                    <div>
-                      <p><strong>1. Get RapidAPI Key</strong></p>
-                      <ul className="text-xs mt-1 ml-4 space-y-1">
-                        <li>• Go to <a href="https://rapidapi.com/ousema.frikha/api/forex-factory-scraper1" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">RapidAPI Forex Factory Scraper</a></li>
-                        <li>• Click "Subscribe to Test" (free tier available)</li>
-                        <li>• Copy your API Key from the dashboard</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p><strong>2. Get Forex Factory Account Username</strong></p>
-                      <ul className="text-xs mt-1 ml-4 space-y-1">
-                        <li>• Your username from your Forex Factory profile (e.g., johndoe)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p><strong>3. Get System ID</strong></p>
-                      <ul className="text-xs mt-1 ml-4 space-y-1">
-                        <li>• The specific trading system ID you want to track on Forex Factory</li>
-                        <li>• Find it in your Forex Factory "My Systems" page</li>
-                      </ul>
-                    </div>
-                    <p><strong>4. Link Account</strong> - Fill in the form below and click "Link Account"</p>
+                  <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
+                    <p><strong>Step 1:</strong> Go to <a href="https://www.forexfactory.com/trade-explorer" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Forex Factory Trade Explorer</a></p>
+                    <p><strong>Step 2:</strong> Copy your top 10 traders data in this format (one per line):</p>
+                    <code className="text-xs bg-background p-2 rounded block my-2">
+                      rank,trader_name,trader_username,balance,profit_percent,trades
+                    </code>
+                    <p><strong>Example:</strong></p>
+                    <code className="text-xs bg-background p-2 rounded block my-2">
+                      1,John Doe,johndoe,25000,45.5,120
+                    </code>
+                    <p><strong>Step 3:</strong> Paste below and click "Upload Traders"</p>
                   </div>
                 </details>
               </div>
