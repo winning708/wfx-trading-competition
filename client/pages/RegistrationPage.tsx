@@ -402,12 +402,19 @@ export default function RegistrationPage() {
         // For Flutterwave, open payment modal using their SDK
         const flutterwaveData = paymentResult.paymentData as any;
 
+        console.log('[Registration] Flutterwave initiated with data:', {
+          email: flutterwaveData.email,
+          amount: flutterwaveData.amount,
+          currency: flutterwaveData.currency,
+          txRef: flutterwaveData.txRef,
+        });
+
         // Check if Flutterwave SDK is loaded
         const FW = (window as any).FlutterwaveCheckout;
 
         if (!FW) {
-          console.error('Flutterwave SDK not loaded');
-          alert('Payment gateway not available. Please refresh the page and try again.');
+          console.error('[Registration] Flutterwave SDK not available on window');
+          alert('Payment gateway not available. Please check your internet connection and refresh the page.');
           setIsLoading(false);
           return;
         }
@@ -431,15 +438,24 @@ export default function RegistrationPage() {
               logo: 'https://wfxtrading.com/logo.png',
             },
             callback: (response: any) => {
-              console.log('[Flutterwave] Payment response:', response);
+              console.log('[Registration] Flutterwave callback received:', {
+                status: response.status,
+                transaction_id: response.transaction_id,
+              });
 
               // Check payment status
               if (response.status === 'successful') {
-                console.log('[Flutterwave] Payment successful:', response.transaction_id);
+                console.log('[Registration] ✅ Payment successful');
                 setIsLoading(false);
                 setStep("success");
+              } else if (response.status === 'cancelled') {
+                console.log('[Registration] ⚠️ Payment cancelled by user');
+                alert('Payment was cancelled. Please try again if you wish to complete registration.');
+                setIsLoading(false);
+                setStep("payment");
+                setSelectedPayment(null);
               } else {
-                console.warn('[Flutterwave] Payment not successful:', response.status);
+                console.warn('[Registration] ❌ Payment failed with status:', response.status);
                 alert(`Payment was ${response.status || 'unsuccessful'}. Please try again.`);
                 setIsLoading(false);
                 setStep("payment");
@@ -447,17 +463,17 @@ export default function RegistrationPage() {
               }
             },
             onclose: () => {
-              console.log('[Flutterwave] Modal closed without payment');
+              console.log('[Registration] Flutterwave modal closed');
               // User closed modal without completing payment
               setIsLoading(false);
             },
           };
 
-          console.log('[Flutterwave] Opening payment modal with config:', paymentConfig);
+          console.log('[Registration] Opening Flutterwave modal...');
           setIsLoading(false);
           FW(paymentConfig);
         } catch (err) {
-          console.error('[Flutterwave] Error opening payment modal:', err);
+          console.error('[Registration] Error opening Flutterwave modal:', err);
           alert('Failed to open payment gateway. Please try again.');
           setIsLoading(false);
         }
