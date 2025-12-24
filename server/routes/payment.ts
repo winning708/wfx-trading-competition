@@ -168,7 +168,7 @@ export const initiateFlutterwavePayment: RequestHandler = async (req, res) => {
 };
 
 /**
- * Create Binance Payment
+ * Create Binance Payment (Manual - Merchant ID Only)
  * POST /api/payment/initiate/binance
  * Body: { email, amount, fullName }
  */
@@ -181,24 +181,25 @@ export const initiateBinancePayment: RequestHandler = async (req, res) => {
     }
 
     const merchantId = process.env.BINANCE_MERCHANT_ID;
-    const apiKey = process.env.BINANCE_API_KEY;
 
-    if (!merchantId || !apiKey) {
-      return res.status(500).json({ success: false, message: 'Payment not configured' });
+    if (!merchantId) {
+      return res.status(500).json({ success: false, message: 'Binance payment not configured' });
     }
 
-    // Generate unique merchant trade number
-    const merchantTradeNo = `trade_${Date.now()}`;
+    // Generate unique order reference
+    const orderRef = `binance_${email}_${Date.now()}`;
 
     const paymentData = {
+      type: 'manual',
+      method: 'binance',
       merchantId,
-      merchantTradeNo,
+      orderRef,
       email,
       amount,
       fullName,
-      currency: 'USDT',
-      returnUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/payment/success?method=binance&ref=${merchantTradeNo}`,
-      cancelUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/payment/failure?method=binance&ref=${merchantTradeNo}`,
+      currency: 'USD',
+      instructions: `Send payment to Binance Merchant ID: ${merchantId}`,
+      confirmUrl: `${process.env.BACKEND_URL || 'http://localhost:5173'}/api/payment/confirm-manual?ref=${orderRef}`,
     };
 
     res.json({ success: true, paymentData });
