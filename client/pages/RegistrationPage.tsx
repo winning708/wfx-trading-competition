@@ -507,8 +507,8 @@ export default function RegistrationPage() {
 
             {/* Payment Instructions */}
             <div className="mb-8 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 p-6">
-              <h3 className="font-bold text-foreground mb-4">📋 Payment Instructions</h3>
-              <p className="text-muted-foreground mb-6">
+              <h3 className="font-bold text-foreground mb-4 text-lg">📋 Payment Instructions</h3>
+              <p className="text-base text-muted-foreground mb-6 leading-relaxed">
                 {manualPaymentData.instructions}
               </p>
 
