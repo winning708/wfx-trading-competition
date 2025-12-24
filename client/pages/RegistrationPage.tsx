@@ -254,6 +254,16 @@ export default function RegistrationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
+  // Redirect to leaderboard after 3 seconds when registration is complete
+  useEffect(() => {
+    if (step === "success") {
+      const timer = setTimeout(() => {
+        navigate("/leaderboard");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [step, navigate]);
+
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
