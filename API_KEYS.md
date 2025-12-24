@@ -26,7 +26,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhY
 
 ### Paste Here:
 ```
-RESEND_API_KEY=re_[re_5uzTUbXE_9DAFScadBWszUXrED2mnDE7v]
+RESEND_API_KEY=re_5uzTUbXE_9DAFScadBWszUXrED2mnDE7v
 ```
 
 ### Email Sender Address:
