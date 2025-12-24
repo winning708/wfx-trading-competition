@@ -419,22 +419,77 @@ export default function RegistrationPage() {
         console.log('[Registration] Processing bank transfer payment');
         const currencyInfo = getCurrencyInfoForCountry(formData.country);
 
-        setManualPaymentData({
-          method: 'bank-transfer',
-          email: formData.email,
-          amount: 15,
-          fullName: formData.fullName,
-          instructions: 'Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.',
-          orderRef: `WFX-${Date.now()}`,
-          currency: 'USD',
-          bankName: 'Wise (Transfer Wise)',
-          accountName: 'WFX Trading',
-          accountNumber: '****-****-****',
-          swiftCode: 'TRWIBEB1XXX',
-          country: formData.country,
-          convertedAmount: currencyInfo.amount,
-          currencyCode: currencyInfo.code,
-        });
+        // Fetch payment settings from admin
+        let settings = adminPaymentSettings;
+        if (!settings) {
+          console.log('[Registration] Fetching payment settings from admin...');
+          settings = await getPaymentSettings();
+          setAdminPaymentSettings(settings);
+        }
+
+        // Determine which payment details to show based on country
+        const isNigerian = formData.country === 'Nigeria';
+
+        if (isNigerian && settings?.nigerian_account_number) {
+          // Show Nigerian bank account
+          console.log('[Registration] Showing Nigerian bank account details');
+          setManualPaymentData({
+            method: 'bank-transfer',
+            email: formData.email,
+            amount: 15,
+            fullName: formData.fullName,
+            instructions: 'Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.',
+            orderRef: `WFX-${Date.now()}`,
+            currency: 'USD',
+            bankName: settings.nigerian_bank_name || 'Bank Account',
+            accountName: settings.nigerian_account_name || 'WFX Trading',
+            accountNumber: settings.nigerian_account_number || '',
+            swiftCode: settings.nigerian_swift_code || '',
+            country: formData.country,
+            convertedAmount: currencyInfo.amount,
+            currencyCode: currencyInfo.code,
+          });
+        } else if (!isNigerian && (settings?.binance_wallet_address || settings?.bybit_wallet_address)) {
+          // Show Binance/Bybit crypto details for international users
+          console.log('[Registration] Showing international crypto wallet details');
+          setManualPaymentData({
+            method: 'bank-transfer',
+            email: formData.email,
+            amount: 15,
+            fullName: formData.fullName,
+            instructions: 'Please send payment to one of the crypto wallet addresses below. Your payment will be verified within 5-30 minutes.',
+            orderRef: `WFX-${Date.now()}`,
+            currency: 'USD',
+            bankName: 'Crypto Payment',
+            accountName: 'International Payment',
+            accountNumber: settings.binance_wallet_address || settings.bybit_wallet_address || '',
+            walletAddress: settings.binance_wallet_address || '',
+            swiftCode: settings.bybit_wallet_address || '',
+            country: formData.country,
+            convertedAmount: currencyInfo.amount,
+            currencyCode: currencyInfo.code,
+          });
+        } else {
+          // Fallback if no settings configured
+          console.warn('[Registration] Payment settings not configured, showing fallback');
+          setManualPaymentData({
+            method: 'bank-transfer',
+            email: formData.email,
+            amount: 15,
+            fullName: formData.fullName,
+            instructions: 'Please transfer funds to the account details below. Your payment will be verified within 1-2 business days.',
+            orderRef: `WFX-${Date.now()}`,
+            currency: 'USD',
+            bankName: isNigerian ? 'Bank Account' : 'Crypto Wallet',
+            accountName: 'WFX Trading',
+            accountNumber: 'Pending admin configuration',
+            swiftCode: '',
+            country: formData.country,
+            convertedAmount: currencyInfo.amount,
+            currencyCode: currencyInfo.code,
+          });
+        }
+
         console.log('[Registration] ✅ Bank transfer data set, switching to manual-payment step');
         setIsLoading(false);
         setStep("manual-payment");
