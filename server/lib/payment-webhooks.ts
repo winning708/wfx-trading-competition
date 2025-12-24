@@ -208,8 +208,8 @@ export async function handleFlutterwaveWebhook(
       data.amount || 0
     );
 
-    // Send confirmation email
-    await sendConfirmationEmail(email);
+    // NOTE: Email sending disabled - credentials are shown on dashboard instead
+    // Users will see their credentials immediately after payment on the dashboard
 
     return {
       success: true,
