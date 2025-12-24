@@ -366,6 +366,32 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteTrader = async (trader: Trader) => {
+    if (!window.confirm(`Are you sure you want to delete ${trader.username}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      if (!trader.id) {
+        alert("❌ Error: Trader ID not found");
+        return;
+      }
+
+      const result = await deleteTrader(trader.id);
+
+      if (result.success) {
+        alert(`✅ Trader ${trader.username} has been deleted`);
+        // Reload traders list
+        const data = await getLeaderboard();
+        setTraders(data);
+      } else {
+        alert(`❌ Error: ${result.message || "Failed to delete trader"}`);
+      }
+    } catch (error) {
+      alert(`❌ Error deleting trader: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
