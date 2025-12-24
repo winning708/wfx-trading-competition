@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, ExternalLink } from "lucide-react";
 import Header from "@/components/layout/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { registerTrader } from "@/lib/api";
+import { registerTrader, initiatePayment } from "@/lib/api";
 
 const COUNTRIES = [
   "Afghanistan",
