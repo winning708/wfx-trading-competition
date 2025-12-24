@@ -19,11 +19,14 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
   try {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
-      console.warn('[Email] Resend API key not configured');
+      console.error('[Email] Resend API key not configured in environment variables');
+      console.error('[Email] Please set RESEND_API_KEY environment variable');
       return false;
     }
 
     const fromEmail = options.from || process.env.EMAIL_FROM || 'noreply@wfxtrading.com';
+
+    console.log('[Email] Sending email via Resend:', { to: options.to, from: fromEmail, subject: options.subject });
 
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -40,8 +43,17 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('[Email] Resend error:', error);
+      const errorText = await response.text();
+      console.error('[Email] Resend API error - Status:', response.status);
+      console.error('[Email] Resend API response:', errorText);
+
+      // Try to parse as JSON for better error details
+      try {
+        const errorJson = JSON.parse(errorText);
+        console.error('[Email] Resend error details:', JSON.stringify(errorJson, null, 2));
+      } catch (e) {
+        // Response is not JSON, log as-is
+      }
       return false;
     }
 
@@ -49,7 +61,11 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
     console.log('[Email] Email sent successfully via Resend to:', options.to, 'ID:', data.id);
     return true;
   } catch (error) {
-    console.error('[Email] Error sending email via Resend:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Email] Error sending email via Resend:', errorMessage);
+    if (error instanceof Error && error.stack) {
+      console.error('[Email] Stack trace:', error.stack);
+    }
     return false;
   }
 }
