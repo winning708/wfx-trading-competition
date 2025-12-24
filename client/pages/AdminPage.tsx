@@ -332,6 +332,60 @@ export default function AdminPage() {
     }
   };
 
+  const handleBulkUpload = async () => {
+    if (!csvInput.trim()) {
+      alert("Please paste CSV data first");
+      return;
+    }
+
+    setIsUploadingBulk(true);
+    setUploadErrors([]);
+    setUploadSuccess(false);
+
+    try {
+      console.log('[AdminPage] Parsing CSV data...');
+      const traders = parseForexFactoryCSV(csvInput);
+
+      if (traders.length === 0) {
+        alert("❌ No valid trader data found in CSV. Please check the format.");
+        setIsUploadingBulk(false);
+        return;
+      }
+
+      console.log(`[AdminPage] Uploading ${traders.length} traders...`);
+
+      // Use first credential as default, or let user select
+      const credId = credentials.length > 0 ? credentials[0].id : '';
+      if (!credId) {
+        alert("❌ No credentials available. Please create a credential first.");
+        setIsUploadingBulk(false);
+        return;
+      }
+
+      const result = await uploadForexFactoryTraderData(traders, credId);
+
+      console.log('[AdminPage] Upload result:', result);
+
+      if (result.updatedCount > 0) {
+        setUploadSuccess(true);
+        setCSVInput("");
+        await loadMonitoring();
+        alert(`✅ Successfully updated ${result.updatedCount} trader(s)!`);
+      }
+
+      if (result.errors.length > 0) {
+        setUploadErrors(result.errors);
+      }
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("Error uploading bulk data:", errorMsg);
+      setUploadErrors([errorMsg]);
+      alert(`❌ Error uploading traders:\n\n${errorMsg}`);
+    } finally {
+      setIsUploadingBulk(false);
+    }
+  };
+
   const handleDeleteIntegration = async (integrationId: string) => {
     if (!confirm("Delete this Forex Factory integration?")) return;
 
