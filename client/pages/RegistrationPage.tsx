@@ -338,15 +338,18 @@ export default function RegistrationPage() {
     }
 
     setIsLoading(true);
+    setLoadingMessage('');
 
     try {
       // Simulate form validation delay
       await new Promise((resolve) => setTimeout(resolve, 500));
+      setLoadingMessage('');
       setStep("payment");
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
+      setLoadingMessage('');
     }
   };
 
