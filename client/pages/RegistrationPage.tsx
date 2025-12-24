@@ -1034,7 +1034,7 @@ export default function RegistrationPage() {
               {/* Terms Agreement */}
               <div className="rounded-lg border border-border bg-card/50 p-4">
                 <p className="text-sm text-muted-foreground">
-                  By registering, you agree to the WFX Trading Competition{" "}
+                  By registering, you agree to the WFX TRADING SHOWDOWN{" "}
                   <a href="/rules" className="text-primary hover:underline">
                     Rules & Terms
                   </a>
