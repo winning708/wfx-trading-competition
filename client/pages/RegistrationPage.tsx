@@ -415,15 +415,31 @@ export default function RegistrationPage() {
       setLoadingMessage('');
 
       // Handle different payment methods
-      if (selectedPayment === 'flutterwave' && 'public_key' in paymentResult.paymentData!) {
-        // For Flutterwave, show manual payment instructions instead of relying on SDK
-        const flutterwaveData = paymentResult.paymentData as any;
+      console.log('[Registration] Payment result:', {
+        success: paymentResult.success,
+        hasPaymentData: !!paymentResult.paymentData,
+        paymentDataKeys: paymentResult.paymentData ? Object.keys(paymentResult.paymentData) : [],
+        selectedPayment,
+      });
 
-        console.log('[Registration] Flutterwave initiated - showing payment instructions:', {
+      if (selectedPayment === 'flutterwave') {
+        // For Flutterwave, show manual payment instructions
+        console.log('[Registration] Processing Flutterwave payment');
+
+        if (!paymentResult.paymentData) {
+          console.error('[Registration] ❌ No payment data returned for Flutterwave');
+          setIsLoading(false);
+          alert('Payment gateway error. Please try again.');
+          return;
+        }
+
+        const flutterwaveData = paymentResult.paymentData as any;
+        console.log('[Registration] Flutterwave data:', {
           email: flutterwaveData.email,
           amount: flutterwaveData.amount,
           currency: flutterwaveData.currency,
           txRef: flutterwaveData.txRef,
+          hasPublicKey: 'public_key' in flutterwaveData,
         });
 
         // Show manual payment instructions for Flutterwave
@@ -433,9 +449,10 @@ export default function RegistrationPage() {
           amount: 15,
           fullName: formData.fullName,
           instructions: 'To complete your payment, click the button below to open Flutterwave\'s secure payment page. You can pay with your card, mobile money, USSD, or bank transfer.',
-          orderRef: flutterwaveData.txRef,
+          orderRef: flutterwaveData.txRef || 'pending',
           currency: 'USD',
         });
+        console.log('[Registration] ✅ Flutterwave manual payment data set, switching to manual-payment step');
         setIsLoading(false);
         setStep("manual-payment");
       } else {
