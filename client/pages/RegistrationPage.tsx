@@ -449,21 +449,21 @@ export default function RegistrationPage() {
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
-        } else if (!isNigerian && (settings?.binance_wallet_address || settings?.bybit_wallet_address)) {
+        } else if (!isNigerian && (settings?.binance_pay_id || settings?.bybit_wallet_address)) {
           // Show Binance/Bybit crypto details for international users
-          console.log('[Registration] Showing international crypto wallet details');
+          console.log('[Registration] Showing international payment details');
           setManualPaymentData({
             method: 'bank-transfer',
             email: formData.email,
             amount: 15,
             fullName: formData.fullName,
-            instructions: 'Please send payment to one of the crypto wallet addresses below. Your payment will be verified within 5-30 minutes.',
+            instructions: 'Please send payment to one of the options below. Your payment will be verified within 5-30 minutes.',
             orderRef: `WFX-${Date.now()}`,
             currency: 'USD',
             bankName: 'Crypto Payment',
             accountName: 'International Payment',
-            accountNumber: settings.binance_wallet_address || settings.bybit_wallet_address || '',
-            walletAddress: settings.binance_wallet_address || '',
+            accountNumber: settings.binance_pay_id || settings.bybit_wallet_address || '',
+            walletAddress: settings.binance_pay_id || '',
             swiftCode: settings.bybit_wallet_address || '',
             country: formData.country,
             convertedAmount: currencyInfo.amount,
