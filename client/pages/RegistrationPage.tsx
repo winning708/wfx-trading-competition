@@ -456,10 +456,12 @@ export default function RegistrationPage() {
         setStep("manual-payment");
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      alert("An error occurred during payment. Please try again.");
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("[Registration] ❌ Payment error:", errorMsg);
       setIsLoading(false);
+      setLoadingMessage('');
       setStep("payment");
+      alert("An error occurred during payment. Please try again.");
     }
   };
 
