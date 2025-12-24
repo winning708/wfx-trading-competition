@@ -907,10 +907,10 @@ export default function RegistrationPage() {
           {/* Page Title */}
           <div className="mb-12 text-center">
             <h1 className="mb-4 text-4xl md:text-5xl font-bold text-foreground">
-              Join the Competition
+              Join WFX TRADING SHOWDOWN
             </h1>
             <p className="text-lg text-muted-foreground">
-              Register for the WFX Trading Competition and start trading with
+              Register for the WFX TRADING SHOWDOWN and start trading with
               $1,000 demo capital.
             </p>
           </div>
