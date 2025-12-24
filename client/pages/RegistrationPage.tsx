@@ -455,9 +455,25 @@ export default function RegistrationPage() {
         console.log('[Registration] ✅ Flutterwave manual payment data set, switching to manual-payment step');
         setIsLoading(false);
         setStep("manual-payment");
-      } else {
+      } else if (selectedPayment === 'binance' || selectedPayment === 'bybit') {
         // For Binance and Bybit (manual payments)
+        console.log('[Registration] Processing', selectedPayment, 'payment');
+
+        if (!paymentResult.paymentData) {
+          console.error('[Registration] ❌ No payment data returned for', selectedPayment);
+          setIsLoading(false);
+          alert('Payment gateway error. Please try again.');
+          return;
+        }
+
         const data = paymentResult.paymentData as any;
+        console.log('[Registration]', selectedPayment, 'data:', {
+          method: data.method,
+          orderRef: data.orderRef,
+          hasMerchantId: !!data.merchantId,
+          hasWalletAddress: !!data.walletAddress,
+        });
+
         setManualPaymentData({
           method: selectedPayment,
           email: formData.email,
@@ -469,8 +485,13 @@ export default function RegistrationPage() {
           walletAddress: data.walletAddress,
           currency: data.currency,
         });
+        console.log('[Registration] ✅', selectedPayment, 'manual payment data set');
         setIsLoading(false);
         setStep("manual-payment");
+      } else {
+        console.error('[Registration] ❌ Unknown payment method:', selectedPayment);
+        setIsLoading(false);
+        alert('Unknown payment method. Please try again.');
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
