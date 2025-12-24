@@ -1,6 +1,6 @@
 /**
  * Email Service
- * Handles sending emails via SendGrid or other providers
+ * Handles sending emails via Resend (works in Nigeria!)
  */
 
 interface EmailOptions {
@@ -11,53 +11,55 @@ interface EmailOptions {
 }
 
 /**
- * Send email via SendGrid
+ * Send email via Resend
+ * Resend works in Nigeria and has a free tier!
+ * Sign up at: https://resend.com
  */
-export async function sendEmailViaSendGrid(options: EmailOptions): Promise<boolean> {
+export async function sendEmailViaResend(options: EmailOptions): Promise<boolean> {
   try {
-    const apiKey = process.env.SENDGRID_API_KEY;
+    const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
-      console.warn('[Email] SendGrid API key not configured');
+      console.warn('[Email] Resend API key not configured');
       return false;
     }
 
-    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+    const fromEmail = options.from || process.env.EMAIL_FROM || 'noreply@wfxtrading.com';
+
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        personalizations: [
-          {
-            to: [{ email: options.to }],
-            subject: options.subject,
-          },
-        ],
-        from: {
-          email: options.from || process.env.SENDGRID_FROM_EMAIL || 'noreply@wfxtrading.com',
-        },
-        content: [
-          {
-            type: 'text/html',
-            value: options.html,
-          },
-        ],
+        from: fromEmail,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
       }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      console.error('[Email] SendGrid error:', error);
+      const error = await response.text();
+      console.error('[Email] Resend error:', error);
       return false;
     }
 
-    console.log('[Email] Email sent successfully to:', options.to);
+    const data = await response.json();
+    console.log('[Email] Email sent successfully via Resend to:', options.to, 'ID:', data.id);
     return true;
   } catch (error) {
-    console.error('[Email] Error sending email:', error);
+    console.error('[Email] Error sending email via Resend:', error);
     return false;
   }
+}
+
+/**
+ * Legacy SendGrid function - redirects to Resend
+ * Kept for backwards compatibility
+ */
+export async function sendEmailViaSendGrid(options: EmailOptions): Promise<boolean> {
+  return sendEmailViaResend(options);
 }
 
 /**
