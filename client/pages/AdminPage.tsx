@@ -151,6 +151,29 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  // Load pending payments when tab changes
+  useEffect(() => {
+    if (activeTab === "payments") {
+      loadPendingPayments();
+    }
+  }, [activeTab]);
+
+  const loadPendingPayments = async () => {
+    setIsLoadingPendingPayments(true);
+    try {
+      const response = await fetch('/api/admin/payments/pending');
+      const data = await response.json();
+      if (data.success) {
+        setPendingPayments(data.payments || []);
+      }
+    } catch (error) {
+      console.error("Error loading pending payments:", error);
+      setPendingPayments([]);
+    } finally {
+      setIsLoadingPendingPayments(false);
+    }
+  };
+
   const loadCredentials = async () => {
     setIsLoadingCredentials(true);
     try {
