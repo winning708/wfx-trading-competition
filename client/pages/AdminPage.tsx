@@ -113,6 +113,22 @@ export default function AdminPage() {
   const [pendingPayments, setPendingPayments] = useState<any[]>([]);
   const [isLoadingPendingPayments, setIsLoadingPendingPayments] = useState(false);
 
+  // Payment settings state
+  const [paymentSettings, setPaymentSettings] = useState<AdminPaymentSettings | null>(null);
+  const [isLoadingPaymentSettings, setIsLoadingPaymentSettings] = useState(false);
+  const [showPaymentSettingsForm, setShowPaymentSettingsForm] = useState(false);
+  const [paymentSettingsForm, setPaymentSettingsForm] = useState({
+    nigerian_bank_name: "",
+    nigerian_account_name: "",
+    nigerian_account_number: "",
+    nigerian_swift_code: "",
+    binance_wallet_address: "",
+    binance_network: "BNB",
+    bybit_wallet_address: "",
+    bybit_network: "BTC",
+  });
+  const [isSavingPaymentSettings, setIsSavingPaymentSettings] = useState(false);
+
   // Load traders on mount
   useEffect(() => {
     const loadTraders = async () => {
