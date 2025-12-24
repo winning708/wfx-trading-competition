@@ -212,6 +212,12 @@ export async function assignCredentialToTrader(
       };
     }
 
+    // Send credentials email to the trader
+    const emailSuccess = await sendCredentialsEmailToTrader(traderId);
+    if (!emailSuccess) {
+      console.warn('Failed to send credentials email, but assignment succeeded');
+    }
+
     return { success: true };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
@@ -220,6 +226,35 @@ export async function assignCredentialToTrader(
       success: false,
       error: `Exception: ${errorMsg}`
     };
+  }
+}
+
+/**
+ * Send trading credentials email to a trader
+ * Calls the server endpoint to send the email
+ */
+export async function sendCredentialsEmailToTrader(traderId: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/email/send-credentials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ traderId }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('Error sending credentials email:', error);
+      return false;
+    }
+
+    const data = await response.json();
+    console.log('Credentials email sent:', data);
+    return true;
+  } catch (error) {
+    console.error('Exception sending credentials email:', error);
+    return false;
   }
 }
 
