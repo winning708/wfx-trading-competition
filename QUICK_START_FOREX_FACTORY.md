@@ -1,90 +1,100 @@
-# Forex Factory Trade Explorer - Quick Start (5 minutes)
+# Forex Factory Manual Upload - Quick Start (5 minutes)
 
 ## How It Works
 
-This integration uses a **direct web scraper** to fetch your trading data from Forex Factory. 
-**No API key required!** Just your username and system ID.
+Instead of automated scraping, you **manually upload** your top Forex Factory traders daily. This ensures you get real, up-to-date data from Forex Factory.
 
-## Step 1: Get Your Forex Factory Details (2 minutes)
+## What You Need
 
-### Your Account Username
-- Log in to **https://www.forexfactory.com**
-- Go to your **Profile** or **Settings**
-- Copy your username (e.g., `Winning708`)
-- This is what appears on the leaderboard
+- Access to Forex Factory Trade Explorer
+- Admin Panel access to your competition
+- 5 minutes per day
 
-### Your System ID or Trader ID
-- Go to **Trade Explorer** in Forex Factory
-- Find your trading system
-- The System ID is in the URL or page details
-- Examples:
-  - `2001661536` (numeric trader ID)
-  - `Trader_1` (system name)
-  - `system_12345` (system ID)
+## Step-by-Step
 
-## Step 2: Link Your Account in Admin Panel (2 minutes)
+### Step 1: Visit Forex Factory (1 minute)
 
-1. Open **Admin Panel → Monitoring** tab
-2. Click **Link Account** button
-3. Fill in the form:
-   - **Trading Credential**: Select your credential
-   - **Forex Factory Account Username**: `Winning708`
-   - **API Key**: Can be any value (not currently used, but required)
-   - **System ID**: `2001661536`
-4. Click **Test Connection** to verify
-5. Click **Link Account**
+1. Go to **https://www.forexfactory.com/trade-explorer**
+2. View your top traders (or top 10 you want to track)
+3. Note their data:
+   - Rank (1, 2, 3...)
+   - Name (Full name)
+   - Username
+   - Balance
+   - Profit %
+   - Number of trades
 
-## Step 3: Sync Your Data (1 minute)
+### Step 2: Format as CSV (2 minutes)
 
-1. Click **Sync** next to your integration
-2. Wait for sync to complete (usually 2-5 seconds)
-3. Check the status:
-   - ✅ **Green** = Success - data fetched and updated
-   - ❌ **Red** = Error (hover to see details)
+Prepare data in this format (one line per trader):
 
-## What Happens Next?
+```
+rank,trader_name,trader_username,balance,profit_percent,trades
+1,John Doe,johndoe,25000,45.5,120
+2,Jane Smith,janesmith,22000,40.2,110
+3,Robert Johnson,rjohnson,20500,38.1,105
+```
 
-- Your trading performance is automatically fetched from Forex Factory
-- Balance and profit/loss updates are synced to the leaderboard
-- Your account ranks appear in the live leaderboard
-- Historical data is preserved for auditing
+**Tip:** Use the **"Load Template"** button in Admin Panel to get the format.
 
-## How The Scraper Works
+### Step 3: Upload in Admin Panel (2 minutes)
 
-The system automatically:
-1. Scrapes your public Forex Factory trader profile
-2. Extracts your balance, profit %, and trading stats
-3. Syncs the data to our leaderboard
-4. Updates every time you click Sync (or automatically on schedule)
+1. Go to **Admin Panel → Monitoring** tab
+2. Find **"Upload Forex Factory Traders"** section
+3. Paste your trader data in the text area
+4. Click **"Upload Traders"** button
+5. ✅ Done! Leaderboard is now updated with real Forex Factory data
 
-**Note:** The scraper uses your public Forex Factory profile, so your system must be visible on the Forex Factory leaderboard.
+## Example
 
-## Common Issues
+**From Forex Factory:**
+```
+Rank: 1
+Trader: John Doe (@johndoe)
+Balance: $25,000
+Profit: 45.5%
+Trades: 120
+```
 
-| Issue | Solution |
-|-------|----------|
-| "Could not find trader" | Verify your Forex Factory username is exact and public on leaderboard |
-| Connection fails | Ensure Forex Factory website is accessible; try again in a moment |
-| No data returned | Check that your system is active and visible on Forex Factory Trade Explorer |
+**Format as CSV:**
+```
+1,John Doe,johndoe,25000,45.5,120
+```
+
+**Paste into Admin Panel and click Upload!**
+
+## What Happens
+
+When you upload:
+- ✅ Trader data is validated
+- ✅ Leaderboard is updated with current balances
+- ✅ Profit percentages are recalculated
+- ✅ Rankings are refreshed
+- ✅ Green success message appears
+
+## Tips
+
+- **Update daily** at a consistent time
+- **Copy from Forex Factory directly** for accuracy
+- **Use the template** to save time formatting
+- **Keep backups** of daily uploads (optional)
+- **5 minutes** - That's all it takes!
 
 ## Troubleshooting
 
-**Q: What if my profile is private?**
-A: The scraper needs your system to be visible on the Forex Factory leaderboard. Make sure your Trade Explorer system is public.
+**Q: Trader not found?**
+A: Make sure the trader exists in Admin → Traders first
 
-**Q: Do I need an API key from Forex Factory?**
-A: No! The scraper directly accesses public data. The API Key field can contain any value.
+**Q: CSV format error?**
+A: Click "Load Template" to see correct format. Each line needs 6 comma-separated values.
 
-**Q: How often does it sync?**
-A: Manual sync when you click the Sync button. Contact your administrator for automatic periodic syncing.
+**Q: Upload says success but leaderboard didn't update?**
+A: Refresh the leaderboard page (F5). Changes appear instantly after upload.
 
-**Q: Can I use a different username?**
-A: Yes, as long as the username matches your public Forex Factory profile exactly.
+## Need More Help?
 
-## Need Help?
+See [FOREX_FACTORY_MANUAL_UPLOAD.md](./FOREX_FACTORY_MANUAL_UPLOAD.md) for detailed guide with troubleshooting and advanced tips.
 
-- See [FOREX_FACTORY_SETUP.md](./FOREX_FACTORY_SETUP.md) for detailed setup guide
-- Check error messages in red status indicators (hover for details)
-- Contact your competition administrator
+---
 
-**That's it! Your Forex Factory account is now linked and syncing.** 🚀
+**That's it!** Your leaderboard now shows real Forex Factory data, updated daily by you. 🚀
