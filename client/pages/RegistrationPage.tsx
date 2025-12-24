@@ -363,8 +363,23 @@ export default function RegistrationPage() {
     setIsLoading(true);
 
     try {
-      // Register trader in Supabase
-      const success = await registerTrader({
+      // Initiate payment with selected gateway
+      const paymentResult = await initiatePayment(
+        selectedPayment,
+        formData.email,
+        15,
+        formData.fullName
+      );
+
+      if (!paymentResult.success) {
+        console.error("Payment initiation failed:", paymentResult.message);
+        alert("Failed to initiate payment. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Register trader in Supabase BEFORE payment processing
+      const registerSuccess = await registerTrader({
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
@@ -372,17 +387,50 @@ export default function RegistrationPage() {
         paymentMethod: selectedPayment,
       });
 
-      if (success) {
-        // Save email to localStorage for dashboard access
-        localStorage.setItem("trader_email", formData.email);
-        setStep("success");
-      } else {
+      if (!registerSuccess) {
         console.error("Failed to register trader");
         alert("Registration failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Save email to localStorage for dashboard access
+      localStorage.setItem("trader_email", formData.email);
+
+      // Handle different payment methods
+      if (selectedPayment === 'flutterwave' && 'public_key' in paymentResult.paymentData!) {
+        // For Flutterwave, open payment modal
+        // The payment data contains public_key and other details for Flutterwave integration
+        // Store the payment data and show instruction to complete payment
+        setManualPaymentData({
+          method: 'flutterwave',
+          email: formData.email,
+          amount: 15,
+          fullName: formData.fullName,
+          instructions: 'Complete your payment using Flutterwave',
+          orderRef: (paymentResult.paymentData as any).txRef,
+          currency: 'USD',
+        });
+        setStep("manual-payment");
+      } else {
+        // For Binance and Bybit (manual payments)
+        const data = paymentResult.paymentData as any;
+        setManualPaymentData({
+          method: selectedPayment,
+          email: formData.email,
+          amount: 15,
+          fullName: formData.fullName,
+          instructions: data.instructions,
+          orderRef: data.orderRef,
+          merchantId: data.merchantId,
+          walletAddress: data.walletAddress,
+          currency: data.currency,
+        });
+        setStep("manual-payment");
       }
     } catch (error) {
       console.error("Payment error:", error);
-      alert("An error occurred during registration. Please try again.");
+      alert("An error occurred during payment. Please try again.");
     } finally {
       setIsLoading(false);
     }
