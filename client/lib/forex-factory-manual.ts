@@ -146,20 +146,14 @@ export async function uploadForexFactoryTraderData(
       console.log(`[Forex Factory Upload] Found trader: ${targetTrader.full_name}`);
 
       // 3. Update performance data
-      // Use the profit_percent provided in CSV (Forex Factory data)
-      // Calculate current_balance from starting balance and profit percentage
-      const startingBalance = 10000; // Default starting balance
-      const profitPercent = trader.profit_percent; // Use the provided value
-      const currentBalance = startingBalance * (1 + profitPercent / 100);
-
+      // Use exact values provided in CSV - no calculations
       const { error: updateError } = await supabase
         .from('performance_data')
         .upsert([
           {
             trader_id: targetTrader.id,
-            starting_balance: startingBalance,
-            current_balance: currentBalance,
-            profit_percentage: profitPercent,
+            current_balance: trader.balance,
+            profit_percentage: trader.profit_percent,
             last_updated: new Date().toISOString(),
           },
         ], { onConflict: 'trader_id' });
