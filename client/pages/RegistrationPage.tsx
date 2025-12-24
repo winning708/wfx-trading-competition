@@ -278,26 +278,6 @@ export default function RegistrationPage() {
     }
   }, [step, navigate]);
 
-  // Check if Flutterwave SDK is loaded
-  useEffect(() => {
-    const checkFlutterwave = () => {
-      const FW = (window as any).FlutterwaveCheckout;
-      if (FW) {
-        console.log('[Registration] ✅ Flutterwave SDK is loaded and ready');
-      } else {
-        console.warn('[Registration] ⚠️ Flutterwave SDK is not loaded yet');
-      }
-    };
-
-    // Check immediately
-    checkFlutterwave();
-
-    // Check again after a delay (in case script is still loading)
-    const timer = setTimeout(checkFlutterwave, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
