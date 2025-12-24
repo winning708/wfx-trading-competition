@@ -961,123 +961,74 @@ export default function AdminPage() {
                 </details>
               </div>
 
-              {/* Forex Factory Link Form */}
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-foreground">Forex Factory Integrations</h2>
-                <button
-                  onClick={() => setShowLinkForm(!showLinkForm)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  <Plus className="h-4 w-4" />
-                  Link Account
-                </button>
-              </div>
+              {/* Bulk Upload Form */}
+              <div className="rounded-lg border border-border bg-card p-6">
+                <h2 className="text-xl font-semibold text-foreground mb-4">📤 Upload Forex Factory Traders</h2>
 
-              {showLinkForm && (
-                <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Link Forex Factory Account</h3>
-
-                  <form onSubmit={handleLinkForexFactory} className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Select Trading Credential *
-                        </label>
-                        <select
-                          value={selectedCredentialForLink}
-                          onChange={(e) => setSelectedCredentialForLink(e.target.value)}
-                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                        >
-                          <option value="">Choose a credential...</option>
-                          {credentials.map((cred) => (
-                            <option key={cred.id} value={cred.id}>
-                              {cred.account_username} ({cred.account_number})
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Forex Factory Account Username *
-                        </label>
-                        <Input
-                          type="text"
-                          value={forexFactoryForm.ff_account_username}
-                          onChange={(e) =>
-                            setForexFactoryForm({
-                              ...forexFactoryForm,
-                              ff_account_username: e.target.value,
-                            })
-                          }
-                          placeholder="e.g., johndoe"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          API Key (placeholder) *
-                        </label>
-                        <Input
-                          type="password"
-                          value={forexFactoryForm.ff_api_key}
-                          onChange={(e) =>
-                            setForexFactoryForm({
-                              ...forexFactoryForm,
-                              ff_api_key: e.target.value,
-                            })
-                          }
-                          placeholder="Any value - not required but field must be filled"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          System ID *
-                        </label>
-                        <Input
-                          type="text"
-                          value={forexFactoryForm.ff_system_id}
-                          onChange={(e) =>
-                            setForexFactoryForm({
-                              ...forexFactoryForm,
-                              ff_system_id: e.target.value,
-                            })
-                          }
-                          placeholder="e.g., system_12345"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 justify-end">
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-medium text-foreground">
+                        CSV Data (Paste trader data) *
+                      </label>
                       <button
                         type="button"
-                        onClick={() => setShowLinkForm(false)}
-                        className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors"
+                        onClick={() => setCSVInput(generateCSVTemplate())}
+                        className="text-xs text-primary hover:underline"
                       >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                      >
-                        Link Account
+                        Load Template
                       </button>
                     </div>
-                  </form>
-                </div>
-              )}
+                    <textarea
+                      value={csvInput}
+                      onChange={(e) => setCSVInput(e.target.value)}
+                      placeholder={`rank,trader_name,trader_username,balance,profit_percent,trades
+1,John Doe,johndoe,25000,45.5,120
+2,Jane Smith,janesmith,22000,40.2,110`}
+                      rows={8}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
 
-              {/* Sync Controls */}
-              <div className="flex gap-2">
-                <button
-                  onClick={handleSyncAll}
-                  disabled={isSyncing}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success text-success-foreground hover:bg-success/90 transition-colors disabled:opacity-50"
-                >
-                  <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                  Sync All
-                </button>
+                  {uploadSuccess && (
+                    <div className="p-3 rounded-lg bg-success/10 text-success border border-success/30">
+                      <p className="text-sm font-medium">✅ Upload successful! Traders updated.</p>
+                    </div>
+                  )}
+
+                  {uploadErrors.length > 0 && (
+                    <div className="p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/30">
+                      <p className="text-sm font-medium mb-2">⚠️ Upload errors:</p>
+                      <ul className="text-xs space-y-1">
+                        {uploadErrors.map((error, idx) => (
+                          <li key={idx}>• {error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCSVInput("");
+                        setUploadErrors([]);
+                        setUploadSuccess(false);
+                      }}
+                      className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={handleBulkUpload}
+                      disabled={isUploadingBulk || !csvInput.trim()}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {isUploadingBulk ? "Uploading..." : "Upload Traders"}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Integrations List */}
