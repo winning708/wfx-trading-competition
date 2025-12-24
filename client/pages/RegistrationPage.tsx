@@ -780,6 +780,16 @@ export default function RegistrationPage() {
               ))}
             </div>
 
+            {/* Selected Method Info */}
+            {selectedPayment && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 mb-8">
+                <p className="text-sm text-muted-foreground mb-2">Selected Payment Method</p>
+                <p className="text-lg font-semibold text-foreground">
+                  {PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name}
+                </p>
+              </div>
+            )}
+
             {/* Order Summary */}
             <div className="rounded-lg border border-border bg-card p-6 mb-8">
               <div className="mb-4">
