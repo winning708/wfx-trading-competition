@@ -171,3 +171,114 @@ export const notifyAdminPayment: RequestHandler = async (req, res) => {
     res.json({ success: true, message: 'Payment submitted (notification may have failed)' });
   }
 };
+
+/**
+ * Get Admin Payment Settings
+ * GET /api/admin/payment-settings
+ */
+export const getPaymentSettings: RequestHandler = async (req, res) => {
+  try {
+    const { data: settings, error } = await supabase
+      .from('admin_payment_settings')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      // PGRST116 is "no rows returned"
+      console.error('[Admin] Error fetching payment settings:', error);
+      return res.status(500).json({ success: false, message: 'Failed to fetch payment settings' });
+    }
+
+    // Return settings or empty object if none exist
+    res.json({ success: true, settings: settings || null });
+  } catch (error) {
+    console.error('[Admin] Error in getPaymentSettings:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
+ * Update Admin Payment Settings
+ * POST /api/admin/payment-settings
+ */
+export const updatePaymentSettings: RequestHandler = async (req, res) => {
+  try {
+    const {
+      nigerian_bank_name,
+      nigerian_account_name,
+      nigerian_account_number,
+      nigerian_swift_code,
+      binance_wallet_address,
+      binance_network,
+      bybit_wallet_address,
+      bybit_network,
+    } = req.body;
+
+    // Validate required fields
+    if (!nigerian_account_number || !binance_wallet_address || !bybit_wallet_address) {
+      return res.status(400).json({
+        success: false,
+        message: 'Nigerian account number, Binance wallet, and Bybit wallet are required',
+      });
+    }
+
+    // First, try to get existing settings
+    const { data: existingSettings } = await supabase
+      .from('admin_payment_settings')
+      .select('id')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    let result;
+
+    if (existingSettings) {
+      // Update existing settings
+      result = await supabase
+        .from('admin_payment_settings')
+        .update({
+          nigerian_bank_name,
+          nigerian_account_name,
+          nigerian_account_number,
+          nigerian_swift_code,
+          binance_wallet_address,
+          binance_network,
+          bybit_wallet_address,
+          bybit_network,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingSettings.id)
+        .select()
+        .single();
+    } else {
+      // Create new settings
+      result = await supabase
+        .from('admin_payment_settings')
+        .insert({
+          nigerian_bank_name,
+          nigerian_account_name,
+          nigerian_account_number,
+          nigerian_swift_code,
+          binance_wallet_address,
+          binance_network,
+          bybit_wallet_address,
+          bybit_network,
+        })
+        .select()
+        .single();
+    }
+
+    if (result.error) {
+      console.error('[Admin] Error updating payment settings:', result.error);
+      return res.status(500).json({ success: false, message: 'Failed to update payment settings' });
+    }
+
+    console.log('[Admin] ✅ Payment settings updated');
+    res.json({ success: true, settings: result.data, message: 'Payment settings updated successfully' });
+  } catch (error) {
+    console.error('[Admin] Error in updatePaymentSettings:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
