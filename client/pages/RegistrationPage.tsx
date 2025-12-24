@@ -702,14 +702,15 @@ export default function RegistrationPage() {
               </div>
             </div>
 
-            <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
+            <div className="mb-8 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 p-4">
               <p className="text-sm text-muted-foreground mb-2">Payment Status</p>
-              <p className="text-2xl font-bold text-success">Processing...</p>
+              <p className="text-2xl font-bold text-amber-600">Awaiting Admin Approval</p>
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Your payment is being processed. Your trading credentials will be displayed
-              on your dashboard as soon as your payment is confirmed.
+              Thank you for your payment! Your registration is now under review by our admin team.
+              Once approved, your trading credentials will be displayed on your dashboard.
+              We'll notify you via email when your account is approved.
             </p>
 
             <button
