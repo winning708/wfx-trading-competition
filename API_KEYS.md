@@ -114,10 +114,10 @@ BACKEND_URL=https://yourdomain.com
 
 ## ✅ Checklist
 
-- [ ] **Resend** - API key pasted above
-- [ ] **Flutterwave** - All 3 keys pasted above
-- [ ] (Optional) **Binance** - All keys pasted
-- [ ] (Optional) **Bybit** - All keys pasted
+- [x] **Resend** - ✅ Configured
+- [x] **Flutterwave** - ✅ Configured (All 3 keys)
+- [ ] (Optional) **Binance Merchant ID** - Paste your Merchant ID
+- [ ] (Optional) **Bybit USDT Wallet** - Paste your TRC-20 wallet address
 
 ---
 
