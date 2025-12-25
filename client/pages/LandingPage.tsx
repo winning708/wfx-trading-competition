@@ -128,9 +128,58 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Why Join Section */}
+      <section className="border-b border-border px-4 py-16 md:py-24 bg-gradient-to-br from-success/5 via-background to-primary/5">
+        <div className="container mx-auto">
+          <h2 className="text-center text-3xl md:text-4xl font-bold text-foreground mb-12">
+            Why Join WFX Trading Competition?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="rounded-lg border border-border bg-card p-6 hover:border-primary/50 transition-colors">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <Trophy className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mb-3 text-lg font-semibold text-foreground">
+                Real Competition
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Compete against real traders from around the world. Rankings update in real-time based on actual trading performance.
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-6 hover:border-primary/50 transition-colors">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
+                <TrendingUp className="h-6 w-6 text-success" />
+              </div>
+              <h3 className="mb-3 text-lg font-semibold text-foreground">
+                Risk-Free Trading
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Trade with demo capital only. Perfect for testing strategies and building skills without risking real money.
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-6 hover:border-primary/50 transition-colors">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-warning/10">
+                <Award className="h-6 w-6 text-warning" />
+              </div>
+              <h3 className="mb-3 text-lg font-semibold text-foreground">
+                Valuable Prizes
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Win cash and prop firm account credits. Top 3 traders receive significant rewards for their performance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Key Details */}
       <section className="border-b border-border px-4 py-16 md:py-24">
         <div className="container mx-auto">
+          <h2 className="text-center text-3xl md:text-4xl font-bold text-foreground mb-12">
+            How It Works
+          </h2>
           <div className="grid md:grid-cols-4 gap-8">
             <div className="rounded-lg border border-border bg-card p-6">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
