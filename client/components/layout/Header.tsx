@@ -77,7 +77,7 @@ export default function Header() {
             >
               Leaderboard
             </Link>
-            {hasCredentials && (
+            {isPaymentApproved && (
               <Link
                 to="/dashboard"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
