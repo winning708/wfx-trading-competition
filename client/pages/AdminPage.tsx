@@ -909,11 +909,11 @@ export default function AdminPage() {
 
               {/* Credential Form */}
               {showCredentialForm && (
-                <div className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                <div className="rounded-lg border border-border bg-card p-3 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2">
                     Upload New Trading Credential
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-4">
                     When uploaded, this credential will be automatically assigned to the first unassigned trader
                   </p>
 
