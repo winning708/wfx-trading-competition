@@ -165,7 +165,7 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Leaderboard Table */}
-      <section className="px-4 py-16 md:py-24">
+      <section className="px-4 py-8 md:py-24">
         <div className="container mx-auto">
           {error && (
             <div className="mb-8 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
