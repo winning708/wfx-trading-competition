@@ -402,6 +402,98 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Change Password Section */}
+          <div className="mb-8">
+            {!showChangePassword ? (
+              <button
+                onClick={() => setShowChangePassword(true)}
+                className="w-full px-4 py-3 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium text-foreground text-left flex items-center justify-between"
+              >
+                <span>🔐 Manage Your Account Password</span>
+                <span className="text-xs text-muted-foreground">Click to change</span>
+              </button>
+            ) : (
+              <div className="rounded-lg border border-border bg-card p-6 space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-foreground">Change Your Password</h3>
+                  <button
+                    onClick={() => {
+                      setShowChangePassword(false);
+                      setPasswordError(null);
+                      setNewPassword("");
+                      setConfirmNewPassword("");
+                    }}
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {passwordSuccess && (
+                  <div className="rounded-lg border border-success/50 bg-success/10 p-4">
+                    <p className="text-sm font-medium text-success">✓ Password updated successfully!</p>
+                  </div>
+                )}
+
+                {passwordError && (
+                  <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+                    <p className="text-sm font-medium text-destructive">✕ {passwordError}</p>
+                  </div>
+                )}
+
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Enter new password (min 8 characters)"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      placeholder="Re-enter your password"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                  </div>
+
+                  <div className="flex gap-2 justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowChangePassword(false);
+                        setPasswordError(null);
+                        setNewPassword("");
+                        setConfirmNewPassword("");
+                      }}
+                      className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isChangingPassword}
+                      className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium disabled:opacity-50"
+                    >
+                      {isChangingPassword ? "Updating..." : "Update Password"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
+
           {/* Info Box */}
           <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6 mb-6 space-y-3">
             <p className="text-sm md:text-base text-blue-600 dark:text-blue-400">
