@@ -141,20 +141,36 @@ export default function DashboardPage() {
   }
 
   if (error) {
+    const isPendingPayment = error.includes("pending approval");
+
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center px-4 py-20 md:py-32">
           <div className="w-full max-w-md">
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6">
-              <p className="text-lg font-semibold text-destructive mb-2">Error</p>
-              <p className="text-sm text-destructive/90 mb-4">{error}</p>
-              <button
-                onClick={() => navigate("/register")}
-                className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
-              >
-                Register Here
-              </button>
+            <div className={`rounded-lg border p-6 ${isPendingPayment ? 'border-amber-500/50 bg-amber-500/10' : 'border-destructive/50 bg-destructive/10'}`}>
+              <p className={`text-lg font-semibold mb-2 ${isPendingPayment ? 'text-amber-600 dark:text-amber-400' : 'text-destructive'}`}>
+                {isPendingPayment ? '⏳ Payment Pending Approval' : '❌ Error'}
+              </p>
+              <p className={`text-sm mb-4 ${isPendingPayment ? 'text-amber-600/90 dark:text-amber-400/90' : 'text-destructive/90'}`}>
+                {error}
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => navigate("/")}
+                  className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+                >
+                  Back to Home
+                </button>
+                {isPendingPayment && (
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="w-full px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium"
+                  >
+                    Check Again
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
