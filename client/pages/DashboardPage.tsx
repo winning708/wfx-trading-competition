@@ -98,7 +98,7 @@ export default function DashboardPage() {
           .maybeSingle();
 
         if (assignmentError) {
-          console.error("Error fetching assignment:", assignmentError);
+          console.error("Error fetching assignment:", assignmentError.message || assignmentError);
           setError("Could not load your credentials");
           setIsLoading(false);
           return;
