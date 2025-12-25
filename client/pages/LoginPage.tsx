@@ -149,17 +149,17 @@ export default function LoginPage() {
             {!success && (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email Address
+                  <label htmlFor="credential" className="block text-sm font-medium text-foreground mb-2">
+                    Email or Username
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
                     <input
-                      id="email"
-                      type="email"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="credential"
+                      type="text"
+                      placeholder="your@email.com or username"
+                      value={credential}
+                      onChange={(e) => setCredential(e.target.value)}
                       disabled={isLoading}
                       className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
                       required
@@ -169,7 +169,7 @@ export default function LoginPage() {
 
                 <button
                   type="submit"
-                  disabled={isLoading || !email.trim()}
+                  disabled={isLoading || !credential.trim()}
                   className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
