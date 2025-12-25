@@ -752,6 +752,79 @@ export default function RegistrationPage() {
                 </div>
               )}
 
+              {manualPaymentData.method === 'binance' && (
+                <div className="space-y-4">
+                  <div className="bg-yellow-500/5 rounded-lg p-4 border border-yellow-500/30">
+                    <p className="text-sm text-muted-foreground mb-2">Binance Pay ID:</p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                        {manualPaymentData.accountNumber}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
+                          alert('Binance Pay ID copied!');
+                        }}
+                        className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
+                      >
+                        <Copy size={14} /> Copy
+                      </button>
+                    </div>
+                  </div>
+
+                  {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
+                    <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                      <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">Amount in your local currency:</p>
+                      <p className="text-xl font-bold text-foreground">
+                        {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
+                      </p>
+                      <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
+                        (Equivalent to $15 USD)
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {manualPaymentData.method === 'bybit' && (
+                <div className="space-y-4">
+                  <div className="bg-purple-500/5 rounded-lg p-4 border border-purple-500/30">
+                    <p className="text-sm text-muted-foreground mb-2">Bybit Wallet Address:</p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
+                        {manualPaymentData.accountNumber}
+                      </code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
+                          alert('Bybit wallet address copied!');
+                        }}
+                        className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
+                      >
+                        <Copy size={14} /> Copy
+                      </button>
+                    </div>
+                    {manualPaymentData.swiftCode && (
+                      <p className="text-sm text-muted-foreground mt-3">
+                        Network: <span className="font-mono text-foreground">{manualPaymentData.swiftCode}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
+                    <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                      <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">Amount in your local currency:</p>
+                      <p className="text-xl font-bold text-foreground">
+                        {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
+                      </p>
+                      <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
+                        (Equivalent to $15 USD)
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="mt-6 p-4 bg-background rounded-lg border border-border">
                 <p className="text-sm text-muted-foreground mb-2">⏱️ How long does it take?</p>
                 <p className="text-muted-foreground">
