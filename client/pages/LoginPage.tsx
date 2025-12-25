@@ -212,7 +212,7 @@ export default function LoginPage() {
             {/* Info Box */}
             <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4">
               <p className="text-xs text-blue-600 dark:text-blue-400">
-                <strong>💡 Tip:</strong> Use the email address you registered with to log back in.
+                <strong>💡 Tip:</strong> Log in with either your email address or username.
               </p>
             </div>
           </div>
