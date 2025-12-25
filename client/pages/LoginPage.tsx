@@ -6,12 +6,13 @@ import { AlertCircle, CheckCircle, Mail, ArrowRight, Loader } from "lucide-react
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [credential, setCredential] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [userStatus, setUserStatus] = useState<{
     fullName: string;
+    email: string;
     paymentStatus: string;
     registered: boolean;
   } | null>(null);
@@ -22,19 +23,22 @@ export default function LoginPage() {
     setSuccess(false);
     setUserStatus(null);
 
-    if (!email.trim()) {
-      setError("Please enter your email address");
+    if (!credential.trim()) {
+      setError("Please enter your email or username");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Check if user exists
+      // Check if it's an email or username
+      const isEmail = credential.includes("@");
+
+      // Check if user exists by email or username
       const { data: trader, error: fetchError } = await supabase
         .from("traders")
-        .select("id, full_name, email, payment_status")
-        .eq("email", email.toLowerCase().trim())
+        .select("id, full_name, email, username, payment_status")
+        .or(isEmail ? `email.eq.${credential.toLowerCase().trim()}` : `username.eq.${credential.toLowerCase().trim()}`)
         .maybeSingle();
 
       if (fetchError) {
@@ -46,7 +50,7 @@ export default function LoginPage() {
 
       if (!trader) {
         // User doesn't exist
-        setError("Email not found. Please register to create an account.");
+        setError(isEmail ? "Email not found. Please register to create an account." : "Username not found. Please register to create an account.");
         setIsLoading(false);
         return;
       }
@@ -54,12 +58,13 @@ export default function LoginPage() {
       // User found
       setUserStatus({
         fullName: trader.full_name,
+        email: trader.email,
         paymentStatus: trader.payment_status,
         registered: true,
       });
 
       // Save email to localStorage
-      localStorage.setItem("trader_email", email.toLowerCase().trim());
+      localStorage.setItem("trader_email", trader.email);
 
       // Redirect based on payment status
       if (trader.payment_status === "approved") {
