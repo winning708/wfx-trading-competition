@@ -104,7 +104,7 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="flex items-center gap-3">
-            {isPaymentApproved && !isRegisterPage ? (
+            {isPaymentApproved === true && !isRegisterPage ? (
               <>
                 <Link
                   to="/dashboard"
@@ -121,6 +121,9 @@ export default function Header() {
                   <span className="hidden sm:inline">Logout</span>
                 </button>
               </>
+            ) : isPaymentApproved === null ? (
+              // Loading state - show nothing while checking
+              null
             ) : (
               <Link
                 to="/register"
