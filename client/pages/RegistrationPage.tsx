@@ -766,7 +766,7 @@ export default function RegistrationPage() {
             <div className="space-y-4 mt-8">
               {console.log('[Manual Payment] Method:', manualPaymentData.method)}
 
-              {manualPaymentData.method === 'bank-transfer' ? (
+              {manualPaymentData.method === 'bank-transfer' && (
                 <button
                   onClick={() => {
                     console.log('[Manual Payment] Clicked: I\'ve Sent the Bank Transfer');
@@ -777,10 +777,32 @@ export default function RegistrationPage() {
                 >
                   ✅ I've Sent the Bank Transfer
                 </button>
-              ) : (
-                <div className="w-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-600 font-semibold">
-                  ⚠️ Error: Unknown payment method: {manualPaymentData.method}
-                </div>
+              )}
+
+              {manualPaymentData.method === 'binance' && (
+                <button
+                  onClick={() => {
+                    console.log('[Manual Payment] Clicked: I\'ve Sent the Binance Payment');
+                    setStep("success");
+                    setLoadingMessage('');
+                  }}
+                  className="w-full h-12 rounded-lg bg-yellow-600 text-white font-bold hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
+                >
+                  ✅ I've Sent the Binance Payment
+                </button>
+              )}
+
+              {manualPaymentData.method === 'bybit' && (
+                <button
+                  onClick={() => {
+                    console.log('[Manual Payment] Clicked: I\'ve Sent the Bybit Payment');
+                    setStep("success");
+                    setLoadingMessage('');
+                  }}
+                  className="w-full h-12 rounded-lg bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
+                >
+                  ✅ I've Sent the Bybit Payment
+                </button>
               )}
 
               <button
