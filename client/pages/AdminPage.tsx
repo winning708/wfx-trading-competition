@@ -1129,13 +1129,13 @@ export default function AdminPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">
                       Select Trader
                     </label>
                     <select
                       value={selectedTrader}
                       onChange={(e) => setSelectedTrader(e.target.value)}
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">Choose a trader...</option>
                       {tradersWithoutCredentials.map((trader) => (
@@ -1147,13 +1147,13 @@ export default function AdminPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-foreground mb-2">
                       Select Credential
                     </label>
                     <select
                       value={selectedCredential}
                       onChange={(e) => setSelectedCredential(e.target.value)}
-                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       <option value="">Choose a credential...</option>
                       {availableCredentials.map((cred) => (
@@ -1167,7 +1167,7 @@ export default function AdminPage() {
                   <div className="flex items-end">
                     <button
                       onClick={handleAssignCredential}
-                      className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+                      className="w-full px-3 sm:px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium text-sm"
                     >
                       Assign
                     </button>
