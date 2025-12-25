@@ -1,9 +1,59 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { ArrowRight, TrendingUp, Award, DollarSign, Zap } from "lucide-react";
 import CountdownTimer from "@/components/CountdownTimer";
 import Header from "@/components/layout/Header";
+import { supabase } from "@/lib/supabase";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        const traderEmail = localStorage.getItem("trader_email");
+        if (!traderEmail) {
+          setIsLoading(false);
+          return;
+        }
+
+        // Check payment status
+        const { data, error } = await supabase
+          .from("traders")
+          .select("payment_status")
+          .eq("email", traderEmail)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error checking payment status:", error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (data?.payment_status === "approved") {
+          // Redirect approved users to their dashboard
+          navigate("/dashboard");
+        } else {
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.error("Error in checkUserStatus:", err);
+        setIsLoading(false);
+      }
+    };
+
+    checkUserStatus();
+  }, [navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
