@@ -1084,24 +1084,24 @@ export default function RegistrationPage() {
               </div>
 
               {/* Entry Fee Summary */}
-              <div className="rounded-lg border border-border bg-card/50 p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">
+              <div className="rounded-lg border border-border bg-card/50 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                       WFX TRADING SHOWDOWN Entry Fee
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Entry fee: {(() => {
                         const currencyInfo = getCurrencyInfoForCountry(formData.country);
                         return formData.country ? `${currencyInfo.display} ($15 USD)` : '$15 USD'
                       })()} - Includes $1,000 demo trading capital
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-center sm:text-right flex-shrink-0">
                     <div className="text-xs text-muted-foreground mb-1">USD</div>
-                    <p className="text-3xl font-bold text-primary">$15</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">$15</p>
                     {formData.country && formData.country !== 'United States' && (
-                      <p className="text-sm font-semibold text-primary mt-2">
+                      <p className="text-xs sm:text-sm font-semibold text-primary mt-1 sm:mt-2">
                         {getCurrencyInfoForCountry(formData.country).display}
                       </p>
                     )}
