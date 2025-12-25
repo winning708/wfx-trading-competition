@@ -1852,8 +1852,8 @@ export default function AdminPage() {
 
                     {/* Crypto Wallets Info */}
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground mb-3">💱 International Payment Methods</h3>
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">💱 International Payment Methods</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="text-sm border border-border rounded-lg p-3">
                           <p className="text-muted-foreground">Binance Pay ID</p>
                           <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.binance_pay_id || "—"}</p>
