@@ -1316,6 +1316,54 @@ export default function RegistrationPage() {
                 )}
               </div>
 
+              {/* Password Section Header */}
+              <div className="pt-4 border-t border-border">
+                <h3 className="text-base font-semibold text-foreground mb-4">Create Account Password</h3>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Password *
+                </label>
+                <Input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Create a strong password (min 8 characters)"
+                  className={errors.password ? "border-destructive" : ""}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Must be at least 8 characters long. Use uppercase, lowercase, and numbers for better security.
+                </p>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Confirm Password *
+                </label>
+                <Input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Re-enter your password"
+                  className={errors.confirmPassword ? "border-destructive" : ""}
+                />
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+
               {/* Entry Fee Summary */}
               <div className="rounded-lg border border-border bg-card/50 p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
