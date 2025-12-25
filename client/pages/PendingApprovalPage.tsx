@@ -33,8 +33,14 @@ export default function PendingApprovalPage() {
           .eq("email", traderEmail)
           .single();
 
-        if (error || !traderData) {
-          console.error("Error fetching trader:", error);
+        if (error) {
+          console.error("Error fetching trader:", error.message || error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (!traderData) {
+          console.error("Trader not found");
           setIsLoading(false);
           return;
         }
@@ -81,8 +87,14 @@ export default function PendingApprovalPage() {
           .eq("email", traderEmail)
           .single();
 
-        if (error || !traderData) {
-          console.error("Error fetching trader:", error);
+        if (error) {
+          console.error("Error fetching trader:", error.message || error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (!traderData) {
+          console.error("Trader not found");
           setIsLoading(false);
           return;
         }
