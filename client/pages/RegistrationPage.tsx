@@ -394,6 +394,7 @@ export default function RegistrationPage() {
 
       // Register trader in Supabase BEFORE payment processing
       const registerSuccess = await registerTrader({
+        username: formData.username,
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
