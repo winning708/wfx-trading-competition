@@ -57,7 +57,7 @@ export default function DashboardPage() {
         // Fetch trader details
         const { data: traderData, error: traderError } = await supabase
           .from("traders")
-          .select("id, full_name, email, payment_status")
+          .select("id, full_name, email, payment_status, trader_password")
           .eq("email", traderEmail)
           .maybeSingle();
 
