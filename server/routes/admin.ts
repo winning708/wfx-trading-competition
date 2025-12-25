@@ -71,6 +71,47 @@ export const approvePayment: RequestHandler = async (req, res) => {
       return res.status(500).json({ success: false, message: 'Failed to approve payment' });
     }
 
+    // Auto-assign an unassigned credential if available
+    try {
+      // Get all unassigned credentials (credentials not yet assigned to any trader)
+      const { data: unassignedCredentials } = await supabase
+        .from('trading_credentials')
+        .select('id')
+        .eq('is_active', true)
+        .order('created_at', { ascending: true })
+        .limit(1);
+
+      if (unassignedCredentials && unassignedCredentials.length > 0) {
+        // Check if this credential is already assigned
+        const { data: existingAssignment } = await supabase
+          .from('credential_assignments')
+          .select('id')
+          .eq('credential_id', unassignedCredentials[0].id)
+          .single();
+
+        // If credential is not yet assigned, assign it to this trader
+        if (!existingAssignment) {
+          const { error: assignError } = await supabase
+            .from('credential_assignments')
+            .insert([
+              {
+                trader_id: traderId,
+                credential_id: unassignedCredentials[0].id,
+              },
+            ]);
+
+          if (assignError) {
+            console.warn('[Admin] Warning: Could not auto-assign credential:', assignError);
+          } else {
+            console.log('[Admin] ✅ Credential auto-assigned to trader:', { traderId, credentialId: unassignedCredentials[0].id });
+          }
+        }
+      }
+    } catch (assignmentError) {
+      console.warn('[Admin] Warning: Auto-assignment failed but payment was approved:', assignmentError);
+      // Don't fail the payment approval if auto-assignment fails
+    }
+
     // Send approval email to trader
     await sendApprovalEmail(trader.email, trader.full_name);
 
