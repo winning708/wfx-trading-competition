@@ -24,7 +24,7 @@ export default function Header() {
           .from("traders")
           .select("payment_status")
           .eq("email", email)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error("Error fetching trader status:", error.message || error);
