@@ -210,6 +210,8 @@ interface FormData {
   email: string;
   phone: string;
   country: string;
+  password: string;
+  confirmPassword: string;
 }
 
 interface PaymentMethod {
