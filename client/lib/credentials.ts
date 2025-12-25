@@ -112,11 +112,8 @@ export async function uploadCredential(
 
     console.log(`Credential assigned to ${targetTrader.full_name} (${targetTrader.email})`);
 
-    // Send credentials email to the newly assigned trader
-    const emailSuccess = await sendCredentialsEmailToTrader(targetTrader.id);
-    if (!emailSuccess) {
-      console.warn('Failed to send credentials email, but assignment succeeded');
-    }
+    // Note: Credentials are now displayed on the user's dashboard instead of being sent via email
+    // No email notification is needed
 
     return { credential: credentialData, assignedTo: targetTrader.full_name };
   } catch (error) {
