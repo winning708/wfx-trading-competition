@@ -59,36 +59,40 @@ export default function LandingPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative border-b border-border px-4 py-20 md:py-32">
-        <div className="container mx-auto">
+      <section className="relative overflow-hidden border-b border-border px-4 py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-background">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-20" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-20" />
+        </div>
+
+        <div className="container mx-auto relative z-10">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2">
-              <Zap className="mr-2 h-4 w-4 text-primary" />
+              <Zap className="mr-2 h-4 w-4 text-primary animate-pulse" />
               <span className="text-sm font-medium text-primary">
                 Competition Opening January 5, 2026
               </span>
             </div>
 
-            <h1 className="mb-6 text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-              WFX Trading Competition 2026
+            <h1 className="mb-6 text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-tight">
+              WFX Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Competition 2026</span>
             </h1>
-            <p className="mb-8 text-xl text-muted-foreground">
+            <p className="mb-8 text-xl md:text-2xl font-semibold text-primary">
               Trade Smart. Trade to Win.
             </p>
-            <p className="mb-12 text-base text-muted-foreground max-w-2xl mx-auto">
-              Join our exclusive trading competition with $1,000 demo capital.
-              Compete with traders worldwide, showcase your skills, and win
-              amazing prizes.
+            <p className="mb-12 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Join thousands of traders competing for glory and prizes. With $1,000 demo capital, prove your trading skills against competitors worldwide in our 5-day trading showdown.
             </p>
 
-            <div className="mb-16">
+            <div className="mb-12 p-8 rounded-2xl border-2 border-primary/30 bg-primary/5 backdrop-blur">
+              <p className="text-sm text-muted-foreground mb-4 font-semibold">Competition Starts In:</p>
               <CountdownTimer />
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Link
                 to="/register"
-                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary/80 px-8 text-base font-semibold text-primary-foreground hover:shadow-lg hover:shadow-primary/50 transition-all"
               >
                 Register Now
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -99,6 +103,26 @@ export default function LandingPage() {
               >
                 View Leaderboard
               </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+              <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
+                <p className="text-2xl md:text-3xl font-bold text-primary">$15</p>
+                <p className="text-xs text-muted-foreground">Entry Fee</p>
+              </div>
+              <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
+                <p className="text-2xl md:text-3xl font-bold text-success">$1,000</p>
+                <p className="text-xs text-muted-foreground">Starting Capital</p>
+              </div>
+              <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
+                <p className="text-2xl md:text-3xl font-bold text-primary">5</p>
+                <p className="text-xs text-muted-foreground">Trading Days</p>
+              </div>
+              <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
+                <p className="text-2xl md:text-3xl font-bold text-warning">$515K+</p>
+                <p className="text-xs text-muted-foreground">Prize Pool</p>
+              </div>
             </div>
           </div>
         </div>
