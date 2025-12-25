@@ -98,9 +98,12 @@ export default function LeaderboardPage() {
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
                 Live Leaderboard
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
                 Real-time rankings sorted by profit percentage
               </p>
+              <div className="mb-4">
+                <CountdownTimer />
+              </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
