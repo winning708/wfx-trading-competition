@@ -1649,8 +1649,8 @@ export default function AdminPage() {
                   <form onSubmit={handleSavePaymentSettings} className="space-y-6">
                     {/* Nigerian Bank Account Section */}
                     <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-foreground">🇳🇬 Nigerian Bank Account</h3>
-                      <p className="text-sm text-muted-foreground">These details will be shown to users from Nigeria</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">🇳🇬 Nigerian Bank Account</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to users from Nigeria</p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -1725,8 +1725,8 @@ export default function AdminPage() {
 
                     {/* Binance Section */}
                     <div className="space-y-4 border-t border-border pt-6">
-                      <h3 className="text-lg font-semibold text-foreground">₿ Binance Pay</h3>
-                      <p className="text-sm text-muted-foreground">These details will be shown to international users</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">₿ Binance Pay</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to international users</p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
