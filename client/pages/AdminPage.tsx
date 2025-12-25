@@ -1256,9 +1256,9 @@ export default function AdminPage() {
           {activeTab === "monitoring" && (
             <div className="space-y-6">
               {/* Info Box */}
-              <div className="rounded-lg border border-primary/50 bg-primary/5 p-4">
-                <h3 className="font-semibold text-foreground mb-2">📊 Forex Factory Manual Data Upload</h3>
-                <p className="text-sm text-muted-foreground mb-3">
+              <div className="rounded-lg border border-primary/50 bg-primary/5 p-3 sm:p-4">
+                <h3 className="font-semibold text-sm sm:text-base text-foreground mb-2">📊 Forex Factory Manual Data Upload</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3">
                   Upload your top Forex Factory traders daily. Copy the top 10 traders from Forex Factory Trade Explorer and paste the data below to update the leaderboard.
                 </p>
                 <details className="text-sm text-muted-foreground">
