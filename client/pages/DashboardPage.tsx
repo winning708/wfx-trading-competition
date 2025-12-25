@@ -141,6 +141,64 @@ export default function DashboardPage() {
     navigate("/");
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(false);
+
+    // Validation
+    if (!newPassword.trim()) {
+      setPasswordError("New password is required");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    if (!trader) return;
+
+    setIsChangingPassword(true);
+
+    try {
+      const { error: updateError } = await supabase
+        .from("traders")
+        .update({ trader_password: newPassword })
+        .eq("id", trader.id);
+
+      if (updateError) {
+        console.error("Error updating password:", updateError);
+        setPasswordError("Failed to update password. Please try again.");
+        return;
+      }
+
+      setPasswordSuccess(true);
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setShowChangePassword(false);
+
+      // Update trader object with new password
+      if (trader) {
+        setTrader({ ...trader, trader_password: newPassword });
+      }
+
+      // Show success message for 3 seconds
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("Error changing password:", errorMsg);
+      setPasswordError(errorMsg);
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
