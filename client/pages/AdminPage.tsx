@@ -187,6 +187,38 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  // Load traders with passwords when tab changes
+  useEffect(() => {
+    if (activeTab === "passwords") {
+      loadTradersWithPasswords();
+    }
+  }, [activeTab]);
+
+  const loadTradersWithPasswords = async () => {
+    setIsLoadingPasswords(true);
+    try {
+      const response = await fetch('/api/admin/traders-with-passwords');
+      const data = await response.json();
+      if (data.success) {
+        setTradersWithPasswords(data.traders || []);
+      }
+    } catch (error) {
+      console.error("Error loading traders with passwords:", error);
+      setTradersWithPasswords([]);
+    } finally {
+      setIsLoadingPasswords(false);
+    }
+  };
+
+  const filteredTradersWithPasswords = tradersWithPasswords.filter(trader => {
+    const searchLower = passwordSearch.toLowerCase();
+    return (
+      trader.username?.toLowerCase().includes(searchLower) ||
+      trader.email?.toLowerCase().includes(searchLower) ||
+      trader.full_name?.toLowerCase().includes(searchLower)
+    );
+  });
+
   const loadPendingPayments = async () => {
     setIsLoadingPendingPayments(true);
     try {
