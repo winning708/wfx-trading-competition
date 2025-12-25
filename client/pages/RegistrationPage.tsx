@@ -507,6 +507,61 @@ export default function RegistrationPage() {
         console.log('[Registration] ✅ Bank transfer data set, switching to manual-payment step');
         setIsLoading(false);
         setStep("manual-payment");
+      } else if (selectedPayment === 'binance' || selectedPayment === 'bybit') {
+        // For Crypto payments (Binance or Bybit)
+        console.log('[Registration] Processing crypto payment:', selectedPayment);
+        const currencyInfo = getCurrencyInfoForCountry(formData.country);
+
+        // Fetch payment settings from admin
+        let settings = adminPaymentSettings;
+        if (!settings) {
+          console.log('[Registration] Fetching payment settings from admin...');
+          settings = await getPaymentSettings();
+          setAdminPaymentSettings(settings);
+        }
+
+        if (selectedPayment === 'binance') {
+          // Show Binance Pay details
+          console.log('[Registration] Showing Binance Pay details');
+          setManualPaymentData({
+            method: 'binance',
+            email: formData.email,
+            amount: 15,
+            fullName: formData.fullName,
+            instructions: 'Send exactly $15 USD to the Binance Pay ID below. Your payment will be verified within 5-30 minutes.',
+            orderRef: `WFX-${Date.now()}`,
+            currency: 'USD',
+            bankName: 'Binance Pay',
+            accountName: 'WFX Trading Showdown',
+            accountNumber: settings?.binance_pay_id || 'Pending admin configuration',
+            country: formData.country,
+            convertedAmount: currencyInfo.amount,
+            currencyCode: currencyInfo.code,
+          });
+        } else {
+          // Show Bybit wallet details
+          console.log('[Registration] Showing Bybit wallet details');
+          setManualPaymentData({
+            method: 'bybit',
+            email: formData.email,
+            amount: 15,
+            fullName: formData.fullName,
+            instructions: 'Send exactly $15 USD to the Bybit wallet address below. Your payment will be verified within 5-30 minutes.',
+            orderRef: `WFX-${Date.now()}`,
+            currency: 'USD',
+            bankName: 'Bybit Wallet',
+            accountName: 'WFX Trading Showdown',
+            accountNumber: settings?.bybit_wallet_address || 'Pending admin configuration',
+            swiftCode: settings?.bybit_network || 'USDT',
+            country: formData.country,
+            convertedAmount: currencyInfo.amount,
+            currencyCode: currencyInfo.code,
+          });
+        }
+
+        console.log('[Registration] ✅ Crypto payment data set, switching to manual-payment step');
+        setIsLoading(false);
+        setStep("manual-payment");
       } else {
         console.error('[Registration] ❌ Unknown payment method:', selectedPayment);
         setIsLoading(false);
