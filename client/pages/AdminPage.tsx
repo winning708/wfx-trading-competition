@@ -662,20 +662,20 @@ export default function AdminPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <div className="px-4 py-8 md:py-12">
+      <div className="px-3 py-6 md:px-4 md:py-12 sm:px-3">
         <div className="container mx-auto">
           {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
+          <div className="mb-8 md:mb-12">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
               Admin Panel
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Manage traders, upload credentials, and assign accounts
             </p>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-8 border-b border-border">
+          <div className="flex gap-1 mb-8 border-b border-border overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0">
             <button
               onClick={() => setActiveTab("traders")}
               className={`px-4 py-3 font-medium border-b-2 transition-colors ${
