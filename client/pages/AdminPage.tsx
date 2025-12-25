@@ -1767,8 +1767,8 @@ export default function AdminPage() {
 
                     {/* Bybit Section */}
                     <div className="space-y-4 border-t border-border pt-6">
-                      <h3 className="text-lg font-semibold text-foreground">Bybit Wallet</h3>
-                      <p className="text-sm text-muted-foreground">These details will be shown to international users</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">Bybit Wallet</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to international users</p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -1808,18 +1808,18 @@ export default function AdminPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2 justify-end border-t border-border pt-6">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:justify-end border-t border-border pt-6">
                       <button
                         type="button"
                         onClick={() => setShowPaymentSettingsForm(false)}
-                        className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors"
+                        className="px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={isSavingPaymentSettings}
-                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm font-medium"
                       >
                         {isSavingPaymentSettings ? "Saving..." : "Save Settings"}
                       </button>
