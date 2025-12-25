@@ -4,15 +4,42 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function Header() {
-  const [hasCredentials, setHasCredentials] = useState(false);
+  const [isPaymentApproved, setIsPaymentApproved] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isRegisterPage = location.pathname === "/register";
 
   useEffect(() => {
-    // Check if user is registered (has email in localStorage)
-    const email = localStorage.getItem("trader_email");
-    setHasCredentials(!!email);
+    const checkPaymentStatus = async () => {
+      try {
+        // Check if user is registered (has email in localStorage)
+        const email = localStorage.getItem("trader_email");
+        if (!email) {
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        // Fetch trader from database to check payment status
+        const { data, error } = await supabase
+          .from("traders")
+          .select("payment_status")
+          .eq("email", email)
+          .single();
+
+        if (error || !data) {
+          console.error("Error fetching trader status:", error);
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        setIsPaymentApproved(data.payment_status === "approved");
+      } catch (err) {
+        console.error("Error checking payment status:", err);
+        setIsPaymentApproved(false);
+      }
+    };
+
+    checkPaymentStatus();
   }, []);
 
   const handleLogout = () => {
