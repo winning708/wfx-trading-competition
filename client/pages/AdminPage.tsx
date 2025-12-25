@@ -1016,24 +1016,90 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {/* Credentials List */}
-              <div className="rounded-lg border border-border bg-card overflow-x-auto">
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {isLoadingCredentials ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">Loading credentials...</p>
+                  </div>
+                ) : credentials.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
+                  </div>
+                ) : (
+                  credentials.map((cred) => (
+                    <div
+                      key={cred.id}
+                      className="rounded-lg border border-border bg-card p-4 space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted-foreground mb-1">Username</p>
+                          <p className="font-medium text-foreground text-sm break-all">{cred.account_username}</p>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteCredential(cred.id)}
+                          className="flex-shrink-0 p-2 text-destructive hover:bg-destructive/10 rounded transition-colors"
+                          title="Delete credential"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Account #</p>
+                          <p className="text-sm text-foreground font-mono break-all">{cred.account_number}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Broker</p>
+                          <p className="text-sm text-foreground">{cred.broker}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-2">Status</p>
+                        <span
+                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+                            cred.is_active
+                              ? "bg-success/10 text-success"
+                              : "bg-destructive/10 text-destructive"
+                          }`}
+                        >
+                          {cred.is_active ? (
+                            <>
+                              <Check className="h-3 w-3" /> Active
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="h-3 w-3" /> Inactive
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Username
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Account #
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Broker
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Status
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-foreground">
                         Actions
                       </th>
                     </tr>
@@ -1041,14 +1107,14 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingCredentials ? (
                       <tr>
-                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-muted-foreground">Loading credentials...</p>
+                        <td colSpan={5} className="px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">Loading credentials...</p>
                         </td>
                       </tr>
                     ) : credentials.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-muted-foreground">No credentials uploaded yet</p>
+                        <td colSpan={5} className="px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
                         </td>
                       </tr>
                     ) : (
@@ -1057,18 +1123,18 @@ export default function AdminPage() {
                           key={cred.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
-                          <td className="px-3 sm:px-4 py-3 font-medium text-foreground text-xs sm:text-sm">
+                          <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {cred.account_username}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-muted-foreground text-xs sm:text-sm font-mono">
+                          <td className="px-4 py-3 text-muted-foreground text-sm font-mono">
                             {cred.account_number}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-muted-foreground text-xs sm:text-sm">
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
                             {cred.broker}
                           </td>
-                          <td className="px-3 sm:px-4 py-3">
+                          <td className="px-4 py-3">
                             <span
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
                                 cred.is_active
                                   ? "bg-success/10 text-success"
                                   : "bg-destructive/10 text-destructive"
@@ -1085,13 +1151,13 @@ export default function AdminPage() {
                               )}
                             </span>
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-right">
+                          <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => handleDeleteCredential(cred.id)}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
                             >
-                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="hidden sm:inline">Delete</span>
+                              <Trash2 className="h-4 w-4" />
+                              Delete
                             </button>
                           </td>
                         </tr>
