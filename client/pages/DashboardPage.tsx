@@ -9,6 +9,7 @@ interface Trader {
   full_name: string;
   email: string;
   payment_status?: string;
+  trader_password?: string;
 }
 
 interface TradingCredential {
