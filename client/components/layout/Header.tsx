@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { TrendingUp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { TrendingUp, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Header() {
