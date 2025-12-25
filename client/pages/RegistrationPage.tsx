@@ -293,6 +293,14 @@ export default function RegistrationPage() {
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    } else if (formData.username.length < 3) {
+      newErrors.username = "Username must be at least 3 characters";
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.username)) {
+      newErrors.username = "Username can only contain letters, numbers, underscores, and hyphens";
+    }
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required";
     }
