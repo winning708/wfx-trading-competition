@@ -1180,22 +1180,22 @@ export default function AdminPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Trader
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Email
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        Account Username
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                        Account
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        Account Number
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                        Acc #
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Assigned
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                         Actions
                       </th>
                     </tr>
@@ -1203,14 +1203,14 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingAssignments ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">Loading assignments...</p>
+                        <td colSpan={6} className="px-3 sm:px-4 py-6 text-center">
+                          <p className="text-xs sm:text-sm text-muted-foreground">Loading assignments...</p>
                         </td>
                       </tr>
                     ) : assignments.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">No assignments yet</p>
+                        <td colSpan={6} className="px-3 sm:px-4 py-6 text-center">
+                          <p className="text-xs sm:text-sm text-muted-foreground">No assignments yet</p>
                         </td>
                       </tr>
                     ) : (
@@ -1219,28 +1219,28 @@ export default function AdminPage() {
                           key={assignment.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
-                          <td className="px-6 py-4 font-medium text-foreground">
+                          <td className="px-3 sm:px-4 py-3 font-medium text-foreground text-xs sm:text-sm">
                             {assignment.trader?.full_name || "Unknown"}
                           </td>
-                          <td className="px-6 py-4 text-muted-foreground text-sm">
+                          <td className="px-3 sm:px-4 py-3 text-muted-foreground text-xs sm:text-sm break-all">
                             {assignment.trader?.email || "N/A"}
                           </td>
-                          <td className="px-6 py-4 font-mono text-sm text-foreground">
+                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-foreground">
                             {assignment.credential?.account_username || "N/A"}
                           </td>
-                          <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
+                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-muted-foreground">
                             {assignment.credential?.account_number || "N/A"}
                           </td>
-                          <td className="px-6 py-4 text-sm text-muted-foreground">
+                          <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-muted-foreground">
                             {new Date(assignment.assigned_at).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-3 sm:px-4 py-3 text-right">
                             <button
                               onClick={() => handleRemoveAssignment(assignment.id)}
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
                             >
-                              <Trash2 className="h-4 w-4" />
-                              Remove
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="hidden sm:inline">Remove</span>
                             </button>
                           </td>
                         </tr>
