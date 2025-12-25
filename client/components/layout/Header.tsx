@@ -26,15 +26,22 @@ export default function Header() {
           .eq("email", email)
           .single();
 
-        if (error || !data) {
-          console.error("Error fetching trader status:", error);
+        if (error) {
+          console.error("Error fetching trader status:", error.message || error);
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        if (!data) {
+          // User doesn't exist yet or hasn't registered
           setIsPaymentApproved(false);
           return;
         }
 
         setIsPaymentApproved(data.payment_status === "approved");
       } catch (err) {
-        console.error("Error checking payment status:", err);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Error checking payment status:", errorMsg);
         setIsPaymentApproved(false);
       }
     };
