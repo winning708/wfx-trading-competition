@@ -1,184 +1,331 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import { CredentialsCard } from "@/components/credentials/CredentialsCard";
-import PagePlaceholder from "@/components/PagePlaceholder";
-import {
-  getCredentialsByEmail,
-  extractEmailFromPaymentRef,
-  TraderCredentials,
-} from "@/lib/credentials-display";
-import { AlertCircle, CheckCircle } from "lucide-react";
+import { Copy, Check, LogOut, Eye, EyeOff } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+
+interface Trader {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
+interface TradingCredential {
+  id: string;
+  account_username: string;
+  account_password: string;
+  account_number: string;
+  broker: string;
+}
+
+interface CredentialAssignment {
+  id: string;
+  trader_id: string;
+  credential_id: string;
+  assigned_at: string;
+  credential?: TradingCredential;
+}
 
 export default function DashboardPage() {
-  const [searchParams] = useSearchParams();
-  const [credentials, setCredentials] = useState<TraderCredentials | null>(null);
+  const navigate = useNavigate();
+  const [trader, setTrader] = useState<Trader | null>(null);
+  const [assignment, setAssignment] = useState<CredentialAssignment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
-  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadCredentials = async () => {
+    const fetchTraderData = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
-
-        // Try to get email from payment reference
-        const paymentRef = searchParams.get("ref");
-        const paymentSuccess = searchParams.get("payment") === "success";
-
-        let userEmail = email;
-
-        if (paymentRef) {
-          userEmail = extractEmailFromPaymentRef(paymentRef);
-          setShowPaymentSuccess(paymentSuccess);
-        }
-
-        // Try to get email from localStorage (saved during registration)
-        if (!userEmail) {
-          userEmail = localStorage.getItem("trader_email");
-        }
-
-        if (!userEmail) {
+        // Get trader email from localStorage
+        const traderEmail = localStorage.getItem("trader_email");
+        if (!traderEmail) {
+          setError("No trader session found. Please register first.");
           setIsLoading(false);
           return;
         }
 
-        setEmail(userEmail);
+        // Fetch trader details
+        const { data: traderData, error: traderError } = await supabase
+          .from("traders")
+          .select("id, full_name, email")
+          .eq("email", traderEmail)
+          .single();
 
-        // Fetch credentials for this email
-        const creds = await getCredentialsByEmail(userEmail);
-
-        if (creds) {
-          setCredentials(creds);
-        } else {
-          setError("No credentials assigned yet");
+        if (traderError || !traderData) {
+          console.error("Error fetching trader:", traderError);
+          setError("Trader not found");
+          setIsLoading(false);
+          return;
         }
+
+        setTrader(traderData);
+
+        // Fetch credential assignment with credential details
+        const { data: assignmentData, error: assignmentError } = await supabase
+          .from("credential_assignments")
+          .select(`
+            id,
+            trader_id,
+            credential_id,
+            assigned_at,
+            trading_credentials(
+              id,
+              account_username,
+              account_password,
+              account_number,
+              broker
+            )
+          `)
+          .eq("trader_id", traderData.id)
+          .maybeSingle();
+
+        if (assignmentError) {
+          console.error("Error fetching assignment:", assignmentError);
+          setError("Could not load your credentials");
+          setIsLoading(false);
+          return;
+        }
+
+        if (!assignmentData) {
+          setError("No trading credentials assigned yet. Please contact support.");
+          setIsLoading(false);
+          return;
+        }
+
+        setAssignment(assignmentData as CredentialAssignment);
+        setIsLoading(false);
       } catch (err) {
-        console.error("[Dashboard] Error loading credentials:", err);
-        setError("Failed to load credentials");
-      } finally {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Error in dashboard:", errorMsg);
+        setError(errorMsg);
         setIsLoading(false);
       }
     };
 
-    loadCredentials();
-  }, [searchParams, email]);
+    fetchTraderData();
+  }, []);
+
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("trader_email");
+    navigate("/");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center px-4 py-20 md:py-32">
+          <div className="text-center">
+            <p className="text-lg text-muted-foreground">Loading your credentials...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center px-4 py-20 md:py-32">
+          <div className="w-full max-w-md">
+            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6">
+              <p className="text-lg font-semibold text-destructive mb-2">Error</p>
+              <p className="text-sm text-destructive/90 mb-4">{error}</p>
+              <button
+                onClick={() => navigate("/register")}
+                className="w-full px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+              >
+                Register Here
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!trader || !assignment?.trading_credentials) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center px-4 py-20 md:py-32">
+          <div className="w-full max-w-md">
+            <div className="rounded-lg border border-border bg-card p-6 text-center">
+              <p className="text-lg font-semibold text-foreground mb-2">No Credentials Found</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Your trading credentials have not been assigned yet. Please contact support.
+              </p>
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const credential = assignment.trading_credentials as TradingCredential;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="pt-12 pb-16">
-        <div className="container mx-auto px-4">
-          {/* Payment Success Alert */}
-          {showPaymentSuccess && (
-            <div className="mb-8 p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-900/30 flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <div className="font-semibold text-green-900 dark:text-green-200">
-                  ✅ Payment Received Successfully!
-                </div>
-                <div className="text-sm text-green-800 dark:text-green-300 mt-1">
-                  Your credentials are now active. You can log in to your trading account anytime.
-                </div>
+
+      <div className="flex items-center justify-center px-4 py-8 md:py-12">
+        <div className="w-full max-w-4xl">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Welcome, {trader.full_name}!
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Your trading credentials for the WFX Trading Competition
+            </p>
+          </div>
+
+          {/* Credentials Card */}
+          <div className="rounded-lg border-2 border-primary bg-primary/5 p-6 md:p-8 space-y-6 mb-8">
+            {/* Broker Section */}
+            <div className="space-y-2">
+              <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
+                Trading Platform
+              </p>
+              <p className="text-2xl md:text-3xl font-bold text-foreground">
+                {credential.broker}
+              </p>
+            </div>
+
+            <div className="border border-border"></div>
+
+            {/* Account Number */}
+            <div className="space-y-3">
+              <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
+                Account Number
+              </p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
+                  {credential.account_number}
+                </code>
+                <button
+                  onClick={() => handleCopy(credential.account_number, "account_number")}
+                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  title="Copy account number"
+                >
+                  {copiedField === "account_number" ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <Copy className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Loading State */}
-          {isLoading && (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="text-muted-foreground mt-4">Loading your credentials...</p>
-            </div>
-          )}
-
-          {/* Credentials Display */}
-          {!isLoading && credentials && (
-            <div>
-              <CredentialsCard credentials={credentials} />
-            </div>
-          )}
-
-          {/* No Credentials State */}
-          {!isLoading && !credentials && !error && (
-            <PagePlaceholder
-              title="Trader Dashboard"
-              description="Your trading credentials will appear here once you complete payment and they are assigned by the admin."
-            />
-          )}
-
-          {/* Error State */}
-          {!isLoading && error && (
-            <div className="max-w-2xl mx-auto">
-              <div className="p-6 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-900/30">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-yellow-900 dark:text-yellow-200">
-                      Credentials Not Yet Available
-                    </div>
-                    <div className="text-sm text-yellow-800 dark:text-yellow-300 mt-2 space-y-2">
-                      <p>
-                        {error === "No credentials assigned yet"
-                          ? "Your payment has been received, but your credentials are still being prepared. The admin will assign your trading account shortly. Please check back in a few moments."
-                          : error}
-                      </p>
-                      <p className="text-xs">
-                        If you continue to see this message after 30 minutes, please contact support.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {/* Username */}
+            <div className="space-y-3">
+              <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
+                Username
+              </p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
+                  {credential.account_username}
+                </code>
+                <button
+                  onClick={() => handleCopy(credential.account_username, "username")}
+                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  title="Copy username"
+                >
+                  {copiedField === "username" ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <Copy className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Manual Email Entry (for testing/access without payment) */}
-          {!isLoading && !credentials && email === null && !error && (
-            <div className="max-w-2xl mx-auto mt-8">
-              <ManualEmailEntry onEmailSubmit={setEmail} />
+            {/* Password */}
+            <div className="space-y-3">
+              <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
+                Password
+              </p>
+              <div className="flex items-center gap-2">
+                <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
+                  {showPassword ? credential.account_password : "●".repeat(credential.account_password.length)}
+                </code>
+                <button
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="flex-shrink-0 p-3 rounded-lg bg-card hover:bg-card/80 transition-colors border border-border"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-foreground" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-foreground" />
+                  )}
+                </button>
+                <button
+                  onClick={() => handleCopy(credential.account_password, "password")}
+                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  title="Copy password"
+                >
+                  {copiedField === "password" ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <Copy className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Info Box */}
+          <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6 mb-6 space-y-3">
+            <p className="text-sm md:text-base text-blue-600 dark:text-blue-400">
+              <strong>✓ Your credentials are ready!</strong>
+            </p>
+            <div className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-2">
+              <p>
+                <strong>Next Steps:</strong>
+              </p>
+              <ol className="list-decimal list-inside space-y-1 ml-2">
+                <li>Download MT4 or MT5 from your broker's website</li>
+                <li>Launch the platform and select {credential.broker}</li>
+                <li>Click "Login" and enter your credentials above</li>
+                <li>Start trading and monitor your progress on the leaderboard</li>
+              </ol>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => navigate("/leaderboard")}
+              className="flex-1 px-4 py-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold"
+            >
+              View Leaderboard →
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex-1 px-4 py-3 rounded-lg border border-border hover:bg-card/50 transition-colors font-semibold flex items-center justify-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  );
-}
-
-/**
- * Manual email entry for testing/accessing credentials
- */
-function ManualEmailEntry({ onEmailSubmit }: { onEmailSubmit: (email: string) => void }) {
-  const [inputEmail, setInputEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputEmail.trim()) {
-      onEmailSubmit(inputEmail.trim());
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="p-6 bg-card rounded-lg border border-border">
-        <label className="block text-sm font-medium mb-2">Enter Your Email</label>
-        <input
-          type="email"
-          value={inputEmail}
-          onChange={(e) => setInputEmail(e.target.value)}
-          placeholder="your-email@example.com"
-          className="w-full px-4 py-2 rounded border border-input bg-background text-foreground mb-4"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-primary text-primary-foreground rounded font-medium hover:bg-primary/90 transition"
-        >
-          View Credentials
-        </button>
-      </div>
-    </form>
   );
 }
