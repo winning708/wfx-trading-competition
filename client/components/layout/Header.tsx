@@ -60,9 +60,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:h-16 sm:items-center sm:justify-between gap-3 sm:gap-0 py-3 sm:py-0">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <div className="relative">
               <TrendingUp className="h-8 w-8 text-primary" />
             </div>
@@ -103,18 +103,18 @@ export default function Header() {
           </nav>
 
           {/* CTA Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {isPaymentApproved === true && !isRegisterPage ? (
               <>
                 <Link
                   to="/dashboard"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="flex-1 sm:flex-none inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 sm:px-6 text-xs sm:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
                 >
-                  My Dashboard
+                  Dashboard
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-accent transition-colors gap-2"
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-3 sm:px-4 text-xs sm:text-sm font-medium text-foreground hover:bg-accent transition-colors gap-2 flex-shrink-0"
                   title="Logout"
                 >
                   <LogOut className="h-4 w-4" />
@@ -125,20 +125,20 @@ export default function Header() {
               // Loading state - show nothing while checking
               null
             ) : (
-              <div className="flex items-center gap-2">
+              <>
                 <Link
                   to="/login"
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-primary bg-transparent px-6 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                  className="flex-1 sm:flex-none inline-flex h-10 items-center justify-center rounded-md border border-primary bg-transparent px-4 sm:px-6 text-xs sm:text-sm font-medium text-primary hover:bg-primary/10 transition-colors whitespace-nowrap"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="flex-1 sm:flex-none inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 sm:px-6 text-xs sm:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors whitespace-nowrap"
                 >
                   Register
                 </Link>
-              </div>
+              </>
             )}
           </div>
         </div>
