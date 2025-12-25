@@ -278,12 +278,12 @@ export default function RegistrationPage() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [adminPaymentSettings, setAdminPaymentSettings] = useState<AdminPaymentSettings | null>(null);
 
-  // Redirect to leaderboard after 3 seconds when registration is complete
+  // Redirect to dashboard after 2 seconds when registration is complete
   useEffect(() => {
     if (step === "success") {
       const timer = setTimeout(() => {
-        navigate("/leaderboard");
-      }, 3000);
+        navigate("/dashboard");
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [step, navigate]);
