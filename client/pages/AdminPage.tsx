@@ -65,8 +65,13 @@ interface Trader {
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<
-    "traders" | "credentials" | "assignments" | "monitoring" | "payments"
+    "traders" | "credentials" | "assignments" | "monitoring" | "payments" | "passwords"
   >("traders");
+
+  // Password management state
+  const [passwordSearch, setPasswordSearch] = useState("");
+  const [tradersWithPasswords, setTradersWithPasswords] = useState<any[]>([]);
+  const [isLoadingPasswords, setIsLoadingPasswords] = useState(false);
 
   // Traders state
   const [traders, setTraders] = useState<Trader[]>([]);
