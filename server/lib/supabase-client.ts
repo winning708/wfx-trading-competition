@@ -575,10 +575,16 @@ export async function sendCredentialsEmailToTrader(
       .from('credential_assignments')
       .select('credential_id')
       .eq('trader_id', traderId)
-      .single();
+      .maybeSingle();
 
-    if (assignmentError || !assignment) {
-      console.error('[Credentials Email] Failed to fetch credential assignment:', assignmentError);
+    if (assignmentError) {
+      console.error('[Credentials Email] Database error fetching credential assignment:', assignmentError);
+      return false;
+    }
+
+    if (!assignment) {
+      console.warn('[Credentials Email] No credential assignment found for trader:', traderId);
+      console.warn('[Credentials Email] Please assign a trading credential to this trader first');
       return false;
     }
 
