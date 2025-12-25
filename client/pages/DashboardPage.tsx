@@ -54,8 +54,15 @@ export default function DashboardPage() {
           .eq("email", traderEmail)
           .single();
 
-        if (traderError || !traderData) {
-          console.error("Error fetching trader:", traderError);
+        if (traderError) {
+          console.error("Error fetching trader:", traderError.message || traderError);
+          setError("Trader not found");
+          setIsLoading(false);
+          return;
+        }
+
+        if (!traderData) {
+          console.error("Trader not found - no data returned");
           setError("Trader not found");
           setIsLoading(false);
           return;
