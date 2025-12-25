@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function Header() {
-  const [isPaymentApproved, setIsPaymentApproved] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isRegisterPage = location.pathname === "/register";
+
+  // Initialize based on localStorage to avoid flash
+  const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkPaymentStatus = async () => {
