@@ -34,5 +34,6 @@ export interface TraderRegistration {
   email: string;
   phone: string;
   country: string;
+  password: string;
   paymentMethod: string;
 }
