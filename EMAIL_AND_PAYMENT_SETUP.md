@@ -2,31 +2,62 @@
 
 This guide walks you through setting up all email and payment services for the WFX Trading Competition platform.
 
-## 1. Email Service - SendGrid
+## 1. Email Service - Resend
 
-### Step 1: Create SendGrid Account
-1. Go to [SendGrid](https://sendgrid.com/)
+### Overview
+The application uses **Resend** for email delivery. Resend is a modern email service that works great for transactional emails and supports sending from Nigeria and other countries.
+
+### Step 1: Create Resend Account
+1. Go to [Resend](https://resend.com/)
 2. Sign up for a free account
 3. Complete email verification
+4. You'll get a default verified email: `your-name@resend.dev`
 
 ### Step 2: Get API Key
-1. Navigate to **Settings → API Keys**
+1. Navigate to **API Keys** in the dashboard
 2. Click **Create API Key**
-3. Name it: `WFX Trading API`
-4. Select **Full Access**
-5. Copy the key
+3. Copy the key (starts with `re_`)
 
-### Step 3: Get Sender Email
-1. Navigate to **Settings → Sender Authentication**
-2. Verify a domain or single sender email
-3. Use verified email as `SENDGRID_FROM_EMAIL`
+### Step 3: Production Email Setup (IMPORTANT for Credential Emails)
+The free tier of Resend has a limitation: you can only send emails from:
+- Your verified email address (e.g., `your-name@resend.dev`)
+- A domain you've verified in Resend
+
+**To send credential emails to traders:**
+
+**Option A: Use Your Verified Email (Recommended for Testing)**
+```env
+RESEND_API_KEY=re_your_api_key_here
+EMAIL_FROM=your-verified-email@resend.dev
+```
+
+**Option B: Verify a Domain (Recommended for Production)**
+1. Go to [Resend Dashboard → Domains](https://resend.com/domains)
+2. Click **Add Domain**
+3. Enter your domain (e.g., `resend.wfxtrading.com`)
+4. Follow the DNS instructions to verify the domain
+5. Once verified, use an email from that domain:
+```env
+RESEND_API_KEY=re_your_api_key_here
+EMAIL_FROM=noreply@resend.wfxtrading.com
+```
 
 ### Step 4: Environment Variables
-Add to your `.env` file:
 ```env
-SENDGRID_API_KEY=your_sendgrid_api_key_here
-SENDGRID_FROM_EMAIL=noreply@yourcompany.com
+RESEND_API_KEY=re_your_api_key_here
+EMAIL_FROM=your-verified-email-address@resend.dev
 ```
+
+### Troubleshooting: "You can only send testing emails to your own email address"
+**Error**: `validation_error: You can only send testing emails to your own email address`
+
+**Solution**: This happens when:
+1. The `EMAIL_FROM` is not a verified address in your Resend account
+2. You're on the free tier and haven't verified a domain
+
+**Fix it by:**
+- Using the email address Resend verified for you (check your account)
+- Or verify a domain in Resend dashboard and update `EMAIL_FROM`
 
 ---
 
