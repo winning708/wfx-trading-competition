@@ -1035,11 +1035,11 @@ export default function RegistrationPage() {
                     <p className="text-sm text-muted-foreground">
                       {method.description}
                     </p>
-                    {formData.country && (
-                      <p className="text-sm font-semibold text-primary mt-2">
-                        {currencyInfo.display}
-                      </p>
-                    )}
+                    <p className="text-sm font-semibold text-primary mt-2">
+                      {method.id === 'bank-transfer' && formData.country
+                        ? currencyInfo.display
+                        : '$15 USD'}
+                    </p>
                   </div>
                 </button>
                 );
