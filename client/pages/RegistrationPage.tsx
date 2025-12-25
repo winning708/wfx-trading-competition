@@ -246,6 +246,20 @@ const PAYMENT_METHODS: PaymentMethod[] = [
     icon: "🏦",
     color: "from-blue-500 to-blue-600",
   },
+  {
+    id: "binance",
+    name: "Binance Pay",
+    description: "Pay with Binance Pay",
+    icon: "🟡",
+    color: "from-yellow-500 to-yellow-600",
+  },
+  {
+    id: "bybit",
+    name: "Bybit",
+    description: "Pay with Bybit wallet",
+    icon: "💜",
+    color: "from-purple-500 to-purple-600",
+  },
 ];
 
 export default function RegistrationPage() {
