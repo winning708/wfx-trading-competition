@@ -59,7 +59,8 @@ export default function PendingApprovalPage() {
 
         setIsLoading(false);
       } catch (err) {
-        console.error("Error checking payment status:", err);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Error checking payment status:", errorMsg);
         setIsLoading(false);
       }
     };
@@ -112,7 +113,8 @@ export default function PendingApprovalPage() {
 
         setIsLoading(false);
       } catch (err) {
-        console.error("Error checking payment status:", err);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Error checking payment status:", errorMsg);
         setIsLoading(false);
       }
     };
