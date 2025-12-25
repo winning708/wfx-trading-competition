@@ -73,38 +73,48 @@ export const approvePayment: RequestHandler = async (req, res) => {
 
     // Auto-assign an unassigned credential if available
     try {
-      // Get all unassigned credentials (credentials not yet assigned to any trader)
-      const { data: unassignedCredentials } = await supabase
-        .from('trading_credentials')
+      // First, check if this trader already has a credential assignment
+      const { data: existingAssignment } = await supabase
+        .from('credential_assignments')
         .select('id')
-        .eq('is_active', true)
-        .order('created_at', { ascending: true })
-        .limit(1);
+        .eq('trader_id', traderId)
+        .maybeSingle();
 
-      if (unassignedCredentials && unassignedCredentials.length > 0) {
-        // Check if this credential is already assigned
-        const { data: existingAssignment } = await supabase
+      // Only assign if trader doesn't already have a credential
+      if (!existingAssignment) {
+        // Get all credentials that are assigned to someone
+        const { data: assignedCredentialIds } = await supabase
           .from('credential_assignments')
-          .select('id')
-          .eq('credential_id', unassignedCredentials[0].id)
-          .single();
+          .select('credential_id');
 
-        // If credential is not yet assigned, assign it to this trader
-        if (!existingAssignment) {
+        const assignedIds = new Set((assignedCredentialIds || []).map((a: any) => a.credential_id));
+
+        // Get the first active credential that hasn't been assigned yet
+        const { data: allCredentials } = await supabase
+          .from('trading_credentials')
+          .select('id')
+          .eq('is_active', true)
+          .order('created_at', { ascending: true });
+
+        const unassignedCredential = (allCredentials || []).find((cred: any) => !assignedIds.has(cred.id));
+
+        if (unassignedCredential) {
           const { error: assignError } = await supabase
             .from('credential_assignments')
             .insert([
               {
                 trader_id: traderId,
-                credential_id: unassignedCredentials[0].id,
+                credential_id: unassignedCredential.id,
               },
             ]);
 
           if (assignError) {
             console.warn('[Admin] Warning: Could not auto-assign credential:', assignError);
           } else {
-            console.log('[Admin] ✅ Credential auto-assigned to trader:', { traderId, credentialId: unassignedCredentials[0].id });
+            console.log('[Admin] ✅ Credential auto-assigned to trader:', { traderId, credentialId: unassignedCredential.id });
           }
+        } else {
+          console.warn('[Admin] ⚠️ No unassigned credentials available for trader:', traderId);
         }
       }
     } catch (assignmentError) {
