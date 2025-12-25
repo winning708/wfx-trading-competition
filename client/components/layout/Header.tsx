@@ -4,12 +4,19 @@ import { useEffect, useState } from "react";
 
 export default function Header() {
   const [hasCredentials, setHasCredentials] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is registered (has email in localStorage)
     const email = localStorage.getItem("trader_email");
     setHasCredentials(!!email);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("trader_email");
+    setHasCredentials(false);
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
