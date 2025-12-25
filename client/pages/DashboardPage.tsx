@@ -196,6 +196,21 @@ export default function DashboardPage() {
             </p>
           </div>
 
+          {/* Payment Approved Banner */}
+          {trader.payment_status === 'approved' && (
+            <div className="mb-8 rounded-lg border-2 border-success/50 bg-success/10 p-4 md:p-6">
+              <div className="flex items-start gap-3">
+                <div className="text-2xl">✅</div>
+                <div className="flex-1">
+                  <p className="font-semibold text-success mb-1">Payment Approved!</p>
+                  <p className="text-sm text-success/90">
+                    Your payment has been approved by our admin team. Your trading credentials are ready below. You can now access the platform and start trading!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Credentials Card */}
           <div className="rounded-lg border-2 border-primary bg-primary/5 p-6 md:p-8 space-y-6 mb-8">
             {/* Broker Section */}
