@@ -1190,6 +1190,29 @@ export default function RegistrationPage() {
           {/* Registration Form */}
           <div className="rounded-lg border border-border bg-card p-8 md:p-12">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Username *
+                </label>
+                <Input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  placeholder="Choose your trading username"
+                  className={errors.username ? "border-destructive" : ""}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Must be 3+ characters. Letters, numbers, underscores, and hyphens only.
+                </p>
+                {errors.username && (
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.username}
+                  </p>
+                )}
+              </div>
+
               {/* Full Name */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
