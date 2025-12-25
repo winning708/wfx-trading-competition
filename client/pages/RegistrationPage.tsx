@@ -205,6 +205,7 @@ const COUNTRIES = [
 ];
 
 interface FormData {
+  username: string;
   fullName: string;
   email: string;
   phone: string;
