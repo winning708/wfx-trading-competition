@@ -359,27 +359,63 @@ export function PaymentMonitoring() {
       {/* Failed Payments Detail */}
       {failedPayments.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-4">Failed Payments</h3>
-          <div className="rounded-lg border border-destructive/50 bg-destructive/5 overflow-hidden">
+          <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Failed Payments</h3>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {failedPayments.map((tx) => (
+              <div key={tx.id} className="rounded-lg border border-destructive/50 bg-destructive/5 p-3 space-y-2">
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-destructive text-sm truncate">{tx.trader?.full_name || "Unknown"}</p>
+                    <p className="text-xs text-muted-foreground break-all">{tx.trader?.email || "N/A"}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-muted-foreground mb-1">Method</p>
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize ${getMethodColor(tx.payment_method)}`}>
+                      {tx.payment_method}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground mb-1">Amount</p>
+                    <p className="font-medium text-destructive">${tx.amount.toLocaleString("en-US", { maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground mb-1">Error</p>
+                    <p className="text-xs text-destructive">{tx.error_message || "No error message"}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground mb-1">Date</p>
+                    <p className="text-xs text-muted-foreground">{new Date(tx.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block rounded-lg border border-destructive/50 bg-destructive/5 overflow-hidden">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-destructive/20 bg-destructive/5">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-destructive">
                     Trader
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-destructive">
                     Email
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-destructive">
                     Method
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-destructive">
                     Amount
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-destructive">
                     Error
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-destructive">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-destructive">
                     Date
                   </th>
                 </tr>
@@ -387,24 +423,24 @@ export function PaymentMonitoring() {
               <tbody>
                 {failedPayments.map((tx) => (
                   <tr key={tx.id} className="border-b border-destructive/20">
-                    <td className="px-6 py-4 font-medium text-foreground">
+                    <td className="px-4 py-3 font-medium text-foreground text-xs sm:text-sm">
                       {tx.trader?.full_name || "Unknown"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground break-all">
                       {tx.trader?.email || "N/A"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize ${getMethodColor(tx.payment_method)}`}>
                         {tx.payment_method}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-destructive">
+                    <td className="px-4 py-3 text-right font-medium text-destructive text-xs sm:text-sm">
                       ${tx.amount.toLocaleString("en-US", { maximumFractionDigits: 2 })}
                     </td>
-                    <td className="px-6 py-4 text-sm text-destructive max-w-xs truncate">
+                    <td className="px-4 py-3 text-xs sm:text-sm text-destructive max-w-xs truncate">
                       {tx.error_message || "No error message"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground">
                       {new Date(tx.created_at).toLocaleDateString()}
                     </td>
                   </tr>
