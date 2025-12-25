@@ -678,58 +678,64 @@ export default function AdminPage() {
           <div className="flex gap-1 mb-8 border-b border-border overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0">
             <button
               onClick={() => setActiveTab("traders")}
-              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === "traders"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
+              title="Traders"
             >
-              <Users className="inline h-4 w-4 mr-2" />
-              Traders ({traders.length})
+              <Users className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Traders</span>
+              <span className="sm:hidden">({traders.length})</span>
             </button>
             <button
               onClick={() => setActiveTab("credentials")}
-              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === "credentials"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
+              title="Credentials"
             >
-              <Key className="inline h-4 w-4 mr-2" />
-              Credentials ({credentials.length})
+              <Key className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Credentials</span>
             </button>
             <button
               onClick={() => setActiveTab("assignments")}
-              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === "assignments"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
+              title="Assignments"
             >
-              <Upload className="inline h-4 w-4 mr-2" />
-              Assignments ({assignments.length})
+              <Upload className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Assignments</span>
             </button>
             <button
               onClick={() => setActiveTab("monitoring")}
-              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === "monitoring"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
+              title="Monitoring"
             >
-              <Activity className="inline h-4 w-4 mr-2" />
-              Monitoring
+              <Activity className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Monitoring</span>
             </button>
             <button
               onClick={() => setActiveTab("payments")}
-              className={`px-4 py-3 font-medium border-b-2 transition-colors ${
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === "payments"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
+              title="Payments"
             >
-              <CreditCard className="inline h-4 w-4 mr-2" />
-              Payments
+              <CreditCard className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Payments</span>
             </button>
           </div>
 
