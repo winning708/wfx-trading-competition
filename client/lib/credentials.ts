@@ -232,33 +232,13 @@ export async function assignCredentialToTrader(
 
 /**
  * Send trading credentials email to a trader
- * Calls the server endpoint to send the email
+ * NOTE: Email functionality has been removed. Credentials are now displayed on the user's dashboard.
+ * This function is deprecated and kept only for backwards compatibility.
  */
 export async function sendCredentialsEmailToTrader(traderId: string): Promise<boolean> {
-  try {
-    const response = await fetch('/api/email/send-credentials', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ traderId }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      const errorMsg = error?.message || error?.error || JSON.stringify(error);
-      console.error('Error sending credentials email:', errorMsg);
-      return false;
-    }
-
-    const data = await response.json();
-    console.log('Credentials email sent:', data);
-    return true;
-  } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Exception sending credentials email:', errorMsg);
-    return false;
-  }
+  // Credentials are now displayed on the user's dashboard instead of being sent via email
+  console.log('[Deprecated] sendCredentialsEmailToTrader called but email feature is disabled. Credentials are available on user dashboard.');
+  return true;
 }
 
 // Get assignments with trader and credential details
