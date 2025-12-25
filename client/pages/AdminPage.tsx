@@ -1351,9 +1351,62 @@ export default function AdminPage() {
               </div>
 
               {/* Upload History */}
-              <div className="rounded-lg border border-border bg-card overflow-x-auto">
-                <div className="px-6 py-4 border-b border-border">
-                  <h3 className="text-lg font-semibold text-foreground">📋 Recent Uploads</h3>
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                <h3 className="text-base font-semibold text-foreground mb-3">📋 Recent Uploads</h3>
+                {isLoadingMonitoring ? (
+                  <div className="text-center py-6">
+                    <p className="text-sm text-muted-foreground">Loading integrations...</p>
+                  </div>
+                ) : forexFactoryIntegrations.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-sm text-muted-foreground">No Forex Factory integrations yet</p>
+                  </div>
+                ) : (
+                  forexFactoryIntegrations.map((integration) => (
+                    <div key={integration.id} className="rounded-lg border border-border bg-card p-3 space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-mono text-xs text-foreground truncate">{integration.credential?.account_username || "N/A"}</p>
+                          <p className="font-mono text-xs text-muted-foreground truncate">{integration.ff_account_username}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <p className="text-muted-foreground mb-1">Status</p>
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                            integration.sync_status === 'success'
+                              ? 'bg-success/10 text-success'
+                              : integration.sync_status === 'error'
+                              ? 'bg-destructive/10 text-destructive'
+                              : integration.sync_status === 'syncing'
+                              ? 'bg-primary/10 text-primary'
+                              : 'bg-muted text-muted-foreground'
+                          }`}>
+                            {integration.sync_status === 'syncing' && <RefreshCw className="h-3 w-3 animate-spin" />}
+                            {integration.sync_status === 'success' && <Check className="h-3 w-3" />}
+                            {integration.sync_status === 'error' && <AlertCircle className="h-3 w-3" />}
+                            {integration.sync_status.charAt(0).toUpperCase() + integration.sync_status.slice(1)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-1">Updated</p>
+                          <p className="text-xs text-muted-foreground">{integration.last_sync ? new Date(integration.last_sync).toLocaleDateString() : 'Never'}</p>
+                        </div>
+                        <div className="col-span-2 flex gap-2 justify-end">
+                          <button onClick={() => handleManualSync(integration.id)} disabled={isSyncing} className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"><RefreshCw className="h-3 w-3" /></button>
+                          <button onClick={() => handleDeleteIntegration(integration.id)} className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"><Trash2 className="h-3 w-3" /></button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
+                <div className="px-4 py-3 border-b border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground">📋 Recent Uploads</h3>
                 </div>
                 <table className="w-full">
                   <thead>
