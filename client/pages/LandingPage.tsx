@@ -1,9 +1,49 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, TrendingUp, Award, DollarSign, Zap, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import CountdownTimer from "@/components/CountdownTimer";
 import Header from "@/components/layout/Header";
 
 export default function LandingPage() {
+  const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      try {
+        const email = localStorage.getItem("trader_email");
+        if (!email) {
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("traders")
+          .select("payment_status")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error fetching trader status:", error.message || error);
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        if (!data) {
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        setIsPaymentApproved(data.payment_status === "approved");
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Error checking payment status:", errorMsg);
+        setIsPaymentApproved(false);
+      }
+    };
+
+    checkPaymentStatus();
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <Header />
