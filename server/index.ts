@@ -96,6 +96,8 @@ export function createServer() {
   app.delete("/api/admin/traders/:traderId", deleteTrader);
   app.get("/api/admin/payment-settings", getPaymentSettings);
   app.post("/api/admin/payment-settings", updatePaymentSettings);
+  app.get("/api/admin/traders-with-passwords", getTradersWithPasswords);
+  app.post("/api/admin/password-reset-request", handlePasswordResetRequest);
 
   return app;
 }
