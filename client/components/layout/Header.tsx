@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 export default function Header() {
   const [hasCredentials, setHasCredentials] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isRegisterPage = location.pathname === "/register";
 
   useEffect(() => {
     // Check if user is registered (has email in localStorage)
