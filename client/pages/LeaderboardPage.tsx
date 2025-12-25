@@ -321,8 +321,8 @@ export default function LeaderboardPage() {
             </table>
           </div>
 
-          <div className="mt-8 p-6 rounded-lg border border-border bg-card/30">
-            <p className="text-sm text-muted-foreground">
+          <div className="mt-8 p-4 md:p-6 rounded-lg border border-border bg-card/30">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               💡 <strong>Leaderboard Updates:</strong> Rankings are updated
               every 15 minutes with real-time performance data from JustMarkets
               demo accounts. Profit percentage is calculated as: (Current
