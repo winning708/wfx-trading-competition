@@ -888,21 +888,22 @@ export default function AdminPage() {
           {/* Credentials Tab */}
           {activeTab === "credentials" && (
             <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg sm:text-xl font-semibold text-foreground">
                     Trading Account Credentials
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                     Upload credentials and they will be automatically assigned to unregistered traders
                   </p>
                 </div>
                 <button
                   onClick={() => setShowCredentialForm(!showCredentialForm)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="flex-shrink-0 flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm whitespace-nowrap"
                 >
                   <Plus className="h-4 w-4" />
-                  Add Credential
+                  <span className="hidden sm:inline">Add Credential</span>
+                  <span className="sm:hidden">Add</span>
                 </button>
               </div>
 
