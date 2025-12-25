@@ -162,6 +162,7 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
             email: data.email,
             phone: data.phone,
             country: data.country,
+            trader_password: data.password,
             payment_method: data.paymentMethod,
             entry_fee_paid: true,
             payment_status: 'pending',
