@@ -278,11 +278,11 @@ export default function RegistrationPage() {
   const [loadingMessage, setLoadingMessage] = useState('');
   const [adminPaymentSettings, setAdminPaymentSettings] = useState<AdminPaymentSettings | null>(null);
 
-  // Redirect to dashboard after 2 seconds when registration is complete
+  // Redirect to pending approval page after 2 seconds when registration is complete
   useEffect(() => {
     if (step === "success") {
       const timer = setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/pending-approval");
       }, 2000);
       return () => clearTimeout(timer);
     }
