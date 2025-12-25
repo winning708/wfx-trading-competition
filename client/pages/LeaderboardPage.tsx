@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/layout/Header";
 import { Trophy, TrendingUp, Clock, RefreshCw } from "lucide-react";
+import CountdownTimer from "@/components/CountdownTimer";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
 import { testSupabaseConnection } from "@/lib/test";
 
