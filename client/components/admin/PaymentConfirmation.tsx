@@ -127,7 +127,7 @@ export function PaymentConfirmation() {
           <div className="bg-primary/5 border border-primary/20 rounded p-3 mt-4">
             <p className="text-primary font-medium flex items-center gap-2">
               <Mail className="h-4 w-4" />
-              A confirmation email is automatically sent to the user after you confirm their payment.
+              After confirming payment, the user's payment status is updated to "approved" and they can access their trading credentials on their dashboard.
             </p>
           </div>
         </div>
