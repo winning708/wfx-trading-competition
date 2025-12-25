@@ -267,6 +267,7 @@ export default function RegistrationPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState<"form" | "payment" | "manual-payment" | "success">("form");
   const [formData, setFormData] = useState<FormData>({
+    username: "",
     fullName: "",
     email: "",
     phone: "",
