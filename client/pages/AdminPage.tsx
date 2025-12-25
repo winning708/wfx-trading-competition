@@ -307,7 +307,8 @@ export default function AdminPage() {
 
       const data = await response.json();
       if (data.success) {
-        alert(`✅ Payment approved for ${fullName}! They can now view their credentials on their dashboard.`);
+        const message = `✅ Payment approved for ${fullName}!\n\nThey can now access their credentials on their dashboard.\n\nDashboard link: ${window.location.origin}/dashboard`;
+        alert(message);
         await loadPendingPayments();
       } else {
         alert(`❌ Error: ${data.message}`);
