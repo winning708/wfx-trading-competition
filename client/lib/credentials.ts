@@ -216,11 +216,8 @@ export async function assignCredentialToTrader(
       };
     }
 
-    // Send credentials email to the trader
-    const emailSuccess = await sendCredentialsEmailToTrader(traderId);
-    if (!emailSuccess) {
-      console.warn('Failed to send credentials email, but assignment succeeded');
-    }
+    // Note: Credentials are now displayed on the user's dashboard instead of being sent via email
+    // No email notification is needed
 
     return { success: true };
   } catch (error) {
