@@ -54,7 +54,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("trader_email");
     setIsPaymentApproved(false);
-    navigate("/");
+    navigate("/login");
   };
 
   return (
