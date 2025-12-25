@@ -2165,6 +2165,119 @@ export default function AdminPage() {
               <PaymentMonitoring />
             </div>
           )}
+
+          {/* Passwords Tab */}
+          {activeTab === "passwords" && (
+            <div className="space-y-6">
+              {/* Search Bar */}
+              <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
+                  🔐 Trader Account Passwords
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                  Search traders by username, email, or full name to view their account passwords
+                </p>
+
+                <div className="relative mb-6">
+                  <input
+                    type="text"
+                    value={passwordSearch}
+                    onChange={(e) => setPasswordSearch(e.target.value)}
+                    placeholder="Search by username, email, or name..."
+                    className="w-full rounded-md border border-input bg-background px-4 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+
+                {isLoadingPasswords ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading traders...</p>
+                  </div>
+                ) : filteredTradersWithPasswords.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      {passwordSearch
+                        ? "No traders found matching your search"
+                        : "No traders with passwords yet"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {filteredTradersWithPasswords.map((trader) => (
+                      <div
+                        key={trader.id}
+                        className="rounded-lg border border-border bg-card/50 p-4 space-y-3 hover:border-primary/50 transition-colors"
+                      >
+                        {/* Trader Info Row */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">Username</p>
+                            <p className="font-medium text-foreground text-sm break-words">
+                              {trader.username}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">Email</p>
+                            <p className="text-sm text-foreground break-all">{trader.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">Full Name</p>
+                            <p className="font-medium text-foreground text-sm">{trader.full_name}</p>
+                          </div>
+                        </div>
+
+                        {/* Password Display */}
+                        <div className="bg-background rounded-lg p-4 border border-border">
+                          <p className="text-xs text-muted-foreground mb-2 font-semibold uppercase">
+                            Account Password
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <code className="flex-1 font-mono text-sm text-foreground bg-card/50 px-3 py-2 rounded break-all">
+                              {trader.trader_password || "—"}
+                            </code>
+                            <button
+                              onClick={() => {
+                                if (trader.trader_password) {
+                                  navigator.clipboard.writeText(trader.trader_password);
+                                  alert("Password copied to clipboard!");
+                                }
+                              }}
+                              disabled={!trader.trader_password}
+                              className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 whitespace-nowrap"
+                            >
+                              Copy
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Status Info */}
+                        <div className="flex items-center justify-between gap-2 text-xs pt-2 border-t border-border">
+                          <span className="text-muted-foreground">
+                            Payment Status: {trader.payment_status || "Unknown"}
+                          </span>
+                          <span className="text-muted-foreground">
+                            Registered: {new Date(trader.registered_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Info Box */}
+              <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6">
+                <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                  <strong>ℹ️ Password Management Guide</strong>
+                </p>
+                <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
+                  <li>Use the search bar to quickly find traders by username, email, or name</li>
+                  <li>Click "Copy" to copy a trader's password to your clipboard</li>
+                  <li>Share passwords securely with traders who have forgotten theirs</li>
+                  <li>Passwords are displayed here for admin reference only</li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
