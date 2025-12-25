@@ -1519,21 +1519,59 @@ export default function AdminPage() {
 
               {/* Sync History */}
               <div>
-                <h3 className="text-lg font-semibold text-foreground mb-4">Recent Sync History</h3>
-                <div className="rounded-lg border border-border bg-card overflow-x-auto">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Recent Sync History</h3>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-3">
+                  {syncHistory.length === 0 ? (
+                    <div className="text-center py-6">
+                      <p className="text-sm text-muted-foreground">No sync history yet</p>
+                    </div>
+                  ) : (
+                    syncHistory.map((sync) => (
+                      <div key={sync.id} className="rounded-lg border border-border bg-card p-3 space-y-2">
+                        <div className="flex justify-between items-center gap-2">
+                          <span className="font-medium text-foreground text-sm capitalize">{sync.sync_type}</span>
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                            sync.status === 'success'
+                              ? 'bg-success/10 text-success'
+                              : sync.status === 'error'
+                              ? 'bg-destructive/10 text-destructive'
+                              : 'bg-primary/10 text-primary'
+                          }`}>
+                            {sync.status.charAt(0).toUpperCase() + sync.status.slice(1)}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-muted-foreground mb-1">Records</p>
+                            <p className="font-medium text-foreground">{sync.records_updated}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground mb-1">Synced</p>
+                            <p className="text-xs text-muted-foreground">{new Date(sync.synced_at).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border bg-card/50">
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                           Type
                         </th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                           Status
                         </th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                          Records Updated
+                        <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                          Records
                         </th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                           Synced
                         </th>
                       </tr>
@@ -1541,8 +1579,8 @@ export default function AdminPage() {
                     <tbody>
                       {syncHistory.length === 0 ? (
                         <tr>
-                          <td colSpan={4} className="px-6 py-8 text-center">
-                            <p className="text-muted-foreground">No sync history yet</p>
+                          <td colSpan={4} className="px-4 py-6 text-center">
+                            <p className="text-sm text-muted-foreground">No sync history yet</p>
                           </td>
                         </tr>
                       ) : (
@@ -1551,10 +1589,10 @@ export default function AdminPage() {
                             key={sync.id}
                             className="border-b border-border hover:bg-card/50 transition-colors"
                           >
-                            <td className="px-6 py-4 text-sm capitalize text-foreground">
+                            <td className="px-4 py-3 text-xs sm:text-sm capitalize text-foreground">
                               {sync.sync_type}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-3">
                               <span
                                 className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
                                   sync.status === 'success'
@@ -1567,11 +1605,11 @@ export default function AdminPage() {
                                 {sync.status.charAt(0).toUpperCase() + sync.status.slice(1)}
                               </span>
                             </td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground">
+                            <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground">
                               {sync.records_updated}
                             </td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground">
-                              {new Date(sync.synced_at).toLocaleString()}
+                            <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground">
+                              {new Date(sync.synced_at).toLocaleDateString()}
                             </td>
                           </tr>
                         ))
