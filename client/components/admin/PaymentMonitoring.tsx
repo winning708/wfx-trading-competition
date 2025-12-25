@@ -226,12 +226,12 @@ export function PaymentMonitoring() {
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 overflow-x-auto -mx-2 px-2 md:mx-0 md:px-0">
           {["all", "completed", "pending", "failed"].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f as any)}
-              className={`px-3 py-1 rounded text-sm font-medium transition-colors capitalize ${
+              className={`px-2 sm:px-3 py-1 rounded text-xs sm:text-sm font-medium transition-colors capitalize whitespace-nowrap ${
                 filter === f
                   ? "bg-primary text-primary-foreground"
                   : "bg-card border border-border text-foreground hover:bg-card/50"
@@ -242,27 +242,70 @@ export function PaymentMonitoring() {
           ))}
         </div>
 
-        {/* Transactions Table */}
-        <div className="rounded-lg border border-border bg-card overflow-x-auto">
+        {/* Mobile Card View */}
+        <div className="md:hidden space-y-3">
+          {isLoading ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground text-sm">Loading transactions...</p>
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground text-sm">No transactions found</p>
+            </div>
+          ) : (
+            transactions.map((tx) => (
+              <div key={tx.id} className="rounded-lg border border-border bg-card p-3 space-y-2">
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-sm truncate">{tx.trader?.full_name || "Unknown"}</p>
+                    <p className="text-xs text-muted-foreground break-all">{tx.trader?.email || "N/A"}</p>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize flex-shrink-0 ${getStatusColor(tx.status)}`}>
+                    {tx.status}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-muted-foreground mb-1">Method</p>
+                    <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize ${getMethodColor(tx.payment_method)}`}>
+                      {tx.payment_method}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground mb-1">Amount</p>
+                    <p className="font-medium text-foreground">${tx.amount.toLocaleString("en-US", { maximumFractionDigits: 2 })}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-muted-foreground mb-1">Date</p>
+                    <p className="text-xs text-muted-foreground">{new Date(tx.created_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-card/50">
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                   Trader
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                   Method
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                   Amount
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                   Date
                 </th>
               </tr>
@@ -270,40 +313,40 @@ export function PaymentMonitoring() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center">
-                    <p className="text-muted-foreground">Loading transactions...</p>
+                  <td colSpan={6} className="px-4 py-6 text-center">
+                    <p className="text-muted-foreground text-sm">Loading transactions...</p>
                   </td>
                 </tr>
               ) : transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center">
-                    <p className="text-muted-foreground">No transactions found</p>
+                  <td colSpan={6} className="px-4 py-6 text-center">
+                    <p className="text-muted-foreground text-sm">No transactions found</p>
                   </td>
                 </tr>
               ) : (
                 transactions.map((tx) => (
                   <tr key={tx.id} className="border-b border-border hover:bg-card/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-foreground">
+                    <td className="px-4 py-3 font-medium text-foreground text-xs sm:text-sm">
                       {tx.trader?.full_name || "Unknown"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                    <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground break-all">
                       {tx.trader?.email || "N/A"}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize ${getMethodColor(tx.payment_method)}`}>
                         {tx.payment_method}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right font-medium text-foreground">
+                    <td className="px-4 py-3 text-right font-medium text-foreground text-xs sm:text-sm">
                       ${tx.amount.toLocaleString("en-US", { maximumFractionDigits: 2 })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <span className={`inline-flex px-2 py-1 rounded text-xs font-medium capitalize ${getStatusColor(tx.status)}`}>
                         {tx.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {new Date(tx.created_at).toLocaleDateString()} {new Date(tx.created_at).toLocaleTimeString()}
+                    <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground">
+                      {new Date(tx.created_at).toLocaleDateString()}
                     </td>
                   </tr>
                 ))
