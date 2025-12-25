@@ -114,6 +114,7 @@ export default function AdminPage() {
   // Payment approval state
   const [pendingPayments, setPendingPayments] = useState<any[]>([]);
   const [isLoadingPendingPayments, setIsLoadingPendingPayments] = useState(false);
+  const [approvingPaymentId, setApprovingPaymentId] = useState<string | null>(null);
 
   // Payment settings state
   const [paymentSettings, setPaymentSettings] = useState<AdminPaymentSettings | null>(null);
