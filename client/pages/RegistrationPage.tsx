@@ -415,6 +415,7 @@ export default function RegistrationPage() {
         email: formData.email,
         phone: formData.phone,
         country: formData.country,
+        password: formData.password,
         paymentMethod: selectedPayment,
       });
 
