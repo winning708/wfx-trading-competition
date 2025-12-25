@@ -742,26 +742,84 @@ export default function AdminPage() {
           {/* Traders Tab */}
           {activeTab === "traders" && (
             <div className="space-y-6">
-              <div className="rounded-lg border border-border bg-card overflow-x-auto">
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {isLoadingTraders ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading traders...</p>
+                  </div>
+                ) : traders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No traders registered yet</p>
+                  </div>
+                ) : (
+                  traders.map((trader, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg border border-border bg-card p-3 sm:p-4 space-y-3"
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-foreground truncate">{trader.username}</p>
+                          <p className="text-xs text-muted-foreground break-all">{trader.email || "N/A"}</p>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteTrader(trader)}
+                          className="flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                          <span className="hidden sm:inline">Delete</span>
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                          <p className="text-muted-foreground mb-1">Start Balance</p>
+                          <p className="font-medium text-foreground">${trader.startingBalance.toFixed(2)}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground mb-1">Current Balance</p>
+                          <p className="font-medium text-foreground">${trader.currentBalance.toFixed(2)}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-muted-foreground mb-1">Profit %</p>
+                          <span
+                            className={`font-semibold ${
+                              trader.profitPercentage >= 0
+                                ? "text-success"
+                                : "text-destructive"
+                            }`}
+                          >
+                            {trader.profitPercentage >= 0 ? "+" : ""}
+                            {trader.profitPercentage.toFixed(2)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Name
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Email
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                        Starting Balance
+                      <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
+                        Start Balance
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                         Current Balance
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                         Profit %
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                         Actions
                       </th>
                     </tr>
@@ -769,14 +827,14 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingTraders ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">Loading traders...</p>
+                        <td colSpan={6} className="px-4 py-8 text-center">
+                          <p className="text-muted-foreground text-sm">Loading traders...</p>
                         </td>
                       </tr>
                     ) : traders.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">No traders registered yet</p>
+                        <td colSpan={6} className="px-4 py-8 text-center">
+                          <p className="text-muted-foreground text-sm">No traders registered yet</p>
                         </td>
                       </tr>
                     ) : (
@@ -785,19 +843,19 @@ export default function AdminPage() {
                           key={index}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
-                          <td className="px-6 py-4 font-medium text-foreground">
+                          <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {trader.username}
                           </td>
-                          <td className="px-6 py-4 text-muted-foreground text-sm">
+                          <td className="px-4 py-3 text-muted-foreground text-xs sm:text-sm">
                             {trader.email || "N/A"}
                           </td>
-                          <td className="px-6 py-4 text-right text-muted-foreground">
+                          <td className="px-4 py-3 text-right text-muted-foreground text-xs sm:text-sm">
                             ${trader.startingBalance.toFixed(2)}
                           </td>
-                          <td className="px-6 py-4 text-right font-medium text-foreground">
+                          <td className="px-4 py-3 text-right font-medium text-foreground text-xs sm:text-sm">
                             ${trader.currentBalance.toFixed(2)}
                           </td>
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-4 py-3 text-right text-xs sm:text-sm">
                             <span
                               className={`font-semibold ${
                                 trader.profitPercentage >= 0
@@ -809,13 +867,13 @@ export default function AdminPage() {
                               {trader.profitPercentage.toFixed(2)}%
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-right">
+                          <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => handleDeleteTrader(trader)}
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
                             >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="hidden sm:inline">Delete</span>
                             </button>
                           </td>
                         </tr>
