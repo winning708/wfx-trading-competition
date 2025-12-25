@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { TrendingUp, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function Header() {
   const [hasCredentials, setHasCredentials] = useState(false);
