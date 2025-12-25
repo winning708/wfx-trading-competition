@@ -209,6 +209,18 @@ export default function LoginPage() {
               </button>
             )}
 
+            {/* Forgot Password Link */}
+            {!success && (
+              <div className="text-center">
+                <button
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-xs text-primary hover:underline font-medium"
+                >
+                  Forgot your password?
+                </button>
+              </div>
+            )}
+
             {/* Info Box */}
             <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4">
               <p className="text-xs text-blue-600 dark:text-blue-400">
