@@ -10,6 +10,7 @@ import LandingPage from "./pages/LandingPage";
 import RegistrationPage from "./pages/RegistrationPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import DashboardPage from "./pages/DashboardPage";
+import PendingApprovalPage from "./pages/PendingApprovalPage";
 import RulesPage from "./pages/RulesPage";
 import MonitoringPage from "./pages/MonitoringPage";
 import AdminPage from "./pages/AdminPage";
