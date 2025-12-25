@@ -419,7 +419,7 @@ export default function RegistrationPage() {
             amount: 15,
             currency: 'USD',
             country: formData.country,
-            paymentMethod: 'bank-transfer',
+            paymentMethod: selectedPayment,
           }),
         });
       } catch (notifyError) {
