@@ -1411,19 +1411,19 @@ export default function AdminPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Credential
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                        Forex Factory Account
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                        FF Account
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Status
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                         Last Updated
                       </th>
-                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                         Actions
                       </th>
                     </tr>
@@ -1431,14 +1431,14 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingMonitoring ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">Loading integrations...</p>
+                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">Loading integrations...</p>
                         </td>
                       </tr>
                     ) : forexFactoryIntegrations.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-6 py-8 text-center">
-                          <p className="text-muted-foreground">No Forex Factory integrations yet</p>
+                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">No Forex Factory integrations yet</p>
                         </td>
                       </tr>
                     ) : (
@@ -1447,13 +1447,13 @@ export default function AdminPage() {
                           key={integration.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
-                          <td className="px-6 py-4 font-mono text-sm text-foreground">
+                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-foreground">
                             {integration.credential?.account_username || "N/A"}
                           </td>
-                          <td className="px-6 py-4 font-mono text-sm text-muted-foreground">
+                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-muted-foreground">
                             {integration.ff_account_username}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-4 py-3">
                             <div
                               className="group relative inline-block"
                               title={integration.last_error ? `Error: ${integration.last_error}` : undefined}
@@ -1488,26 +1488,26 @@ export default function AdminPage() {
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-muted-foreground">
+                          <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-muted-foreground">
                             {integration.last_sync
-                              ? new Date(integration.last_sync).toLocaleString()
+                              ? new Date(integration.last_sync).toLocaleDateString()
                               : 'Never'}
                           </td>
-                          <td className="px-6 py-4 text-right space-x-2">
+                          <td className="px-3 sm:px-4 py-3 text-right space-x-1 sm:space-x-2">
                             <button
                               onClick={() => handleManualSync(integration.id)}
                               disabled={isSyncing}
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"
                             >
-                              <RefreshCw className="h-4 w-4" />
-                              Sync
+                              <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="hidden sm:inline">Sync</span>
                             </button>
                             <button
                               onClick={() => handleDeleteIntegration(integration.id)}
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
                             >
-                              <Trash2 className="h-4 w-4" />
-                              Delete
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="hidden sm:inline">Delete</span>
                             </button>
                           </td>
                         </tr>
