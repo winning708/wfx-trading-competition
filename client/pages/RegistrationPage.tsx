@@ -988,10 +988,14 @@ export default function RegistrationPage() {
                 Choose Payment Method
               </h1>
               <p className="text-lg text-muted-foreground">
-                {formData.country ? `Pay ${getCurrencyInfoForCountry(formData.country).display} ($15 USD) entry fee` : 'Select your country to see the entry fee in your local currency'}
+                {formData.country ?
+                  selectedPayment === 'bank-transfer'
+                    ? `Pay ${getCurrencyInfoForCountry(formData.country).display} entry fee`
+                    : `Pay $15 USD entry fee`
+                  : 'Select your payment method to see the entry fee'}
               </p>
               <p className="text-sm text-amber-600 dark:text-amber-400 mt-4">
-                ℹ️ Bank transfer payments are securely processed
+                ℹ️ Choose your preferred payment method
               </p>
             </div>
 
