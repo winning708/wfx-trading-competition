@@ -295,13 +295,12 @@ export default function AdminPage() {
   };
 
   const handleApprovePayment = async (traderId: string, fullName: string) => {
-    if (!window.confirm(`Approve payment and send credentials to ${fullName}?`)) {
+    if (!window.confirm(`Approve payment for ${fullName}? They will see their trading credentials on their dashboard.`)) {
       return;
     }
 
     setApprovingPaymentId(traderId);
     try {
-      // First approve the payment
       const response = await fetch(`/api/admin/payments/${traderId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -309,14 +308,7 @@ export default function AdminPage() {
 
       const data = await response.json();
       if (data.success) {
-        // Send credentials to the trader
-        const credentialsSent = await sendCredentialsEmailToTrader(traderId);
-
-        if (credentialsSent) {
-          alert(`✅ Payment approved and credentials sent to ${fullName}`);
-        } else {
-          alert(`✅ Payment approved for ${fullName}, but failed to send credentials email. You may need to manually assign credentials.`);
-        }
+        alert(`✅ Payment approved for ${fullName}! They can now view their credentials on their dashboard.`);
         await loadPendingPayments();
       } else {
         alert(`❌ Error: ${data.message}`);
