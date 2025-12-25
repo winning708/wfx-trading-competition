@@ -59,7 +59,7 @@ export function PaymentConfirmation() {
         throw new Error(data.message || "Failed to confirm payment");
       }
 
-      setSuccess(`✅ Payment confirmed for ${email}! Notification email sent.`);
+      setSuccess(`✅ Payment confirmed for ${email}! User will see credentials on their dashboard.`);
       
       // Reset form
       setEmail("");
