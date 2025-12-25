@@ -90,7 +90,12 @@ export default function DashboardPage() {
         }
 
         if (!assignmentData) {
-          setError("No trading credentials assigned yet. Please contact support.");
+          const paymentStatus = traderData?.payment_status;
+          if (paymentStatus !== 'approved') {
+            setError("Your payment is still pending approval. Once approved by our admin team, your trading credentials will appear here.");
+          } else {
+            setError("No trading credentials assigned yet. Please contact support.");
+          }
           setIsLoading(false);
           return;
         }
