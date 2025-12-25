@@ -947,12 +947,12 @@ export default function RegistrationPage() {
 
             <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
               <p className="text-sm text-success mb-2">✓ Status</p>
-              <p className="text-2xl font-bold text-success">Redirecting to Dashboard</p>
+              <p className="text-2xl font-bold text-success">Waiting for Approval</p>
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Your registration is complete! We're redirecting you to your dashboard where you'll find your trading credentials.
-              Your dashboard will display all the information you need to get started.
+              Your registration is complete! We're now redirecting you to the approval page where you can track the status of your payment verification.
+              Once approved by our admin team, you'll gain access to your trading credentials.
             </p>
 
             <p className="text-center text-xs text-muted-foreground mb-4">
