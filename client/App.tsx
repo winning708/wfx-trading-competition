@@ -31,6 +31,7 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pending-approval" element={<PendingApprovalPage />} />
