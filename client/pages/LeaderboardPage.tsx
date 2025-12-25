@@ -90,18 +90,18 @@ export default function LeaderboardPage() {
       <Header />
 
       {/* Header Section */}
-      <div className="border-b border-border px-4 py-12 md:py-16">
+      <div className="border-b border-border px-4 py-8 md:py-16">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
                 Live Leaderboard
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Real-time rankings sorted by profit percentage
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
@@ -111,9 +111,9 @@ export default function LeaderboardPage() {
                 <RefreshCw className={`h-5 w-5 text-primary ${isLoading ? 'animate-spin' : ''}`} />
               </button>
               {isLive && (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-success/10">
+                <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-full bg-success/10 whitespace-nowrap">
                   <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-                  <span className="text-sm font-medium text-success">Live</span>
+                  <span className="text-xs sm:text-sm font-medium text-success">Live</span>
                 </div>
               )}
             </div>
