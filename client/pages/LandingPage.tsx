@@ -80,13 +80,23 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link
-                to="/register"
-                className="inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary/80 px-8 text-base font-semibold text-primary-foreground hover:shadow-lg hover:shadow-primary/50 transition-all"
-              >
-                Register Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              {isPaymentApproved === true ? (
+                <Link
+                  to="/dashboard"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary/80 px-8 text-base font-semibold text-primary-foreground hover:shadow-lg hover:shadow-primary/50 transition-all"
+                >
+                  Go to Dashboard
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              ) : isPaymentApproved === false ? (
+                <Link
+                  to="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-gradient-to-r from-primary to-primary/80 px-8 text-base font-semibold text-primary-foreground hover:shadow-lg hover:shadow-primary/50 transition-all"
+                >
+                  Register Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              ) : null}
               <Link
                 to="/leaderboard"
                 className="inline-flex h-12 items-center justify-center rounded-lg border-2 border-primary bg-transparent px-8 text-base font-semibold text-primary hover:bg-primary/10 transition-colors"
