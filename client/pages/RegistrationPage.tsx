@@ -1066,34 +1066,56 @@ export default function RegistrationPage() {
 
               {(() => {
                 const currencyInfo = getCurrencyInfoForCountry(formData.country);
+                const isUSDMethod = selectedPayment === 'binance' || selectedPayment === 'bybit';
+                const isNairaMethod = selectedPayment === 'bank-transfer' && formData.country && formData.country !== 'United States';
+
                 return (
                   <>
                     <div className="space-y-3 mb-4 pb-4 border-b border-border">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
-                          Competition Entry Fee (USD)
-                        </span>
-                        <span className="font-medium text-foreground">$15.00</span>
-                      </div>
-                      {formData.country && formData.country !== 'United States' && (
-                        <div className="flex justify-between bg-primary/5 -mx-3 px-3 py-2 rounded">
-                          <span className="text-muted-foreground">
-                            Equivalent in {currencyInfo.code}
-                          </span>
-                          <span className="font-bold text-foreground">{currencyInfo.display}</span>
-                        </div>
+                      {isUSDMethod ? (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Competition Entry Fee
+                            </span>
+                            <span className="font-medium text-foreground">$15.00</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Tax (0%)</span>
+                            <span className="font-medium text-foreground">$0.00</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">
+                              Competition Entry Fee (USD)
+                            </span>
+                            <span className="font-medium text-foreground">$15.00</span>
+                          </div>
+                          {isNairaMethod && (
+                            <div className="flex justify-between bg-primary/5 -mx-3 px-3 py-2 rounded">
+                              <span className="text-muted-foreground">
+                                Equivalent in {currencyInfo.code}
+                              </span>
+                              <span className="font-bold text-foreground">{currencyInfo.display}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Tax (0%)</span>
+                            <span className="font-medium text-foreground">$0.00</span>
+                          </div>
+                        </>
                       )}
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Tax (0%)</span>
-                        <span className="font-medium text-foreground">$0.00</span>
-                      </div>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-foreground">
-                        Total (USD)
+                        Total {isUSDMethod ? '(USD)' : isNairaMethod ? `(${currencyInfo.code})` : '(USD)'}
                       </span>
-                      <span className="text-2xl font-bold text-primary">$15.00</span>
+                      <span className="text-2xl font-bold text-primary">
+                        {isNairaMethod ? currencyInfo.display : '$15.00'}
+                      </span>
                     </div>
                   </>
                 );
