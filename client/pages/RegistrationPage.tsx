@@ -274,6 +274,8 @@ export default function RegistrationPage() {
     email: "",
     phone: "",
     country: "",
+    password: "",
+    confirmPassword: "",
   });
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
