@@ -252,7 +252,8 @@ export async function sendCredentialsEmailToTrader(traderId: string): Promise<bo
 
     if (!response.ok) {
       const error = await response.json();
-      console.error('Error sending credentials email:', error);
+      const errorMsg = error?.message || error?.error || JSON.stringify(error);
+      console.error('Error sending credentials email:', errorMsg);
       return false;
     }
 
@@ -260,7 +261,8 @@ export async function sendCredentialsEmailToTrader(traderId: string): Promise<bo
     console.log('Credentials email sent:', data);
     return true;
   } catch (error) {
-    console.error('Exception sending credentials email:', error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error('Exception sending credentials email:', errorMsg);
     return false;
   }
 }
