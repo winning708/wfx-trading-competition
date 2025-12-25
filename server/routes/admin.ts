@@ -279,6 +279,85 @@ export const deleteTrader: RequestHandler = async (req, res) => {
 };
 
 /**
+ * Get Traders with Passwords
+ * GET /api/admin/traders-with-passwords
+ */
+export const getTradersWithPasswords: RequestHandler = async (req, res) => {
+  try {
+    const { data: traders, error } = await supabase
+      .from('traders')
+      .select('id, username, email, full_name, trader_password, payment_status, registered_at')
+      .order('registered_at', { ascending: false });
+
+    if (error) {
+      console.error('[Admin] Error fetching traders with passwords:', error);
+      return res.status(500).json({ success: false, message: 'Failed to fetch traders' });
+    }
+
+    res.json({ success: true, traders: traders || [] });
+  } catch (error) {
+    console.error('[Admin] Error in getTradersWithPasswords:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
+ * Handle Password Reset Request
+ * POST /api/admin/password-reset-request
+ */
+export const handlePasswordResetRequest: RequestHandler = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+
+    // Verify trader exists
+    const { data: trader, error: fetchError } = await supabase
+      .from('traders')
+      .select('id, full_name, email')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (fetchError || !trader) {
+      console.error('[Admin] Error verifying trader:', fetchError);
+      // Don't reveal if email exists for security
+      return res.json({
+        success: true,
+        message: 'If the email exists in our system, a password reset request has been sent to our admin team.'
+      });
+    }
+
+    // Send email to admin about password reset request
+    try {
+      await sendAdminNotification({
+        traderId: trader.id,
+        email: trader.email,
+        fullName: trader.full_name,
+        amount: 0,
+        currency: 'USD',
+        country: 'Unknown',
+        paymentMethod: 'password-reset',
+        dashboardUrl: `${process.env.BACKEND_URL || 'http://localhost:5173'}/admin#passwords`,
+      });
+    } catch (emailError) {
+      console.warn('[Admin] Warning: Could not send admin notification:', emailError);
+      // Don't fail the request if email notification fails
+    }
+
+    console.log('[Admin] ✅ Password reset request received for:', { id: trader.id, email: trader.email });
+    res.json({
+      success: true,
+      message: 'Password reset request submitted. Our admin team will contact you within 24 hours.'
+    });
+  } catch (error) {
+    console.error('[Admin] Error in handlePasswordResetRequest:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
  * Get Admin Payment Settings
  * GET /api/admin/payment-settings
  */
