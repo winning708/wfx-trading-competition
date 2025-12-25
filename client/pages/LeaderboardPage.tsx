@@ -182,23 +182,82 @@ export default function LeaderboardPage() {
               </p>
             </div>
           )}
-          <div className="overflow-x-auto rounded-lg border border-border">
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {isLoading ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Loading leaderboard...</p>
+              </div>
+            ) : leaderboard.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No traders registered yet</p>
+              </div>
+            ) : (
+              leaderboard.map((trader) => (
+                <div
+                  key={trader.rank}
+                  className="rounded-lg border border-border bg-card p-4 space-y-3"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      {trader.rank === 1 && (
+                        <Trophy className="h-5 w-5 text-primary" />
+                      )}
+                      <span className="font-bold text-lg text-foreground">
+                        #{trader.rank}
+                      </span>
+                    </div>
+                    <span className="font-medium text-foreground">
+                      {trader.username}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <p className="text-muted-foreground mb-1">Start Balance</p>
+                      <p className="font-medium text-foreground">${trader.startingBalance.toFixed(2)}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1">Current Balance</p>
+                      <p className="font-medium text-foreground">${trader.currentBalance.toFixed(2)}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-muted-foreground mb-1">Profit %</p>
+                      <span
+                        className={`font-semibold text-sm ${
+                          trader.profitPercentage >= 0
+                            ? "text-success"
+                            : "text-destructive"
+                        }`}
+                      >
+                        {trader.profitPercentage >= 0 ? "+" : ""}
+                        {trader.profitPercentage.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto rounded-lg border border-border">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-card/50">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                     Rank
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
                     Trader
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                  <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                     Starting Balance
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                  <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                     Current Balance
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                  <th className="px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
                     Profit %
                   </th>
                 </tr>
@@ -206,14 +265,14 @@ export default function LeaderboardPage() {
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
-                      <p className="text-muted-foreground">Loading leaderboard...</p>
+                    <td colSpan={5} className="px-4 py-12 text-center">
+                      <p className="text-muted-foreground text-sm">Loading leaderboard...</p>
                     </td>
                   </tr>
                 ) : leaderboard.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
-                      <p className="text-muted-foreground">No traders registered yet</p>
+                    <td colSpan={5} className="px-4 py-12 text-center">
+                      <p className="text-muted-foreground text-sm">No traders registered yet</p>
                     </td>
                   </tr>
                 ) : (
@@ -222,30 +281,30 @@ export default function LeaderboardPage() {
                       key={trader.rank}
                       className="border-b border-border hover:bg-card/50 transition-colors"
                     >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
                           {trader.rank === 1 && (
-                            <Trophy className="h-5 w-5 text-primary" />
+                            <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                           )}
-                          <span className="font-semibold text-foreground">
+                          <span className="font-semibold text-foreground text-xs sm:text-sm">
                             #{trader.rank}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="font-medium text-foreground">
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-foreground text-xs sm:text-sm">
                           {trader.username}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right text-muted-foreground">
+                      <td className="px-4 py-3 text-right text-muted-foreground text-xs sm:text-sm">
                         ${trader.startingBalance.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-right font-medium text-foreground">
+                      <td className="px-4 py-3 text-right font-medium text-foreground text-xs sm:text-sm">
                         ${trader.currentBalance.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-3 text-right">
                         <span
-                          className={`font-semibold ${
+                          className={`font-semibold text-xs sm:text-sm ${
                             trader.profitPercentage >= 0
                               ? "text-success"
                               : "text-destructive"
