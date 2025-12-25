@@ -35,11 +35,17 @@ export default function LoginPage() {
       const isEmail = credential.includes("@");
 
       // Check if user exists by email or username
-      const { data: trader, error: fetchError } = await supabase
+      let query = supabase
         .from("traders")
-        .select("id, full_name, email, username, payment_status")
-        .or(isEmail ? `email.eq.${credential.toLowerCase().trim()}` : `username.eq.${credential.toLowerCase().trim()}`)
-        .maybeSingle();
+        .select("id, full_name, email, username, payment_status");
+
+      if (isEmail) {
+        query = query.eq("email", credential.toLowerCase().trim());
+      } else {
+        query = query.eq("username", credential.toLowerCase().trim());
+      }
+
+      const { data: trader, error: fetchError } = await query.maybeSingle();
 
       if (fetchError) {
         console.error("Error fetching trader:", fetchError);
