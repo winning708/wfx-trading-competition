@@ -31,7 +31,7 @@ export default function PendingApprovalPage() {
           .from("traders")
           .select("id, full_name, email, payment_status")
           .eq("email", traderEmail)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error("Error fetching trader:", error.message || error);
@@ -86,7 +86,7 @@ export default function PendingApprovalPage() {
           .from("traders")
           .select("id, full_name, email, payment_status")
           .eq("email", traderEmail)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error("Error fetching trader:", error.message || error);
