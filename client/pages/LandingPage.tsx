@@ -430,20 +430,40 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="px-4 py-20 md:py-32">
         <div className="container mx-auto max-w-2xl text-center">
-          <h2 className="mb-6 text-4xl md:text-5xl font-bold text-foreground">
-            Ready to Compete?
-          </h2>
-          <p className="mb-8 text-lg text-muted-foreground">
-            Join hundreds of traders competing for amazing prizes. Limited spots
-            available.
-          </p>
-          <Link
-            to="/register"
-            className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Register Now - $15
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          {isPaymentApproved === true ? (
+            <>
+              <h2 className="mb-6 text-4xl md:text-5xl font-bold text-foreground">
+                Welcome Back!
+              </h2>
+              <p className="mb-8 text-lg text-muted-foreground">
+                Access your dashboard to view credentials and track your trading performance.
+              </p>
+              <Link
+                to="/dashboard"
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Go to Dashboard
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </>
+          ) : isPaymentApproved === false ? (
+            <>
+              <h2 className="mb-6 text-4xl md:text-5xl font-bold text-foreground">
+                Ready to Compete?
+              </h2>
+              <p className="mb-8 text-lg text-muted-foreground">
+                Join hundreds of traders competing for amazing prizes. Limited spots
+                available.
+              </p>
+              <Link
+                to="/register"
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Register Now - $15
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </>
+          ) : null}
         </div>
       </section>
 
