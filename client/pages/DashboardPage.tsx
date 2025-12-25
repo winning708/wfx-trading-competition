@@ -8,6 +8,7 @@ interface Trader {
   id: string;
   full_name: string;
   email: string;
+  payment_status?: string;
 }
 
 interface TradingCredential {
