@@ -61,6 +61,14 @@ export default function DashboardPage() {
           return;
         }
 
+        // Check if payment is approved FIRST
+        const paymentStatus = traderData?.payment_status;
+        if (paymentStatus !== 'approved') {
+          setError("Your payment is still pending approval by our admin team. Once approved, you'll be able to access your trading credentials. Please check back soon.");
+          setIsLoading(false);
+          return;
+        }
+
         setTrader(traderData);
 
         // Fetch credential assignment with credential details
@@ -90,12 +98,7 @@ export default function DashboardPage() {
         }
 
         if (!assignmentData) {
-          const paymentStatus = traderData?.payment_status;
-          if (paymentStatus !== 'approved') {
-            setError("Your payment is still pending approval. Once approved by our admin team, your trading credentials will appear here.");
-          } else {
-            setError("No trading credentials assigned yet. Please contact support.");
-          }
+          setError("No trading credentials assigned yet. Please contact support.");
           setIsLoading(false);
           return;
         }
