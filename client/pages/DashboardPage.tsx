@@ -52,7 +52,7 @@ export default function DashboardPage() {
           .from("traders")
           .select("id, full_name, email, payment_status")
           .eq("email", traderEmail)
-          .single();
+          .maybeSingle();
 
         if (traderError) {
           console.error("Error fetching trader:", traderError.message || traderError);
