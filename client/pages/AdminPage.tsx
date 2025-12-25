@@ -1718,83 +1718,109 @@ export default function AdminPage() {
                 )}
               </div>
 
-              {/* Pending Payments for Approval */}
+              {/* Pending Payments for Approval - Binance & Bybit Only */}
               <div className="rounded-lg border border-border bg-card p-6">
                 <h2 className="text-xl font-semibold text-foreground mb-4">
-                  ⏳ Pending Payment Approvals
+                  💳 Pending Binance & Bybit Payments
                 </h2>
 
                 {isLoadingPendingPayments ? (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground">Loading pending payments...</p>
                   </div>
-                ) : pendingPayments.length === 0 ? (
+                ) : pendingPayments.filter((p) => p.payment_method === 'binance' || p.payment_method === 'bybit').length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">No pending payments at this time</p>
+                    <p className="text-muted-foreground">No pending Binance or Bybit payments at this time</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {pendingPayments.map((payment) => (
-                      <div
-                        key={payment.id}
-                        className="border border-border rounded-lg p-4 hover:bg-card/50 transition-colors"
-                      >
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium text-foreground">{payment.full_name}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Email</p>
-                            <p className="font-medium text-foreground break-all text-sm">{payment.email}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Country</p>
-                            <p className="font-medium text-foreground">{payment.country}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Payment Method</p>
-                            <p className="font-medium text-foreground capitalize">{payment.payment_method}</p>
-                          </div>
-                        </div>
+                    {pendingPayments
+                      .filter((p) => p.payment_method === 'binance' || p.payment_method === 'bybit')
+                      .map((payment) => {
+                        const methodBadgeClass =
+                          payment.payment_method === 'binance'
+                            ? 'bg-yellow-500/20 text-yellow-700'
+                            : 'bg-purple-500/20 text-purple-700';
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4 pb-4 border-b border-border">
-                          <div>
-                            <p className="text-sm text-muted-foreground">Amount</p>
-                            <p className="font-medium text-foreground">$15 USD</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Registered</p>
-                            <p className="font-medium text-foreground text-sm">
-                              {new Date(payment.registered_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground">Status</p>
-                            <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded inline-block text-sm">
-                              Pending
-                            </p>
-                          </div>
-                        </div>
+                        return (
+                          <div
+                            key={payment.id}
+                            className="border border-border rounded-lg p-4 hover:bg-card/50 transition-colors"
+                          >
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Name</p>
+                                <p className="font-medium text-foreground">{payment.full_name}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Email</p>
+                                <p className="font-medium text-foreground break-all text-sm">{payment.email}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Country</p>
+                                <p className="font-medium text-foreground">{payment.country}</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Payment Method</p>
+                                <span className={`px-3 py-1 rounded-full text-sm font-medium inline-block ${methodBadgeClass}`}>
+                                  {payment.payment_method === 'binance' ? '🟡 Binance' : '💜 Bybit'}
+                                </span>
+                              </div>
+                            </div>
 
-                        <div className="flex gap-3 justify-end">
-                          <button
-                            onClick={() => handleApprovePayment(payment.id, payment.full_name)}
-                            className="px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
-                          >
-                            <Check size={18} />
-                            Approve
-                          </button>
-                          <button
-                            onClick={() => handleRejectPayment(payment.id, payment.full_name)}
-                            className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors flex items-center gap-2"
-                          >
-                            <AlertCircle size={18} />
-                            Reject
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 pb-4 border-b border-border">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Amount</p>
+                                <p className="font-medium text-foreground">$15 USD</p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Registered</p>
+                                <p className="font-medium text-foreground text-sm">
+                                  {new Date(payment.registered_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">Status</p>
+                                <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded inline-block text-sm">
+                                  Pending
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm text-muted-foreground">User ID</p>
+                                <p className="font-medium text-foreground text-xs font-mono">{payment.id.substring(0, 8)}...</p>
+                              </div>
+                            </div>
+
+                            <div className="flex gap-3 justify-end">
+                              <button
+                                onClick={() => handleApprovePayment(payment.id, payment.full_name)}
+                                disabled={approvingPaymentId === payment.id}
+                                className="px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                              >
+                                {approvingPaymentId === payment.id ? (
+                                  <>
+                                    <RefreshCw size={18} className="animate-spin" />
+                                    Processing...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Check size={18} />
+                                    Approve & Send Credentials
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleRejectPayment(payment.id, payment.full_name)}
+                                disabled={approvingPaymentId === payment.id}
+                                className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                              >
+                                <AlertCircle size={18} />
+                                Reject
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 )}
               </div>
