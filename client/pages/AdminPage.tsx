@@ -1829,23 +1829,23 @@ export default function AdminPage() {
                   <div className="space-y-6">
                     {/* Nigerian Account Info */}
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground mb-3">🇳🇬 Nigerian Account</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <div className="text-sm">
-                          <p className="text-muted-foreground">Bank</p>
-                          <p className="font-medium text-foreground">{paymentSettings.nigerian_bank_name || "—"}</p>
+                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">🇳🇬 Nigerian Account</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div className="text-xs sm:text-sm">
+                          <p className="text-muted-foreground mb-1">Bank</p>
+                          <p className="font-medium text-foreground break-words">{paymentSettings.nigerian_bank_name || "—"}</p>
                         </div>
-                        <div className="text-sm">
-                          <p className="text-muted-foreground">Account Name</p>
-                          <p className="font-medium text-foreground">{paymentSettings.nigerian_account_name || "—"}</p>
+                        <div className="text-xs sm:text-sm">
+                          <p className="text-muted-foreground mb-1">Account Name</p>
+                          <p className="font-medium text-foreground break-words">{paymentSettings.nigerian_account_name || "—"}</p>
                         </div>
-                        <div className="text-sm">
-                          <p className="text-muted-foreground">Account Number</p>
-                          <p className="font-medium text-foreground font-mono">{paymentSettings.nigerian_account_number || "—"}</p>
+                        <div className="text-xs sm:text-sm">
+                          <p className="text-muted-foreground mb-1">Account Number</p>
+                          <p className="font-medium text-foreground font-mono break-all">{paymentSettings.nigerian_account_number || "—"}</p>
                         </div>
-                        <div className="text-sm">
-                          <p className="text-muted-foreground">SWIFT</p>
-                          <p className="font-medium text-foreground font-mono">{paymentSettings.nigerian_swift_code || "—"}</p>
+                        <div className="text-xs sm:text-sm">
+                          <p className="text-muted-foreground mb-1">SWIFT</p>
+                          <p className="font-medium text-foreground font-mono break-all">{paymentSettings.nigerian_swift_code || "—"}</p>
                         </div>
                       </div>
                     </div>
