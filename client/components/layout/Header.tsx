@@ -64,21 +64,33 @@ export default function Header() {
           </nav>
 
           {/* CTA Button */}
-          {hasCredentials ? (
-            <Link
-              to="/dashboard"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              My Dashboard
-            </Link>
-          ) : (
-            <Link
-              to="/register"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              Register Now
-            </Link>
-          )}
+          <div className="flex items-center gap-3">
+            {hasCredentials ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  My Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground hover:bg-accent transition-colors gap-2"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/register"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                Register Now
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </header>
