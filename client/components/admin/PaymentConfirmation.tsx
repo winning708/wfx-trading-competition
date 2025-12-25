@@ -231,7 +231,7 @@ export function PaymentConfirmation() {
             disabled={isLoading}
             className="w-full"
           >
-            {isLoading ? "Confirming..." : "✓ Confirm Payment & Send Email"}
+            {isLoading ? "Confirming..." : "✓ Confirm Payment"}
           </Button>
         </form>
       </div>
