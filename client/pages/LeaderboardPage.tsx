@@ -120,44 +120,44 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+            <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                     Competition Status
                   </p>
-                  <p className="text-lg font-semibold text-foreground">
+                  <p className="text-sm sm:text-lg font-semibold text-foreground">
                     Registration Open
                   </p>
                 </div>
-                <Clock className="h-5 w-5 text-primary" />
+                <Clock className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
+            <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                     Registered Traders
                   </p>
-                  <p className="text-lg font-semibold text-foreground">
+                  <p className="text-sm sm:text-lg font-semibold text-foreground">
                     {traderCount > 0 ? traderCount : "0"}
                   </p>
                 </div>
-                <TrendingUp className="h-5 w-5 text-success" />
+                <TrendingUp className="h-5 w-5 text-success flex-shrink-0" />
               </div>
             </div>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">
+            <div className="rounded-lg border border-border bg-card p-3 sm:p-4 sm:col-span-2 md:col-span-1">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                     Top Profit
                   </p>
-                  <p className="text-lg font-semibold text-foreground">
+                  <p className="text-sm sm:text-lg font-semibold text-foreground">
                     {leaderboard[0]?.profitPercentage.toFixed(1)}%
                   </p>
                 </div>
-                <Trophy className="h-5 w-5 text-primary" />
+                <Trophy className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
           </div>
