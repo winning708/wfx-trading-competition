@@ -157,6 +157,7 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
         .from('traders')
         .insert([
           {
+            username: data.username,
             full_name: data.fullName,
             email: data.email,
             phone: data.phone,
