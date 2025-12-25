@@ -125,12 +125,20 @@ export default function Header() {
               // Loading state - show nothing while checking
               null
             ) : (
-              <Link
-                to="/register"
-                className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Register Now
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-primary bg-transparent px-6 text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                >
+                  Register
+                </Link>
+              </div>
             )}
           </div>
         </div>
