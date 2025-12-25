@@ -945,29 +945,19 @@ export default function RegistrationPage() {
               </div>
             </div>
 
-            <div className="mb-8 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 p-4">
-              <p className="text-sm text-muted-foreground mb-2">Payment Status</p>
-              <p className="text-2xl font-bold text-amber-600">Awaiting Admin Approval</p>
+            <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
+              <p className="text-sm text-success mb-2">✓ Status</p>
+              <p className="text-2xl font-bold text-success">Redirecting to Dashboard</p>
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Thank you for your payment! Your registration is now under review by our admin team.
-              Once approved, your trading credentials will be displayed on your dashboard.
-              We'll notify you via email when your account is approved.
+              Your registration is complete! We're redirecting you to your dashboard where you'll find your trading credentials.
+              Your dashboard will display all the information you need to get started.
             </p>
 
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="block w-full rounded-lg bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors mb-3"
-            >
-              Go to Dashboard →
-            </button>
-            <button
-              onClick={() => navigate("/leaderboard")}
-              className="block w-full rounded-lg border border-border px-4 py-3 text-center text-sm font-semibold text-foreground hover:bg-secondary transition-colors"
-            >
-              View Leaderboard
-            </button>
+            <p className="text-center text-xs text-muted-foreground mb-4">
+              Redirecting in a few moments...
+            </p>
           </div>
         </div>
       </div>
