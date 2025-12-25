@@ -26,6 +26,7 @@ import {
   assignCredentialToTrader,
   removeAssignment,
   deleteCredential,
+  sendCredentialsEmailToTrader,
   TradingCredential,
   CredentialAssignment,
 } from "@/lib/credentials";
