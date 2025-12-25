@@ -766,6 +766,18 @@ export default function AdminPage() {
               <CreditCard className="inline h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Payments</span>
             </button>
+            <button
+              onClick={() => setActiveTab("passwords")}
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                activeTab === "passwords"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+              title="Passwords"
+            >
+              🔐
+              <span className="hidden sm:inline ml-1">Passwords</span>
+            </button>
           </div>
 
           {/* Traders Tab */}
