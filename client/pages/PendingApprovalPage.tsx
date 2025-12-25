@@ -23,7 +23,12 @@ export default function PendingApprovalPage() {
       try {
         const traderEmail = localStorage.getItem("trader_email");
         if (!traderEmail) {
-          navigate("/");
+          // User navigated directly to pending approval page without registering
+          // Redirect to registration with a message
+          console.warn("No trader email found. Redirecting to registration.");
+          setTimeout(() => {
+            navigate("/register");
+          }, 1000);
           return;
         }
 
