@@ -1233,27 +1233,82 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Assignments Table */}
-              <div className="rounded-lg border border-border bg-card overflow-x-auto">
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-3">
+                {isLoadingAssignments ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">Loading assignments...</p>
+                  </div>
+                ) : assignments.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-muted-foreground">No assignments yet</p>
+                  </div>
+                ) : (
+                  assignments.map((assignment) => (
+                    <div
+                      key={assignment.id}
+                      className="rounded-lg border border-border bg-card p-4 space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted-foreground mb-1">Trader</p>
+                          <p className="font-medium text-foreground text-sm break-words">
+                            {assignment.trader?.full_name || "Unknown"}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveAssignment(assignment.id)}
+                          className="flex-shrink-0 p-2 text-destructive hover:bg-destructive/10 rounded transition-colors"
+                          title="Remove assignment"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      <div className="space-y-2 border-t border-border pt-3">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Email</p>
+                          <p className="text-sm text-foreground break-all">{assignment.trader?.email || "N/A"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Account Username</p>
+                          <p className="text-sm text-foreground font-mono break-all">{assignment.credential?.account_username || "N/A"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Account #</p>
+                          <p className="text-sm text-foreground font-mono break-all">{assignment.credential?.account_number || "N/A"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Assigned Date</p>
+                          <p className="text-sm text-foreground">{new Date(assignment.assigned_at).toLocaleDateString()}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border bg-card/50">
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Trader
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Email
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Account
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Acc #
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-left text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Assigned
                       </th>
-                      <th className="px-3 sm:px-4 py-3 text-right text-xs sm:text-sm font-semibold text-foreground">
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-foreground">
                         Actions
                       </th>
                     </tr>
@@ -1261,14 +1316,14 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingAssignments ? (
                       <tr>
-                        <td colSpan={6} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-muted-foreground">Loading assignments...</p>
+                        <td colSpan={6} className="px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">Loading assignments...</p>
                         </td>
                       </tr>
                     ) : assignments.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-muted-foreground">No assignments yet</p>
+                        <td colSpan={6} className="px-4 py-6 text-center">
+                          <p className="text-sm text-muted-foreground">No assignments yet</p>
                         </td>
                       </tr>
                     ) : (
@@ -1277,28 +1332,28 @@ export default function AdminPage() {
                           key={assignment.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
-                          <td className="px-3 sm:px-4 py-3 font-medium text-foreground text-xs sm:text-sm">
+                          <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {assignment.trader?.full_name || "Unknown"}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-muted-foreground text-xs sm:text-sm break-all">
+                          <td className="px-4 py-3 text-muted-foreground text-sm break-all">
                             {assignment.trader?.email || "N/A"}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-foreground">
+                          <td className="px-4 py-3 font-mono text-sm text-foreground">
                             {assignment.credential?.account_username || "N/A"}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 font-mono text-xs sm:text-sm text-muted-foreground">
+                          <td className="px-4 py-3 font-mono text-sm text-muted-foreground">
                             {assignment.credential?.account_number || "N/A"}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-muted-foreground">
+                          <td className="px-4 py-3 text-sm text-muted-foreground">
                             {new Date(assignment.assigned_at).toLocaleDateString()}
                           </td>
-                          <td className="px-3 sm:px-4 py-3 text-right">
+                          <td className="px-4 py-3 text-right">
                             <button
                               onClick={() => handleRemoveAssignment(assignment.id)}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
                             >
-                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="hidden sm:inline">Remove</span>
+                              <Trash2 className="h-4 w-4" />
+                              Remove
                             </button>
                           </td>
                         </tr>
