@@ -37,6 +37,8 @@ import {
   deleteTrader,
   getPaymentSettings,
   updatePaymentSettings,
+  getTradersWithPasswords,
+  handlePasswordResetRequest,
 } from "./routes/admin";
 
 export function createServer() {
