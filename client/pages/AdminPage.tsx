@@ -1876,8 +1876,8 @@ export default function AdminPage() {
               </div>
 
               {/* Pending Payments for Approval - Binance & Bybit Only */}
-              <div className="rounded-lg border border-border bg-card p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-4">
+              <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
                   💳 Pending Binance & Bybit Payments
                 </h2>
 
