@@ -105,10 +105,14 @@ export const sendCredentialsEmail: RequestHandler = async (req, res) => {
       return res.status(500).json({
         success: false,
         message: 'Failed to send credentials email. Check server logs for details.',
+        hint: 'This may be due to: (1) No credential assignment found for this trader, (2) Resend API not verified for email domain, or (3) Server configuration issue'
       });
     }
 
-    res.json({ success: true, message: 'Credentials email sent successfully' });
+    res.json({
+      success: true,
+      message: 'Credentials email sent successfully'
+    });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error('[Email] Error in sendCredentialsEmail:', errorMessage);
