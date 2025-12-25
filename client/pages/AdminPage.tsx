@@ -1809,77 +1809,78 @@ export default function AdminPage() {
                         return (
                           <div
                             key={payment.id}
-                            className="border border-border rounded-lg p-4 hover:bg-card/50 transition-colors"
+                            className="border border-border rounded-lg p-3 sm:p-4 hover:bg-card/50 transition-colors"
                           >
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                              <div>
-                                <p className="text-sm text-muted-foreground">Name</p>
-                                <p className="font-medium text-foreground">{payment.full_name}</p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                              <div className="min-w-0">
+                                <p className="text-xs text-muted-foreground">Name</p>
+                                <p className="font-medium text-foreground text-sm truncate">{payment.full_name}</p>
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs text-muted-foreground">Email</p>
+                                <p className="font-medium text-foreground break-all text-xs sm:text-sm">{payment.email}</p>
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">Email</p>
-                                <p className="font-medium text-foreground break-all text-sm">{payment.email}</p>
+                                <p className="text-xs text-muted-foreground">Country</p>
+                                <p className="font-medium text-foreground text-sm">{payment.country}</p>
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">Country</p>
-                                <p className="font-medium text-foreground">{payment.country}</p>
-                              </div>
-                              <div>
-                                <p className="text-sm text-muted-foreground">Payment Method</p>
-                                <span className={`px-3 py-1 rounded-full text-sm font-medium inline-block ${methodBadgeClass}`}>
+                                <p className="text-xs text-muted-foreground">Payment</p>
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${methodBadgeClass}`}>
                                   {payment.payment_method === 'binance' ? '🟡 Binance' : '💜 Bybit'}
                                 </span>
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 pb-4 border-b border-border">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 pb-4 border-b border-border">
                               <div>
-                                <p className="text-sm text-muted-foreground">Amount</p>
-                                <p className="font-medium text-foreground">$15 USD</p>
+                                <p className="text-xs text-muted-foreground">Amount</p>
+                                <p className="font-medium text-foreground text-sm">$15 USD</p>
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">Registered</p>
-                                <p className="font-medium text-foreground text-sm">
+                                <p className="text-xs text-muted-foreground">Registered</p>
+                                <p className="font-medium text-foreground text-xs sm:text-sm">
                                   {new Date(payment.registered_at).toLocaleDateString()}
                                 </p>
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">Status</p>
-                                <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded inline-block text-sm">
+                                <p className="text-xs text-muted-foreground">Status</p>
+                                <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded text-xs inline-block">
                                   Pending
                                 </p>
                               </div>
                               <div>
-                                <p className="text-sm text-muted-foreground">User ID</p>
+                                <p className="text-xs text-muted-foreground">ID</p>
                                 <p className="font-medium text-foreground text-xs font-mono">{payment.id.substring(0, 8)}...</p>
                               </div>
                             </div>
 
-                            <div className="flex gap-3 justify-end">
+                            <div className="flex flex-col sm:flex-row gap-2 justify-end">
                               <button
                                 onClick={() => handleApprovePayment(payment.id, payment.full_name)}
                                 disabled={approvingPaymentId === payment.id}
-                                className="px-4 py-2 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start gap-2"
                               >
                                 {approvingPaymentId === payment.id ? (
                                   <>
-                                    <RefreshCw size={18} className="animate-spin" />
-                                    Processing...
+                                    <RefreshCw size={16} className="animate-spin" />
+                                    <span className="hidden sm:inline">Processing...</span>
                                   </>
                                 ) : (
                                   <>
-                                    <Check size={18} />
-                                    Approve & Send Credentials
+                                    <Check size={16} />
+                                    <span className="hidden md:inline">Approve & Send Credentials</span>
+                                    <span className="md:hidden">Approve</span>
                                   </>
                                 )}
                               </button>
                               <button
                                 onClick={() => handleRejectPayment(payment.id, payment.full_name)}
                                 disabled={approvingPaymentId === payment.id}
-                                className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                               >
-                                <AlertCircle size={18} />
-                                Reject
+                                <AlertCircle size={16} />
+                                <span className="hidden sm:inline">Reject</span>
                               </button>
                             </div>
                           </div>
