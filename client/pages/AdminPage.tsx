@@ -1625,22 +1625,23 @@ export default function AdminPage() {
           {activeTab === "payments" && (
             <div className="space-y-8">
               {/* Payment Account Settings */}
-              <div className="rounded-lg border border-primary/30 bg-primary/5 p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h2 className="text-xl font-semibold text-foreground mb-1">
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+                  <div className="flex-1">
+                    <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-1">
                       💰 Payment Account Settings
                     </h2>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Configure your bank account for Nigerian payments and crypto wallets for international payments
                     </p>
                   </div>
                   <button
                     onClick={() => setShowPaymentSettingsForm(!showPaymentSettingsForm)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium whitespace-nowrap flex-shrink-0"
                   >
-                    <CreditCard className="h-4 w-4" />
-                    {showPaymentSettingsForm ? "Cancel" : "Edit Settings"}
+                    <CreditCard className="h-4 w-4 flex-shrink-0" />
+                    <span className="hidden sm:inline">{showPaymentSettingsForm ? "Cancel" : "Edit Settings"}</span>
+                    <span className="sm:hidden">{showPaymentSettingsForm ? "✕" : "✎"}</span>
                   </button>
                 </div>
 
