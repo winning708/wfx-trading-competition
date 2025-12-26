@@ -29,6 +29,11 @@ export default function LoginPage() {
       return;
     }
 
+    if (!password.trim()) {
+      setError("Please enter your password");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -38,12 +43,13 @@ export default function LoginPage() {
       // Check if user exists by email or username
       let query = supabase
         .from("traders")
-        .select("id, full_name, email, username, payment_status");
+        .select("id, full_name, email, username, payment_status, trader_password");
 
       if (isEmail) {
         query = query.eq("email", credential.toLowerCase().trim());
       } else {
-        query = query.eq("username", credential.toLowerCase().trim());
+        // Don't lowercase username - usernames are case-sensitive
+        query = query.eq("username", credential.trim());
       }
 
       const { data: trader, error: fetchError } = await query.maybeSingle();
@@ -62,7 +68,14 @@ export default function LoginPage() {
         return;
       }
 
-      // User found
+      // Verify password
+      if (trader.trader_password !== password) {
+        setError("Incorrect password. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // User found and password verified
       setUserStatus({
         fullName: trader.full_name,
         email: trader.email,
