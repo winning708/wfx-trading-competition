@@ -100,6 +100,8 @@ export function createServer() {
   app.post("/api/admin/payment-settings", updatePaymentSettings);
   app.get("/api/admin/traders-with-passwords", getTradersWithPasswords);
   app.post("/api/admin/password-reset-request", handlePasswordResetRequest);
+  app.get("/api/admin/password-reset-requests", getPasswordResetRequests);
+  app.post("/api/admin/password-reset-requests/:requestId/resolve", updatePasswordResetRequestStatus);
 
   return app;
 }
