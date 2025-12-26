@@ -814,6 +814,18 @@ export default function AdminPage() {
               🔐
               <span className="hidden sm:inline ml-1">Passwords</span>
             </button>
+            <button
+              onClick={() => setActiveTab("password-requests")}
+              className={`px-2 sm:px-3 md:px-4 py-3 text-xs sm:text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                activeTab === "password-requests"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+              title="Password Requests"
+            >
+              ❓
+              <span className="hidden sm:inline ml-1">Password Requests</span>
+            </button>
           </div>
 
           {/* Traders Tab */}
