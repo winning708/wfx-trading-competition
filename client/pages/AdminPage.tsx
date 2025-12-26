@@ -73,6 +73,11 @@ export default function AdminPage() {
   const [tradersWithPasswords, setTradersWithPasswords] = useState<any[]>([]);
   const [isLoadingPasswords, setIsLoadingPasswords] = useState(false);
 
+  // Password reset requests state
+  const [passwordResetRequests, setPasswordResetRequests] = useState<any[]>([]);
+  const [isLoadingPasswordRequests, setIsLoadingPasswordRequests] = useState(false);
+  const [passwordRequestSearch, setPasswordRequestSearch] = useState("");
+
   // Traders state
   const [traders, setTraders] = useState<Trader[]>([]);
   const [isLoadingTraders, setIsLoadingTraders] = useState(true);
