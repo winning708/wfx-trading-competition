@@ -2085,6 +2085,107 @@ export default function AdminPage() {
                 )}
               </div>
 
+              {/* Pending Bank Transfer Payments */}
+              <div className="rounded-lg border border-border bg-card p-4 md:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
+                  🏦 Pending Bank Transfer Payments
+                </h2>
+
+                {isLoadingPendingPayments ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Loading pending payments...</p>
+                  </div>
+                ) : pendingPayments.filter((p) => p.payment_method === 'bank-transfer').length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No pending bank transfer payments at this time</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {pendingPayments
+                      .filter((p) => p.payment_method === 'bank-transfer')
+                      .map((payment) => (
+                        <div
+                          key={payment.id}
+                          className="border border-border rounded-lg p-3 sm:p-4 hover:bg-card/50 transition-colors"
+                        >
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
+                            <div className="min-w-0">
+                              <p className="text-xs text-muted-foreground">Name</p>
+                              <p className="font-medium text-foreground text-sm truncate">{payment.full_name}</p>
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-xs text-muted-foreground">Email</p>
+                              <p className="font-medium text-foreground break-all text-xs sm:text-sm">{payment.email}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Country</p>
+                              <p className="font-medium text-foreground text-sm">{payment.country}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Payment</p>
+                              <span className="px-2 py-1 rounded-full text-xs font-medium inline-block bg-blue-500/20 text-blue-700">
+                                🏦 Bank Transfer
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 pb-4 border-b border-border">
+                            <div>
+                              <p className="text-xs text-muted-foreground">Amount</p>
+                              <p className="font-medium text-foreground text-sm">$15 USD</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Registered</p>
+                              <p className="font-medium text-foreground text-xs sm:text-sm">
+                                {new Date(payment.registered_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">Status</p>
+                              <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded text-xs inline-block">
+                                Pending
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">ID</p>
+                              <p className="font-medium text-foreground text-xs font-mono">{payment.id.substring(0, 8)}...</p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col sm:flex-row gap-2 justify-end">
+                            <button
+                              onClick={() => handleApprovePayment(payment.id, payment.full_name)}
+                              disabled={approvingPaymentId === payment.id}
+                              className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start gap-2"
+                            >
+                              {approvingPaymentId === payment.id ? (
+                                <>
+                                  <RefreshCw size={16} className="animate-spin" />
+                                  <span className="hidden sm:inline">Processing...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Check size={16} />
+                                  <span className="hidden md:inline">Approve & Send Credentials</span>
+                                  <span className="md:hidden">Approve</span>
+                                </>
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleRejectPayment(payment.id, payment.full_name)}
+                              disabled={approvingPaymentId === payment.id}
+                              className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                              <AlertCircle size={16} />
+                              <span className="hidden sm:inline">Reject</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+
               {/* Pending Payments for Approval - Binance & Bybit Only */}
               <div className="rounded-lg border border-border bg-card p-4 md:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
