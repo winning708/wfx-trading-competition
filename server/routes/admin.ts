@@ -329,6 +329,28 @@ export const handlePasswordResetRequest: RequestHandler = async (req, res) => {
       });
     }
 
+    // Store password reset request in database
+    try {
+      const { error: insertError } = await supabase
+        .from('password_reset_requests')
+        .insert([
+          {
+            trader_id: trader.id,
+            email: trader.email,
+            full_name: trader.full_name,
+            status: 'pending',
+          },
+        ]);
+
+      if (insertError) {
+        console.error('[Admin] Error storing password reset request:', insertError);
+        // Don't fail the request if storing fails
+      }
+    } catch (storeError) {
+      console.warn('[Admin] Warning: Could not store password reset request:', storeError);
+      // Don't fail the request if storing fails
+    }
+
     // Send email to admin about password reset request
     try {
       await sendAdminNotification({
@@ -339,7 +361,7 @@ export const handlePasswordResetRequest: RequestHandler = async (req, res) => {
         currency: 'USD',
         country: 'Unknown',
         paymentMethod: 'password-reset',
-        dashboardUrl: `${process.env.BACKEND_URL || 'http://localhost:5173'}/admin#passwords`,
+        dashboardUrl: `${process.env.BACKEND_URL || 'http://localhost:5173'}/admin#password-requests`,
       });
     } catch (emailError) {
       console.warn('[Admin] Warning: Could not send admin notification:', emailError);
