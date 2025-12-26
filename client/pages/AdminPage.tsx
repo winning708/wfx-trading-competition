@@ -199,6 +199,13 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  // Load password reset requests when tab changes
+  useEffect(() => {
+    if (activeTab === "password-requests") {
+      loadPasswordResetRequests();
+    }
+  }, [activeTab]);
+
   const loadTradersWithPasswords = async () => {
     setIsLoadingPasswords(true);
     try {
@@ -215,12 +222,36 @@ export default function AdminPage() {
     }
   };
 
+  const loadPasswordResetRequests = async () => {
+    setIsLoadingPasswordRequests(true);
+    try {
+      const response = await fetch('/api/admin/password-reset-requests');
+      const data = await response.json();
+      if (data.success) {
+        setPasswordResetRequests(data.requests || []);
+      }
+    } catch (error) {
+      console.error("Error loading password reset requests:", error);
+      setPasswordResetRequests([]);
+    } finally {
+      setIsLoadingPasswordRequests(false);
+    }
+  };
+
   const filteredTradersWithPasswords = tradersWithPasswords.filter(trader => {
     const searchLower = passwordSearch.toLowerCase();
     return (
       trader.username?.toLowerCase().includes(searchLower) ||
       trader.email?.toLowerCase().includes(searchLower) ||
       trader.full_name?.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const filteredPasswordResetRequests = passwordResetRequests.filter(request => {
+    const searchLower = passwordRequestSearch.toLowerCase();
+    return (
+      request.email?.toLowerCase().includes(searchLower) ||
+      request.full_name?.toLowerCase().includes(searchLower)
     );
   });
 
