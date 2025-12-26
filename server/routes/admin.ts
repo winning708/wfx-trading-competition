@@ -380,6 +380,78 @@ export const handlePasswordResetRequest: RequestHandler = async (req, res) => {
 };
 
 /**
+ * Get Password Reset Requests
+ * GET /api/admin/password-reset-requests
+ */
+export const getPasswordResetRequests: RequestHandler = async (req, res) => {
+  try {
+    const { data: requests, error } = await supabase
+      .from('password_reset_requests')
+      .select('*')
+      .order('requested_at', { ascending: false });
+
+    if (error) {
+      console.error('[Admin] Error fetching password reset requests:', error);
+      return res.status(500).json({ success: false, message: 'Failed to fetch password reset requests' });
+    }
+
+    res.json({ success: true, requests: requests || [] });
+  } catch (error) {
+    console.error('[Admin] Error in getPasswordResetRequests:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
+ * Update Password Reset Request Status
+ * POST /api/admin/password-reset-requests/:requestId/resolve
+ */
+export const updatePasswordResetRequestStatus: RequestHandler = async (req, res) => {
+  try {
+    const { requestId } = req.params;
+    const { status, notes, resolvedBy } = req.body;
+
+    if (!requestId) {
+      return res.status(400).json({ success: false, message: 'Request ID is required' });
+    }
+
+    if (!status) {
+      return res.status(400).json({ success: false, message: 'Status is required' });
+    }
+
+    const updateData: any = {
+      status,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (status !== 'pending') {
+      updateData.resolved_at = new Date().toISOString();
+      if (resolvedBy) updateData.resolved_by = resolvedBy;
+    }
+
+    if (notes) {
+      updateData.notes = notes;
+    }
+
+    const { error } = await supabase
+      .from('password_reset_requests')
+      .update(updateData)
+      .eq('id', requestId);
+
+    if (error) {
+      console.error('[Admin] Error updating password reset request:', error);
+      return res.status(500).json({ success: false, message: 'Failed to update password reset request' });
+    }
+
+    console.log('[Admin] ✅ Password reset request updated:', { id: requestId, status });
+    res.json({ success: true, message: 'Password reset request updated successfully' });
+  } catch (error) {
+    console.error('[Admin] Error in updatePasswordResetRequestStatus:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
  * Get Admin Payment Settings
  * GET /api/admin/payment-settings
  */
