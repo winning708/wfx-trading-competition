@@ -33,12 +33,13 @@ const App = () => (
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/admin-login" element={<AdminLoginPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/pending-approval" element={<PendingApprovalPage />} />
           <Route path="/rules" element={<RulesPage />} />
           <Route path="/monitoring" element={<MonitoringPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin" element={<ProtectedAdminRoute />} />
           <Route path="/winners" element={<WinnersPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
