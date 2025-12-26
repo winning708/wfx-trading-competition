@@ -104,6 +104,15 @@ export default function Header() {
 
           {/* CTA Button */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Admin Link */}
+            <Link
+              to="/admin-login"
+              className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors flex-shrink-0"
+              title="Admin Panel"
+            >
+              🔐
+            </Link>
+
             {isPaymentApproved === true && !isRegisterPage ? (
               <>
                 <Link
