@@ -2186,6 +2186,20 @@ export default function AdminPage() {
                 )}
               </div>
 
+              {/* Bank Transfer Instructions */}
+              <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6">
+                <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">
+                  <strong>ℹ️ Bank Transfer Approval Workflow</strong>
+                </p>
+                <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-2 list-disc list-inside">
+                  <li>Users who select "Bank Transfer" during registration will appear in the "Pending Bank Transfer Payments" section above</li>
+                  <li>Check your bank account to confirm the user has sent their payment</li>
+                  <li>Click the <span className="font-semibold">"Approve & Send Credentials"</span> button once payment is confirmed</li>
+                  <li>The user's payment status will be updated to "approved" and they'll immediately receive their trading credentials</li>
+                  <li>Use the "Reject" button if the payment is fraudulent or if you need to deny the registration</li>
+                </ul>
+              </div>
+
               {/* Pending Payments for Approval - Binance & Bybit Only */}
               <div className="rounded-lg border border-border bg-card p-4 md:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-4">
