@@ -733,13 +733,28 @@ export default function AdminPage() {
       <div className="px-3 py-6 md:px-4 md:py-12 sm:px-3">
         <div className="container mx-auto">
           {/* Header */}
-          <div className="mb-8 md:mb-12">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
-              Admin Panel
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Manage traders, upload credentials, and assign accounts
-            </p>
+          <div className="mb-8 md:mb-12 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-2">
+                Admin Panel
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Manage traders, upload credentials, and assign accounts
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                if (window.confirm("Are you sure you want to logout?")) {
+                  localStorage.removeItem("admin_token");
+                  localStorage.removeItem("admin_authenticated");
+                  navigate("/admin-login");
+                }
+              }}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors font-medium text-sm whitespace-nowrap"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </button>
           </div>
 
           {/* Tabs */}
