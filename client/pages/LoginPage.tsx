@@ -7,6 +7,7 @@ import { AlertCircle, CheckCircle, Mail, ArrowRight, Loader } from "lucide-react
 export default function LoginPage() {
   const navigate = useNavigate();
   const [credential, setCredential] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
