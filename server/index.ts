@@ -92,6 +92,7 @@ export function createServer() {
   app.post("/api/email/send-credentials", sendCredentialsEmail);
 
   // Admin routes
+  app.post("/api/admin/verify-password", verifyAdminPassword);
   app.get("/api/admin/payments/pending", getPendingPayments);
   app.post("/api/admin/payments/:traderId/approve", approvePayment);
   app.post("/api/admin/payments/:traderId/reject", rejectPayment);
