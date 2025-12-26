@@ -13,6 +13,47 @@ const supabase = createClient(
 );
 
 /**
+ * Verify Admin Password
+ * POST /api/admin/verify-password
+ */
+export const verifyAdminPassword: RequestHandler = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'Password is required' });
+    }
+
+    // Get admin password from environment variable
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      console.error('[Admin] ERROR: ADMIN_PASSWORD environment variable is not set!');
+      return res.status(500).json({ success: false, message: 'Admin authentication is not configured' });
+    }
+
+    // Verify password (simple comparison - in production, consider hashing)
+    if (password === adminPassword) {
+      // Generate a simple token (in production, use JWT or similar)
+      const token = Buffer.from(`admin:${Date.now()}`).toString('base64');
+
+      console.log('[Admin] ✅ Admin login successful');
+      return res.json({
+        success: true,
+        message: 'Admin authenticated',
+        token
+      });
+    } else {
+      console.warn('[Admin] ⚠️ Failed admin login attempt with incorrect password');
+      return res.status(401).json({ success: false, message: 'Incorrect admin password' });
+    }
+  } catch (error) {
+    console.error('[Admin] Error in verifyAdminPassword:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
  * Get Pending Payments
  * GET /api/admin/payments/pending
  */
