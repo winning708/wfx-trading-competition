@@ -2326,6 +2326,159 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Password Reset Requests Tab */}
+          {activeTab === "password-requests" && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="rounded-lg border border-border bg-card/50 p-4 md:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
+                  ❓ Password Reset Requests
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                  View and manage password reset requests from users
+                </p>
+
+                {/* Search Bar */}
+                <Input
+                  type="text"
+                  value={passwordRequestSearch}
+                  onChange={(e) => setPasswordRequestSearch(e.target.value)}
+                  placeholder="Search by email or name..."
+                  className="max-w-md"
+                />
+              </div>
+
+              {/* Loading State */}
+              {isLoadingPasswordRequests ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Loading password reset requests...</p>
+                </div>
+              ) : filteredPasswordResetRequests.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    {passwordRequestSearch
+                      ? "No password reset requests found"
+                      : "No password reset requests yet"}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredPasswordResetRequests.map((request) => (
+                    <div
+                      key={request.id}
+                      className="rounded-lg border border-border bg-card p-4 sm:p-6 hover:border-primary/50 transition-colors"
+                    >
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Email</p>
+                          <p className="font-medium text-foreground break-all">{request.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Name</p>
+                          <p className="font-medium text-foreground">{request.full_name || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Status</p>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            request.status === 'pending'
+                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                              : request.status === 'resolved'
+                              ? 'bg-success/10 text-success'
+                              : 'bg-destructive/10 text-destructive'
+                          }`}>
+                            {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Requested</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(request.requested_at).toLocaleDateString()} {new Date(request.requested_at).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {request.notes && (
+                        <div className="mb-4 p-3 rounded bg-card/50 border border-border/50">
+                          <p className="text-xs text-muted-foreground mb-1">Admin Notes</p>
+                          <p className="text-sm text-foreground">{request.notes}</p>
+                        </div>
+                      )}
+
+                      {request.status === 'pending' && (
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(
+                                  `/api/admin/password-reset-requests/${request.id}/resolve`,
+                                  {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      status: 'resolved',
+                                      resolvedBy: 'Admin',
+                                      notes: 'Password reset completed'
+                                    })
+                                  }
+                                );
+                                if (response.ok) {
+                                  loadPasswordResetRequests();
+                                }
+                              } catch (error) {
+                                console.error('Error resolving password request:', error);
+                              }
+                            }}
+                            className="flex-1 px-4 py-2 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors text-sm font-medium"
+                          >
+                            ✓ Mark Resolved
+                          </button>
+                          <button
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(
+                                  `/api/admin/password-reset-requests/${request.id}/resolve`,
+                                  {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      status: 'rejected',
+                                      resolvedBy: 'Admin'
+                                    })
+                                  }
+                                );
+                                if (response.ok) {
+                                  loadPasswordResetRequests();
+                                }
+                              } catch (error) {
+                                console.error('Error rejecting password request:', error);
+                              }
+                            }}
+                            className="flex-1 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-sm font-medium"
+                          >
+                            ✕ Reject
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Info Box */}
+              <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6">
+                <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                  <strong>ℹ️ Password Reset Management</strong>
+                </p>
+                <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
+                  <li>Users can submit password reset requests from the login page</li>
+                  <li>Review each request and contact the user directly via their email</li>
+                  <li>After helping reset their password, mark the request as "Resolved"</li>
+                  <li>Use "Reject" to dismiss invalid or spam requests</li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
