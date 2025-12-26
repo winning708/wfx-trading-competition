@@ -30,6 +30,7 @@ import {
   sendCredentialsEmail,
 } from "./routes/email";
 import {
+  verifyAdminPassword,
   getPendingPayments,
   approvePayment,
   rejectPayment,
