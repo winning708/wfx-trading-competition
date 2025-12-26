@@ -32,8 +32,18 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       return res.status(500).json({ success: false, message: 'Admin authentication is not configured' });
     }
 
+    // Trim both for comparison safety
+    const trimmedPassword = password.trim();
+    const trimmedAdminPassword = adminPassword.trim();
+
+    // Debug logging
+    console.log('[Admin] Password verification attempt:');
+    console.log('  Received password length:', trimmedPassword.length);
+    console.log('  Expected password length:', trimmedAdminPassword.length);
+    console.log('  Match:', trimmedPassword === trimmedAdminPassword);
+
     // Verify password (simple comparison - in production, consider hashing)
-    if (password === adminPassword) {
+    if (trimmedPassword === trimmedAdminPassword) {
       // Generate a simple token (in production, use JWT or similar)
       const token = Buffer.from(`admin:${Date.now()}`).toString('base64');
 
@@ -45,6 +55,8 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       });
     } else {
       console.warn('[Admin] ⚠️ Failed admin login attempt with incorrect password');
+      console.warn('[Admin] Received:', JSON.stringify(trimmedPassword));
+      console.warn('[Admin] Expected:', JSON.stringify(trimmedAdminPassword));
       return res.status(401).json({ success: false, message: 'Incorrect admin password' });
     }
   } catch (error) {
