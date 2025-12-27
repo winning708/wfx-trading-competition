@@ -20,21 +20,25 @@ export default defineConfig({
       name: "express-middleware",
       apply: "serve",
       async configureServer(server) {
-        // Dynamically import server with proper error handling
-        try {
-          // Import using require in CJS mode or dynamic import
-          const { createServer } = await import("./server/index.ts");
-          const app = createServer();
-
-          // Add Express app to Vite's middleware stack BEFORE other middlewares
-          // This ensures API routes are handled first
-          server.middlewares.use(app);
-        } catch (error) {
-          console.error(
-            "[Vite] Failed to load Express server:",
-            (error as Error).message,
-          );
-        }
+        // Return middleware function that handles API requests
+        return () => {
+          server.middlewares.use(async (req, res, next) => {
+            // Let Express handle API routes
+            if (req.url.startsWith("/api/")) {
+              try {
+                const { createServer } = await import("./server/index.ts");
+                const app = createServer();
+                app(req, res, next);
+              } catch (error) {
+                console.error("[Vite] Express app error:", error);
+                res.statusCode = 500;
+                res.end("Internal server error");
+              }
+            } else {
+              next();
+            }
+          });
+        };
       },
     },
   ],
