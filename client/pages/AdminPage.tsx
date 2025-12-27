@@ -949,6 +949,9 @@ export default function AdminPage() {
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Trader #{index + 1}
+                          </p>
                           <p className="font-semibold text-foreground truncate">
                             {trader.username}
                           </p>
