@@ -81,6 +81,9 @@ export default function AdminPage() {
   const [isLoadingPasswordRequests, setIsLoadingPasswordRequests] = useState(false);
   const [passwordRequestSearch, setPasswordRequestSearch] = useState("");
 
+  // Credential password visibility state
+  const [visibleCredentialPasswords, setVisibleCredentialPasswords] = useState<Set<string>>(new Set());
+
   // Traders state
   const [traders, setTraders] = useState<Trader[]>([]);
   const [isLoadingTraders, setIsLoadingTraders] = useState(true);
