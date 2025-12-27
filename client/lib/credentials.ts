@@ -12,6 +12,7 @@ export interface TradingCredential {
   account_password: string;
   account_number: string;
   broker: string;
+  server_name: string;
   notes?: string;
   is_active: boolean;
   created_at: string;
