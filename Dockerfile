@@ -29,7 +29,7 @@ RUN pnpm install --frozen-lockfile --prod=false
 # Copy application code
 COPY . .
 
-# Build client and server
+# Build client only
 RUN pnpm run build
 
 # Remove development dependencies
