@@ -29,12 +29,19 @@ function expressPlugin(): Plugin {
     name: "express-plugin",
     apply: "serve", // Only apply during development (serve mode)
     async configureServer(server) {
-      // Only import server in dev mode
-      const { createServer: createExpressApp } = await import("./server");
-      const app = createExpressApp();
+      try {
+        // Only import server in dev mode using dynamic import
+        const serverModule = await import("./server/index.ts");
+        const createExpressApp = serverModule.createServer || serverModule.default;
 
-      // Add Express app as middleware to Vite dev server
-      server.middlewares.use(app);
+        if (createExpressApp) {
+          const app = createExpressApp();
+          // Add Express app as middleware to Vite dev server
+          server.middlewares.use(app);
+        }
+      } catch (error) {
+        console.warn("Failed to load Express server for dev mode:", error);
+      }
     },
   };
 }
