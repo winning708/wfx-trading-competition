@@ -26,16 +26,14 @@ export default defineConfig({
           const { createServer } = await import("./server/index.ts");
           const app = createServer();
 
-          // Use the Express app as middleware for all requests
-          return () => {
-            server.middlewares.use(app);
-          };
+          // Add Express app to Vite's middleware stack BEFORE other middlewares
+          // This ensures API routes are handled first
+          server.middlewares.use(app);
         } catch (error) {
-          console.warn(
-            "[Vite] Express server middleware disabled:",
+          console.error(
+            "[Vite] Failed to load Express server:",
             (error as Error).message,
           );
-          return undefined;
         }
       },
     },
