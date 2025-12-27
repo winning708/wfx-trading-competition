@@ -7,19 +7,19 @@
       "memory": 1024
     }
   },
-  "env": [
-    "VITE_SUPABASE_URL",
-    "VITE_SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "RESEND_API_KEY",
-    "FLUTTERWAVE_PUBLIC_KEY",
-    "FLUTTERWAVE_SECRET_KEY",
-    "FLUTTERWAVE_SECRET_HASH",
-    "BINANCE_MERCHANT_ID",
-    "BYBIT_USDT_WALLET_ADDRESS",
-    "EMAIL_FROM",
-    "ADMIN_PASSWORD"
-  ],
+  "env": {
+    "VITE_SUPABASE_URL": "@vite_supabase_url",
+    "VITE_SUPABASE_ANON_KEY": "@vite_supabase_anon_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
+    "RESEND_API_KEY": "@resend_api_key",
+    "FLUTTERWAVE_PUBLIC_KEY": "@flutterwave_public_key",
+    "FLUTTERWAVE_SECRET_KEY": "@flutterwave_secret_key",
+    "FLUTTERWAVE_SECRET_HASH": "@flutterwave_secret_hash",
+    "BINANCE_MERCHANT_ID": "@binance_merchant_id",
+    "BYBIT_USDT_WALLET_ADDRESS": "@bybit_usdt_wallet_address",
+    "EMAIL_FROM": "@email_from",
+    "ADMIN_PASSWORD": "@admin_password"
+  },
   "rewrites": [
     {
       "source": "/api/:path*",
