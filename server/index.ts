@@ -58,6 +58,20 @@ export function createServer() {
     res.json({ message: ping });
   });
 
+  // Test endpoint to verify environment variables
+  app.get("/api/test-env", (_req, res) => {
+    const adminPasswordSet = !!process.env.ADMIN_PASSWORD;
+    const adminPasswordLength = process.env.ADMIN_PASSWORD?.length || 0;
+    const adminPasswordFirstChars = process.env.ADMIN_PASSWORD?.substring(0, 3) || '';
+
+    res.json({
+      adminPasswordExists: adminPasswordSet,
+      adminPasswordLength,
+      adminPasswordFirstChars,
+      allEnvKeys: Object.keys(process.env).filter(k => k.includes('ADMIN') || k.includes('SUPABASE'))
+    });
+  });
+
   app.get("/api/demo", handleDemo);
 
   // MyFXBook Sync routes
