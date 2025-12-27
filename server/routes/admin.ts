@@ -107,7 +107,7 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error("[Admin] Error in verifyAdminPassword:", error);
     console.log("[Admin] ============================================");
-    res.status(500).json({ success: false, message: "Internal server error" });
+    return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
