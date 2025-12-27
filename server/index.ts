@@ -49,34 +49,23 @@ export function createServer() {
 
   // Middleware
   app.use(cors());
-
-  // Add debugging middleware BEFORE json parser
-  app.use((req, res, next) => {
-    console.log('[Express] Incoming request:');
-    console.log('  Method:', req.method);
-    console.log('  Path:', req.path);
-    console.log('  Headers:', {
-      'content-type': req.headers['content-type'],
-      'content-length': req.headers['content-length'],
-    });
-
-    // For POST/PUT requests, capture the raw body
-    if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-      let rawBody = '';
-      req.on('data', (chunk) => {
-        rawBody += chunk.toString();
-      });
-      req.on('end', () => {
-        console.log('[Express] Raw body received:', rawBody.substring(0, 300));
-        next();
-      });
-    } else {
-      next();
-    }
-  });
-
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  // Add debugging middleware AFTER json parser to log parsed bodies
+  app.use((req, res, next) => {
+    console.log('[Express] Request processed:');
+    console.log('  Method:', req.method);
+    console.log('  Path:', req.path);
+    console.log('  Body present:', !!req.body);
+    if (req.body && typeof req.body === 'object') {
+      console.log('  Body keys:', Object.keys(req.body));
+      if (req.body.password) {
+        console.log('  Password in body:', 'Yes, length:', req.body.password.length);
+      }
+    }
+    next();
+  });
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
