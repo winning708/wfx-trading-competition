@@ -340,6 +340,16 @@ export default function DashboardPage() {
 
           {/* Credentials Card */}
           <div className="rounded-lg border-2 border-primary bg-primary/5 p-6 md:p-8 space-y-6 mb-8">
+            {!competitionStarted && (
+              <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-3 md:p-4 -mt-3 -mx-3 -mt-6 rounded-b-none">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs md:text-sm text-blue-600">
+                    Your account number and username are available now. Your password will unlock on <strong>{getFormattedCompetitionStartDate()}</strong> to prevent early trading.
+                  </p>
+                </div>
+              </div>
+            )}
             {/* Broker Section */}
             <div className="space-y-2">
               <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
