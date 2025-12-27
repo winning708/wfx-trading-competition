@@ -43,6 +43,8 @@ export default function DashboardPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [competitionStarted, setCompetitionStarted] = useState(false);
+  const [timeUntilStart, setTimeUntilStart] = useState(getTimeUntilStart());
 
   useEffect(() => {
     const fetchTraderData = async () => {
