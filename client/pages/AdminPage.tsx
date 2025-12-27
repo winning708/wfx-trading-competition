@@ -1186,6 +1186,22 @@ export default function AdminPage() {
                       </div>
 
                       <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs text-muted-foreground">Password</p>
+                          <button
+                            onClick={() => togglePasswordVisibility(cred.id)}
+                            className="p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded transition-colors"
+                            title={visibleCredentialPasswords.has(cred.id) ? "Hide password" : "Show password"}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <p className="text-sm text-foreground font-mono break-all">
+                          {visibleCredentialPasswords.has(cred.id) ? cred.account_password : "••••••••"}
+                        </p>
+                      </div>
+
+                      <div>
                         <p className="text-xs text-muted-foreground mb-2">Status</p>
                         <span
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
