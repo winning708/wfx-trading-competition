@@ -362,6 +362,16 @@ export default function DashboardPage() {
               </p>
             </div>
 
+            {/* Server Name */}
+            <div className="space-y-2">
+              <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
+                Server
+              </p>
+              <p className="text-lg md:text-xl font-semibold text-foreground font-mono">
+                {credential.server_name}
+              </p>
+            </div>
+
             <div className="border border-border"></div>
 
             {/* Account Number */}
