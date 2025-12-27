@@ -39,7 +39,7 @@ export default function LeaderboardPage() {
         const status = await testSupabaseConnection();
         setConnectionStatus(status);
 
-        console.log('Connection status:', status);
+        console.log("Connection status:", status);
 
         if (!status.connected) {
           setError(`Connection error: ${status.error}`);
@@ -53,10 +53,11 @@ export default function LeaderboardPage() {
         setTraderCount(count);
 
         if (data.length === 0) {
-          console.warn('No traders found in database');
+          console.warn("No traders found in database");
         }
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Failed to load leaderboard';
+        const errorMsg =
+          error instanceof Error ? error.message : "Failed to load leaderboard";
         console.error("Error fetching leaderboard:", error);
         setError(errorMsg);
       } finally {
@@ -81,7 +82,7 @@ export default function LeaderboardPage() {
       const count = await getTraderCount();
       setTraderCount(count);
     } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Failed to refresh';
+      const errorMsg = err instanceof Error ? err.message : "Failed to refresh";
       setError(errorMsg);
     } finally {
       setIsLoading(false);
@@ -114,12 +115,16 @@ export default function LeaderboardPage() {
                 className="p-2 rounded-full hover:bg-card transition-colors disabled:opacity-50"
                 title="Refresh leaderboard"
               >
-                <RefreshCw className={`h-5 w-5 text-primary ${isLoading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`h-5 w-5 text-primary ${isLoading ? "animate-spin" : ""}`}
+                />
               </button>
               {isLive && (
                 <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-full bg-success/10 whitespace-nowrap">
                   <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-                  <span className="text-xs sm:text-sm font-medium text-success">Live</span>
+                  <span className="text-xs sm:text-sm font-medium text-success">
+                    Live
+                  </span>
                 </div>
               )}
             </div>
@@ -200,7 +205,9 @@ export default function LeaderboardPage() {
           {connectionStatus && import.meta.env.DEV && isAdmin && (
             <div className="mb-8 rounded-lg border border-border bg-card/30 p-4">
               <p className="text-xs text-muted-foreground font-mono">
-                <strong>Debug Info:</strong> Connected: {connectionStatus.connected ? '✓' : '✗'} | Performance Data: {connectionStatus.performanceDataCount}
+                <strong>Debug Info:</strong> Connected:{" "}
+                {connectionStatus.connected ? "✓" : "✗"} | Performance Data:{" "}
+                {connectionStatus.performanceDataCount}
               </p>
             </div>
           )}
@@ -213,7 +220,9 @@ export default function LeaderboardPage() {
               </div>
             ) : leaderboard.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No traders registered yet</p>
+                <p className="text-muted-foreground">
+                  No traders registered yet
+                </p>
               </div>
             ) : (
               leaderboard.map((trader) => (
@@ -236,12 +245,20 @@ export default function LeaderboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <p className="text-muted-foreground mb-1">Start Balance</p>
-                      <p className="font-medium text-foreground">${trader.startingBalance.toFixed(2)}</p>
+                      <p className="text-muted-foreground mb-1">
+                        Start Balance
+                      </p>
+                      <p className="font-medium text-foreground">
+                        ${trader.startingBalance.toFixed(2)}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground mb-1">Current Balance</p>
-                      <p className="font-medium text-foreground">${trader.currentBalance.toFixed(2)}</p>
+                      <p className="text-muted-foreground mb-1">
+                        Current Balance
+                      </p>
+                      <p className="font-medium text-foreground">
+                        ${trader.currentBalance.toFixed(2)}
+                      </p>
                     </div>
                     <div className="col-span-2">
                       <p className="text-muted-foreground mb-1">Profit %</p>
@@ -288,13 +305,17 @@ export default function LeaderboardPage() {
                 {isLoading ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center">
-                      <p className="text-muted-foreground text-sm">Loading leaderboard...</p>
+                      <p className="text-muted-foreground text-sm">
+                        Loading leaderboard...
+                      </p>
                     </td>
                   </tr>
                 ) : leaderboard.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center">
-                      <p className="text-muted-foreground text-sm">No traders registered yet</p>
+                      <p className="text-muted-foreground text-sm">
+                        No traders registered yet
+                      </p>
                     </td>
                   </tr>
                 ) : (

@@ -9,7 +9,8 @@ export function useAdminAuth() {
 
   useEffect(() => {
     // Check if admin is authenticated by checking localStorage
-    const isAuthenticated = localStorage.getItem("admin_authenticated") === "true";
+    const isAuthenticated =
+      localStorage.getItem("admin_authenticated") === "true";
     const adminToken = localStorage.getItem("admin_token");
 
     setIsAdmin(isAuthenticated && !!adminToken);
