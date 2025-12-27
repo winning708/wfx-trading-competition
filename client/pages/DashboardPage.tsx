@@ -46,6 +46,19 @@ export default function DashboardPage() {
   const [competitionStarted, setCompetitionStarted] = useState(false);
   const [timeUntilStart, setTimeUntilStart] = useState(getTimeUntilStart());
 
+  // Update competition status
+  useEffect(() => {
+    setCompetitionStarted(hasCompetitionStarted());
+
+    // Update time remaining every second
+    const interval = setInterval(() => {
+      setCompetitionStarted(hasCompetitionStarted());
+      setTimeUntilStart(getTimeUntilStart());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const fetchTraderData = async () => {
       try {
