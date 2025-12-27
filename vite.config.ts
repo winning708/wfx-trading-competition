@@ -29,19 +29,27 @@ function expressPlugin(): Plugin {
     name: "express-plugin",
     apply: "serve", // Only apply during development (serve mode)
     configureServer(server) {
-      // Lazy load server only in dev mode using require
-      try {
-        // Use require to load the server at runtime, not at config parse time
-        const createExpressApp = require("./server/index.ts").createServer;
+      // Return promise to handle async operations
+      return (async () => {
+        try {
+          // Lazy load server only in dev mode using dynamic import
+          // Use a computed string to avoid Vite trying to resolve at config time
+          const modulePath = [".", "server", "index.ts"].join("/");
+          const serverModule = await import(modulePath);
+          const createExpressApp = serverModule.createServer;
 
-        if (createExpressApp) {
-          const app = createExpressApp();
-          // Add Express app as middleware to Vite dev server
-          server.middlewares.use(app);
+          if (createExpressApp && typeof createExpressApp === "function") {
+            const app = createExpressApp();
+            // Add Express app as middleware to Vite dev server
+            server.middlewares.use(app);
+          }
+        } catch (error) {
+          console.warn(
+            "Failed to load Express server for dev mode. Running client-only:",
+            error instanceof Error ? error.message : String(error)
+          );
         }
-      } catch (error) {
-        console.warn("Failed to load Express server for dev mode:", error);
-      }
+      })();
     },
   };
 }
