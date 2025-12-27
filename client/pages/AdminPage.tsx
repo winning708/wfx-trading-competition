@@ -1238,6 +1238,9 @@ export default function AdminPage() {
                         Account #
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+                        Password
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Broker
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
@@ -1251,13 +1254,13 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingCredentials ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-6 text-center">
+                        <td colSpan={6} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">Loading credentials...</p>
                         </td>
                       </tr>
                     ) : credentials.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-4 py-6 text-center">
+                        <td colSpan={6} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
                         </td>
                       </tr>
@@ -1272,6 +1275,20 @@ export default function AdminPage() {
                           </td>
                           <td className="px-4 py-3 text-muted-foreground text-sm font-mono">
                             {cred.account_number}
+                          </td>
+                          <td className="px-4 py-3 text-foreground text-sm font-mono">
+                            <div className="flex items-center gap-2">
+                              <span>
+                                {visibleCredentialPasswords.has(cred.id) ? cred.account_password : "••••••••"}
+                              </span>
+                              <button
+                                onClick={() => togglePasswordVisibility(cred.id)}
+                                className="p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded transition-colors"
+                                title={visibleCredentialPasswords.has(cred.id) ? "Hide password" : "Show password"}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </button>
+                            </div>
                           </td>
                           <td className="px-4 py-3 text-muted-foreground text-sm">
                             {cred.broker}
