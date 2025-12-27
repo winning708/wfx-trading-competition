@@ -13,7 +13,13 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError(null);
 
-    if (!password.trim()) {
+    console.log('[AdminLogin] Login attempt');
+    console.log('[AdminLogin] Password value:', password);
+    console.log('[AdminLogin] Password length:', password.length);
+    console.log('[AdminLogin] Password trimmed:', password.trim());
+
+    if (!password || !password.trim()) {
+      console.log('[AdminLogin] Password is empty');
       setError("Please enter the admin password");
       return;
     }
@@ -21,26 +27,33 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
+      const passwordToSend = password.trim();
+      console.log('[AdminLogin] Sending password, length:', passwordToSend.length);
+
       const response = await fetch("/api/admin/verify-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password: password.trim() }),
+        body: JSON.stringify({ password: passwordToSend }),
       });
 
+      console.log('[AdminLogin] Response status:', response.status);
       const data = await response.json();
+      console.log('[AdminLogin] Response data:', data);
 
       if (data.success) {
         // Store admin token in localStorage
         localStorage.setItem("admin_token", data.token);
         localStorage.setItem("admin_authenticated", "true");
+        console.log('[AdminLogin] ✅ Login successful, redirecting to /admin');
         // Redirect to admin panel
         navigate("/admin");
       } else {
+        console.log('[AdminLogin] Login failed:', data.message);
         setError(data.message || "Incorrect admin password");
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
-      console.error("Admin login error:", errorMsg);
+      console.error("[AdminLogin] Error:", errorMsg, err);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
