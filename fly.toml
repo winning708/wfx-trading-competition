@@ -1,5 +1,5 @@
 # Fly.io configuration for WFX Trading Competition
-app = "wfx-trading-competition"
+app = "wfx-trading-comp-winning"
 primary_region = "ord"
 
 [build]
