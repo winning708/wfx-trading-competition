@@ -41,6 +41,7 @@ FROM base
 
 # Copy built application and dependencies from build stage
 COPY --from=build /app/dist /app/dist
+COPY --from=build /app/server /app/server
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package.json /app/package.json
 
@@ -50,5 +51,5 @@ COPY --from=build /app/public /app/public
 # Expose port 3000 (matching server configuration)
 EXPOSE 3000
 
-# Start the server using the built output
-CMD [ "node", "dist/server/node-build.mjs" ]
+# Start the server using tsx to run TypeScript directly
+CMD [ "npm", "start" ]
