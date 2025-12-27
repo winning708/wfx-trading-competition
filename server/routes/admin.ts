@@ -107,7 +107,9 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error("[Admin] Error in verifyAdminPassword:", error);
     console.log("[Admin] ============================================");
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -583,12 +585,10 @@ export const getPasswordResetRequests: RequestHandler = async (req, res) => {
 
     if (error) {
       console.error("[Admin] Error fetching password reset requests:", error);
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "Failed to fetch password reset requests",
-        });
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch password reset requests",
+      });
     }
 
     res.json({ success: true, requests: requests || [] });
@@ -643,12 +643,10 @@ export const updatePasswordResetRequestStatus: RequestHandler = async (
 
     if (error) {
       console.error("[Admin] Error updating password reset request:", error);
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "Failed to update password reset request",
-        });
+      return res.status(500).json({
+        success: false,
+        message: "Failed to update password reset request",
+      });
     }
 
     console.log("[Admin] ✅ Password reset request updated:", {
