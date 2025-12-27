@@ -49,27 +49,6 @@ primary_region = 'ord'
     grace_period = "5s"
     method = "GET"
     path = "/api/ping"
-  
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-
-  [services.http_checks]
-    enabled = true
-    interval = "10s"
-    timeout = "5s"
-    grace_period = "5s"
-    method = "GET"
-    path = "/api/ping"
 
 [checks]
   [checks.release]
