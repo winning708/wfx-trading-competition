@@ -365,6 +365,7 @@ export default function AdminPage() {
         account_password: "",
         account_number: "",
         broker: "JustMarkets",
+        server_name: "JustMarkets-Demo",
         notes: "",
         is_active: true,
       });
