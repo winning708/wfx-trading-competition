@@ -115,7 +115,8 @@ export default function DashboardPage() {
               account_username,
               account_password,
               account_number,
-              broker
+              broker,
+              server_name
             )
           `)
           .eq("trader_id", traderData.id)
