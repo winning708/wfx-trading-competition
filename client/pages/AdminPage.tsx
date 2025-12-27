@@ -1320,6 +1320,9 @@ export default function AdminPage() {
                           <td className="px-4 py-3 text-muted-foreground text-sm">
                             {cred.broker}
                           </td>
+                          <td className="px-4 py-3 text-muted-foreground text-sm font-mono">
+                            {cred.server_name}
+                          </td>
                           <td className="px-4 py-3">
                             <span
                               className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
