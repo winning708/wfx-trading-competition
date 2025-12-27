@@ -1034,7 +1034,7 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingTraders ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center">
+                        <td colSpan={7} className="px-4 py-8 text-center">
                           <p className="text-muted-foreground text-sm">
                             Loading traders...
                           </p>
@@ -1042,7 +1042,7 @@ export default function AdminPage() {
                       </tr>
                     ) : traders.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center">
+                        <td colSpan={7} className="px-4 py-8 text-center">
                           <p className="text-muted-foreground text-sm">
                             No traders registered yet
                           </p>
@@ -1054,6 +1054,9 @@ export default function AdminPage() {
                           key={index}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
+                            #{index + 1}
+                          </td>
                           <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {trader.username}
                           </td>
