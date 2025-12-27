@@ -197,7 +197,7 @@ export default function LeaderboardPage() {
             </div>
           )}
 
-          {connectionStatus && import.meta.env.DEV && (
+          {connectionStatus && import.meta.env.DEV && isAdmin && (
             <div className="mb-8 rounded-lg border border-border bg-card/30 p-4">
               <p className="text-xs text-muted-foreground font-mono">
                 <strong>Debug Info:</strong> Connected: {connectionStatus.connected ? '✓' : '✗'} | Traders: {connectionStatus.traderCount} | Performance Data: {connectionStatus.performanceDataCount}
