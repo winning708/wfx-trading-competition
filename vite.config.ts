@@ -28,11 +28,11 @@ function expressPlugin(): Plugin {
   return {
     name: "express-plugin",
     apply: "serve", // Only apply during development (serve mode)
-    async configureServer(server) {
+    configureServer(server) {
+      // Lazy load server only in dev mode using require
       try {
-        // Only import server in dev mode using dynamic import
-        const serverModule = await import("./server/index.ts");
-        const createExpressApp = serverModule.createServer || serverModule.default;
+        // Use require to load the server at runtime, not at config parse time
+        const createExpressApp = require("./server/index.ts").createServer;
 
         if (createExpressApp) {
           const app = createExpressApp();
