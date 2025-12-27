@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build"
-  functions = "dist/server"
+  command = "npm ci && npm run build:client"
+  functions = "netlify/functions"
   publish = "dist/spa"
 
 [functions]
@@ -9,7 +9,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/node-build/:splat"
+  to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
 
