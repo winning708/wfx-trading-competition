@@ -27,9 +27,6 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
     // Get admin password from environment variable (with fallback)
     const adminPassword = process.env.ADMIN_PASSWORD || 'Winning@708';
 
-    // Get admin password from environment variable (with fallback)
-    const adminPassword = process.env.ADMIN_PASSWORD || 'Winning@708';
-
     console.log('[Admin] ============================================');
     console.log('[Admin] Password verification attempt');
     console.log('[Admin] Environment variable ADMIN_PASSWORD exists:', !!process.env.ADMIN_PASSWORD);
