@@ -27,23 +27,42 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
     // Get admin password from environment variable
     const adminPassword = process.env.ADMIN_PASSWORD;
 
+    console.log('[Admin] ============================================');
+    console.log('[Admin] Password verification attempt');
+    console.log('[Admin] Environment variable ADMIN_PASSWORD exists:', !!adminPassword);
+    console.log('[Admin] ADMIN_PASSWORD value:', adminPassword ? `[${adminPassword.length} chars]` : 'NOT SET');
+    console.log('[Admin] Received password length:', password.length);
+    console.log('[Admin] Received password (first 3 chars):', password.substring(0, 3));
+    console.log('[Admin] ============================================');
+
     if (!adminPassword) {
       console.error('[Admin] ERROR: ADMIN_PASSWORD environment variable is not set!');
-      return res.status(500).json({ success: false, message: 'Admin authentication is not configured' });
+      return res.status(500).json({ success: false, message: 'Admin authentication is not configured. ADMIN_PASSWORD env var is missing.' });
     }
 
     // Trim both for comparison safety
     const trimmedPassword = password.trim();
     const trimmedAdminPassword = adminPassword.trim();
 
-    // Debug logging
-    console.log('[Admin] Password verification attempt:');
-    console.log('  Received password length:', trimmedPassword.length);
-    console.log('  Expected password length:', trimmedAdminPassword.length);
-    console.log('  Match:', trimmedPassword === trimmedAdminPassword);
+    // Check character by character
+    const match = trimmedPassword === trimmedAdminPassword;
+
+    console.log('[Admin] After trimming:');
+    console.log('  Received length:', trimmedPassword.length);
+    console.log('  Expected length:', trimmedAdminPassword.length);
+    console.log('  Direct match:', match);
+
+    if (!match) {
+      console.log('  Character comparison:');
+      for (let i = 0; i < Math.max(trimmedPassword.length, trimmedAdminPassword.length); i++) {
+        const received = trimmedPassword.charCodeAt(i) || 'undefined';
+        const expected = trimmedAdminPassword.charCodeAt(i) || 'undefined';
+        console.log(`    [${i}] Received: ${trimmedPassword[i] || 'END'} (${received}) vs Expected: ${trimmedAdminPassword[i] || 'END'} (${expected})`);
+      }
+    }
 
     // Verify password (simple comparison - in production, consider hashing)
-    if (trimmedPassword === trimmedAdminPassword) {
+    if (match) {
       // Generate a simple token (in production, use JWT or similar)
       const token = Buffer.from(`admin:${Date.now()}`).toString('base64');
 
@@ -55,8 +74,6 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       });
     } else {
       console.warn('[Admin] ⚠️ Failed admin login attempt with incorrect password');
-      console.warn('[Admin] Received:', JSON.stringify(trimmedPassword));
-      console.warn('[Admin] Expected:', JSON.stringify(trimmedAdminPassword));
       return res.status(401).json({ success: false, message: 'Incorrect admin password' });
     }
   } catch (error) {
