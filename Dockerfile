@@ -51,4 +51,4 @@ COPY --from=build /app/public /app/public
 EXPOSE 3000
 
 # Start the server using the built output
-CMD [ "node", "dist/server/production.mjs" ]
+CMD [ "node", "dist/server/node-build.mjs" ]
