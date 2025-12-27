@@ -18,10 +18,29 @@ const supabase = createClient(
  */
 export const verifyAdminPassword: RequestHandler = async (req, res) => {
   try {
+    console.log('[Admin] ============================================');
+    console.log('[Admin] Received request body:', req.body);
+    console.log('[Admin] Request body type:', typeof req.body);
+    console.log('[Admin] Request body keys:', Object.keys(req.body || {}));
+    console.log('[Admin] ============================================');
+
     const { password } = req.body;
 
-    if (!password) {
-      return res.status(400).json({ success: false, message: 'Password is required' });
+    console.log('[Admin] Extracted password:', password);
+    console.log('[Admin] Password type:', typeof password);
+    console.log('[Admin] Password is empty:', !password);
+
+    if (!password || typeof password !== 'string') {
+      console.error('[Admin] ERROR: Password missing or not a string');
+      return res.status(400).json({
+        success: false,
+        message: 'Password is required',
+        debug: {
+          receivedPassword: !!password,
+          passwordType: typeof password,
+          bodyContent: Object.keys(req.body || {})
+        }
+      });
     }
 
     // Get admin password from environment variable (with fallback)
