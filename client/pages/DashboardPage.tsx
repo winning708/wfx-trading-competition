@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import { Copy, Check, LogOut, Eye, EyeOff } from "lucide-react";
+import { Copy, Check, LogOut, Eye, EyeOff, Lock, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { hasCompetitionStarted, getFormattedCompetitionStartDate, getTimeUntilStart } from "@/lib/competition";
 
 interface Trader {
   id: string;
