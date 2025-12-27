@@ -1,5 +1,9 @@
 import { defineConfig } from "vite";
 import path from "path";
+import { fileURLToPath } from "url";
+
+// Get __dirname in ESM
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Server build configuration
 export default defineConfig({
