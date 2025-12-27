@@ -24,29 +24,17 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password is required' });
     }
 
-    // Get admin password from environment variable
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    // Get admin password from environment variable (with fallback)
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Winning@708';
 
     console.log('[Admin] ============================================');
     console.log('[Admin] Password verification attempt');
-    console.log('[Admin] Environment variable ADMIN_PASSWORD exists:', !!adminPassword);
-    console.log('[Admin] ADMIN_PASSWORD length:', adminPassword?.length);
-    console.log('[Admin] ADMIN_PASSWORD value (first 5 chars):', adminPassword?.substring(0, 5));
+    console.log('[Admin] Environment variable ADMIN_PASSWORD exists:', !!process.env.ADMIN_PASSWORD);
+    console.log('[Admin] Admin password length:', adminPassword.length);
+    console.log('[Admin] Admin password (first 5 chars):', adminPassword.substring(0, 5));
     console.log('[Admin] Received password length:', password.length);
     console.log('[Admin] Received password (first 5 chars):', password.substring(0, 5));
     console.log('[Admin] ============================================');
-
-    if (!adminPassword) {
-      console.error('[Admin] ERROR: ADMIN_PASSWORD environment variable is not set!');
-      return res.status(500).json({
-        success: false,
-        message: 'Admin authentication is not configured. ADMIN_PASSWORD env var is missing.',
-        debug: {
-          envVarExists: false,
-          receivedLength: password.length
-        }
-      });
-    }
 
     // Trim both for comparison safety
     const trimmedPassword = password.trim();
