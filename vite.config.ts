@@ -31,7 +31,10 @@ export default defineConfig({
             server.middlewares.use(app);
           };
         } catch (error) {
-          console.warn("[Vite] Express server middleware disabled:", (error as Error).message);
+          console.warn(
+            "[Vite] Express server middleware disabled:",
+            (error as Error).message,
+          );
           return undefined;
         }
       },
