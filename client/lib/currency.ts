@@ -32,7 +32,6 @@ const CURRENCY_MAP: Record<string, { code: string; symbol: string; rate: number 
   "China": { code: "CNY", symbol: "¥", rate: 7.2 },
   "Japan": { code: "JPY", symbol: "¥", rate: 145 },
   "South Korea": { code: "KRW", symbol: "₩", rate: 1300 },
-  "Thailand": { code: "THB", symbol: "฿", rate: 35 },
   "United Arab Emirates": { code: "AED", symbol: "د.إ", rate: 3.67 },
   "Saudi Arabia": { code: "SAR", symbol: "﷼", rate: 3.75 },
   "Israel": { code: "ILS", symbol: "₪", rate: 3.7 },
