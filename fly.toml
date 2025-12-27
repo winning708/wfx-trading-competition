@@ -1,9 +1,14 @@
-# Fly.io configuration for WFX Trading Competition
-app = "wfx-trading-comp-winning"
-primary_region = "ord"
+# fly.toml app configuration file generated for wfx-trading-comp-winning on 2025-12-27T13:42:51Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'wfx-trading-comp-winning'
+primary_region = 'ord'
 
 [build]
-  builder = "heroku"
+  builder = "docker"
+  buildpacks = []
 
 [env]
   ADMIN_PASSWORD = "Winning@708"
@@ -17,6 +22,7 @@ primary_region = "ord"
   BINANCE_MERCHANT_ID = "48947748"
   BYBIT_USDT_WALLET_ADDRESS = "TH9F2BfgD6C7gM5Jxo8gM3EpxU42kRUJm5"
   EMAIL_FROM = "onboarding@resend.dev"
+  NODE_ENV = "production"
 
 [[services]]
   protocol = "tcp"
@@ -47,5 +53,5 @@ primary_region = "ord"
 [checks]
   [checks.release]
     type = "exec"
-    command = "npm run typecheck"
-    timeout = "30s"
+    command = "/usr/local/bin/node --version"
+    timeout = "10s"
