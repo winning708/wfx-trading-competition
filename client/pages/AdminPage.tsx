@@ -334,6 +334,16 @@ export default function AdminPage() {
     }
   };
 
+  const togglePasswordVisibility = (credentialId: string) => {
+    const newSet = new Set(visibleCredentialPasswords);
+    if (newSet.has(credentialId)) {
+      newSet.delete(credentialId);
+    } else {
+      newSet.add(credentialId);
+    }
+    setVisibleCredentialPasswords(newSet);
+  };
+
   const handleUploadCredential = async (e: React.FormEvent) => {
     e.preventDefault();
 
