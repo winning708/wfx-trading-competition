@@ -3,5 +3,5 @@ import { createServer } from "../../server";
 
 const app = createServer();
 
-// serverless-http handler with proper configuration
+// serverless-http handler for Netlify Functions
 export const handler = serverless(app);
