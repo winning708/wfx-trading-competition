@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
       const passwordToSend = password.trim();
       console.log('[AdminLogin] Sending password, length:', passwordToSend.length);
 
-      const response = await fetch("/api/admin/verify-password", {
+      const response = await fetch("/.netlify/functions/api/admin/verify-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: passwordToSend }),
