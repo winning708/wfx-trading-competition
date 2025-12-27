@@ -19,14 +19,27 @@ const supabase = createClient(
 export const verifyAdminPassword: RequestHandler = async (req, res) => {
   try {
     console.log('[Admin] ============================================');
-    console.log('[Admin] Received request body:', req.body);
+    console.log('[Admin] Request method:', req.method);
+    console.log('[Admin] Request body:', req.body);
     console.log('[Admin] Request body type:', typeof req.body);
-    console.log('[Admin] Request body keys:', Object.keys(req.body || {}));
+    console.log('[Admin] Request headers:', req.headers);
+    console.log('[Admin] Raw body type:', typeof (req as any).rawBody);
     console.log('[Admin] ============================================');
 
-    const { password } = req.body;
+    let password = (req.body as any)?.password;
 
-    console.log('[Admin] Extracted password:', password);
+    // If body not parsed, try to parse raw body
+    if (!password && (req as any).rawBody) {
+      try {
+        const parsed = JSON.parse((req as any).rawBody);
+        password = parsed.password;
+        console.log('[Admin] Extracted password from rawBody');
+      } catch (e) {
+        console.error('[Admin] Failed to parse rawBody:', e);
+      }
+    }
+
+    console.log('[Admin] Final password:', password);
     console.log('[Admin] Password type:', typeof password);
     console.log('[Admin] Password is empty:', !password);
 
