@@ -1383,6 +1383,9 @@ export default function AdminPage() {
                   <thead>
                     <tr className="border-b border-border bg-card/50">
                       <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+                        #
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Username
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
