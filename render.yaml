@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: wfx-trading-competition
+    runtime: node
+    plan: free
+    buildCommand: pnpm install && pnpm run build
+    startCommand: node dist/server/production.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FLUTTERWAVE_PUBLIC_KEY
+        sync: false
+      - key: FLUTTERWAVE_SECRET_KEY
+        sync: false
+      - key: FLUTTERWAVE_SECRET_HASH
+        sync: false
+      - key: BINANCE_MERCHANT_ID
+        sync: false
+      - key: BYBIT_USDT_WALLET_ADDRESS
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
