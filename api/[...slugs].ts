@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { createServer } from "../dist/server/index.mjs";
+import { createServer } from "../dist/server/production.mjs";
 
 // Create the Express app once (singleton)
 let appInstance: any = null;
