@@ -1205,6 +1205,11 @@ export default function AdminPage() {
                       </div>
 
                       <div>
+                        <p className="text-xs text-muted-foreground mb-1">Server</p>
+                        <p className="text-sm text-foreground font-mono">{cred.server_name}</p>
+                      </div>
+
+                      <div>
                         <div className="flex items-center justify-between mb-2">
                           <p className="text-xs text-muted-foreground">Password</p>
                           <button
