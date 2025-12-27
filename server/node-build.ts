@@ -6,8 +6,9 @@ import fs from "fs";
 const port = process.env.PORT || 3000;
 
 // In production, serve the built SPA files
+// When running from dist/server/production.mjs, we need to go up to dist/spa
 const __dirname = import.meta.dirname;
-const distPath = path.join(__dirname, "../dist/spa");
+const distPath = path.join(__dirname, "../spa");
 
 console.log("[Server] Dist path:", distPath);
 console.log("[Server] Dist path exists:", fs.existsSync(distPath));
