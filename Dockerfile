@@ -23,7 +23,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
 # Install node modules
-COPY .npmrc package-lock.json package.json pnpm-lock.yaml ./
+COPY .npmrc package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Copy application code
@@ -39,13 +39,16 @@ RUN pnpm prune --prod
 # Final stage for app image
 FROM base
 
-# Copy built application and node_modules from build stage
+# Copy built application and dependencies from build stage
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package.json /app/package.json
 
-# Expose port 3000
+# Copy public folder if it exists and is needed at runtime
+COPY --from=build /app/public /app/public
+
+# Expose port 3000 (matching server configuration)
 EXPOSE 3000
 
-# Start the server
+# Start the server using the built output
 CMD [ "node", "dist/server/production.mjs" ]
