@@ -20,19 +20,18 @@ export default defineConfig({
       name: "express-middleware",
       apply: "serve",
       async configureServer(server) {
+        // Dynamically import server with proper error handling
         try {
-          // Import and setup Express after Vite is initialized
-          // Using dynamic import with absolute path resolution
-          const serverModule = await import(new URL("./server/index.ts", import.meta.url).href);
-          const app = serverModule.createServer();
+          // Import using require in CJS mode or dynamic import
+          const { createServer } = await import("./server/index.ts");
+          const app = createServer();
 
           // Use the Express app as middleware for all requests
           return () => {
             server.middlewares.use(app);
           };
         } catch (error) {
-          console.error("[Vite] Failed to load Express server:", error);
-          // Continue without server middleware if import fails
+          console.warn("[Vite] Express server middleware disabled:", (error as Error).message);
           return undefined;
         }
       },
