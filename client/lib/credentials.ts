@@ -66,7 +66,33 @@ export async function uploadCredential(
   credential: Omit<TradingCredential, 'id' | 'created_at' | 'updated_at'>
 ): Promise<{ credential: TradingCredential | null; assignedTo?: string; error?: string }> {
   try {
-    // 1. Upload credential
+    // 1. Check if a credential with this account_number already exists
+    const { data: existingByNumber } = await supabase
+      .from('trading_credentials')
+      .select('id, account_number, account_username')
+      .eq('account_number', credential.account_number)
+      .maybeSingle();
+
+    if (existingByNumber) {
+      const msg = `A credential with account number "${credential.account_number}" already exists in the system. Each account number must be unique.`;
+      console.warn('Duplicate account number:', msg);
+      return { credential: null, error: msg };
+    }
+
+    // 2. Check if a credential with this account_username already exists
+    const { data: existingByUsername } = await supabase
+      .from('trading_credentials')
+      .select('id, account_number, account_username')
+      .eq('account_username', credential.account_username)
+      .maybeSingle();
+
+    if (existingByUsername) {
+      const msg = `A credential with account username "${credential.account_username}" already exists in the system. Each username must be unique.`;
+      console.warn('Duplicate account username:', msg);
+      return { credential: null, error: msg };
+    }
+
+    // 3. Upload credential
     const { data: credentialData, error: credError } = await supabase
       .from('trading_credentials')
       .insert([credential])
@@ -76,6 +102,15 @@ export async function uploadCredential(
     if (credError) {
       const errorMsg = credError.message || JSON.stringify(credError);
       console.error('Error uploading credential:', errorMsg);
+
+      // Provide more helpful error messages for common Postgres errors
+      if (errorMsg.includes('duplicate key')) {
+        return {
+          credential: null,
+          error: 'This credential already exists in the system. Please use a different account number or username.'
+        };
+      }
+
       return { credential: null, error: errorMsg };
     }
 
@@ -85,7 +120,7 @@ export async function uploadCredential(
       return { credential: null, error: msg };
     }
 
-    // 2. Get unassigned traders
+    // 4. Get unassigned traders
     const unassignedTraders = await getUnassignedTraders();
 
     if (unassignedTraders.length === 0) {
@@ -93,7 +128,7 @@ export async function uploadCredential(
       return { credential: credentialData };
     }
 
-    // 3. Assign to first unassigned trader
+    // 5. Assign to first unassigned trader
     const targetTrader = unassignedTraders[0];
     const { error: assignError } = await supabase
       .from('credential_assignments')
