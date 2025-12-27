@@ -15,19 +15,26 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // Add Express server middleware for development
+    // Add Express server middleware for development only
     {
       name: "express-middleware",
       apply: "serve",
       async configureServer(server) {
-        // Import and setup Express after Vite is initialized
-        const { createServer } = await import("./server/index");
-        const app = createServer();
+        try {
+          // Import and setup Express after Vite is initialized
+          // Using dynamic import with absolute path resolution
+          const serverModule = await import(new URL("./server/index.ts", import.meta.url).href);
+          const app = serverModule.createServer();
 
-        // Use the Express app as middleware for all requests
-        return () => {
-          server.middlewares.use(app);
-        };
+          // Use the Express app as middleware for all requests
+          return () => {
+            server.middlewares.use(app);
+          };
+        } catch (error) {
+          console.error("[Vite] Failed to load Express server:", error);
+          // Continue without server middleware if import fails
+          return undefined;
+        }
       },
     },
   ],
