@@ -1281,13 +1281,13 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingCredentials ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-6 text-center">
+                        <td colSpan={7} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">Loading credentials...</p>
                         </td>
                       </tr>
                     ) : credentials.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-6 text-center">
+                        <td colSpan={7} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
                         </td>
                       </tr>
