@@ -19,6 +19,7 @@ interface TradingCredential {
   account_password: string;
   account_number: string;
   broker: string;
+  server_name: string;
 }
 
 interface CredentialAssignment {
