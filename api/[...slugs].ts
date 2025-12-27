@@ -1,11 +1,12 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { createServer } from "../dist/server/production.mjs";
 
 // Create the Express app once (singleton)
 let appInstance: any = null;
 
-function getApp() {
+async function getApp() {
   if (!appInstance) {
+    // Dynamically import at runtime to avoid bundler issues
+    const { createServer } = await import("../dist/server/production.mjs");
     appInstance = createServer();
   }
   return appInstance;
