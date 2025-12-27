@@ -26,6 +26,7 @@ export default function LeaderboardPage() {
     performanceDataCount: number;
     error?: string;
   } | null>(null);
+  const { isAdmin } = useAdminAuth();
 
   useEffect(() => {
     // Fetch leaderboard data on component mount
