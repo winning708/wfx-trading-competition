@@ -309,14 +309,29 @@ export default function DashboardPage() {
           </div>
 
           {/* Payment Approved Banner */}
-          {trader.payment_status === 'approved' && (
+          {trader.payment_status === 'approved' && !competitionStarted && (
+            <div className="mb-8 rounded-lg border-2 border-blue-500/50 bg-blue-500/10 p-4 md:p-6">
+              <div className="flex items-start gap-3">
+                <div className="text-2xl">📋</div>
+                <div className="flex-1">
+                  <p className="font-semibold text-blue-600 mb-1">Payment Approved - Ready for Competition!</p>
+                  <p className="text-sm text-blue-600/90">
+                    Your payment has been approved. Your credentials are reserved below. You'll be able to access your password once the competition starts on <strong>{getFormattedCompetitionStartDate()}</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Payment Approved Banner (Competition Started) */}
+          {trader.payment_status === 'approved' && competitionStarted && (
             <div className="mb-8 rounded-lg border-2 border-success/50 bg-success/10 p-4 md:p-6">
               <div className="flex items-start gap-3">
                 <div className="text-2xl">✅</div>
                 <div className="flex-1">
-                  <p className="font-semibold text-success mb-1">Payment Approved!</p>
+                  <p className="font-semibold text-success mb-1">Payment Approved! Competition Started!</p>
                   <p className="text-sm text-success/90">
-                    Your payment has been approved by our admin team. Your trading credentials are ready below. You can now access the platform and start trading!
+                    Your trading credentials are now fully available. Log in to your trading platform and start trading!
                   </p>
                 </div>
               </div>
