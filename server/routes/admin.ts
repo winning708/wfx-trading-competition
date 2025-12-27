@@ -18,23 +18,32 @@ const supabase = createClient(
  */
 export const verifyAdminPassword: RequestHandler = async (req, res) => {
   try {
-    const { password } = req.body;
+    console.log('[Admin] ============================================');
+    console.log('[Admin] verifyAdminPassword route called');
+    console.log('[Admin] req.body type:', typeof req.body);
+    console.log('[Admin] req.body:', JSON.stringify(req.body));
+    console.log('[Admin] req.body keys:', Object.keys(req.body || {}));
+
+    const { password } = req.body || {};
+
+    console.log('[Admin] Extracted password:', password);
+    console.log('[Admin] Password type:', typeof password);
+    console.log('[Admin] Password length:', password?.length || 'undefined');
 
     if (!password) {
+      console.log('[Admin] ⚠️ Password is missing or empty');
       return res.status(400).json({ success: false, message: 'Password is required' });
     }
 
     // Get admin password from environment variable (with fallback)
     const adminPassword = process.env.ADMIN_PASSWORD || 'Winning@708';
 
-    console.log('[Admin] ============================================');
     console.log('[Admin] Password verification attempt');
     console.log('[Admin] Environment variable ADMIN_PASSWORD exists:', !!process.env.ADMIN_PASSWORD);
     console.log('[Admin] Admin password length:', adminPassword.length);
     console.log('[Admin] Admin password (first 5 chars):', adminPassword.substring(0, 5));
     console.log('[Admin] Received password length:', password.length);
     console.log('[Admin] Received password (first 5 chars):', password.substring(0, 5));
-    console.log('[Admin] ============================================');
 
     // Trim both for comparison safety
     const trimmedPassword = password.trim();
@@ -63,6 +72,7 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       const token = Buffer.from(`admin:${Date.now()}`).toString('base64');
 
       console.log('[Admin] ✅ Admin login successful');
+      console.log('[Admin] ============================================');
       return res.json({
         success: true,
         message: 'Admin authenticated',
@@ -70,10 +80,12 @@ export const verifyAdminPassword: RequestHandler = async (req, res) => {
       });
     } else {
       console.warn('[Admin] ⚠️ Failed admin login attempt with incorrect password');
+      console.log('[Admin] ============================================');
       return res.status(401).json({ success: false, message: 'Incorrect admin password' });
     }
   } catch (error) {
     console.error('[Admin] Error in verifyAdminPassword:', error);
+    console.log('[Admin] ============================================');
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
