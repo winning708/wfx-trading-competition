@@ -388,33 +388,69 @@ export default function DashboardPage() {
               <p className="text-xs md:text-sm font-semibold uppercase text-muted-foreground tracking-wide">
                 Password
               </p>
-              <div className="flex items-center gap-2">
-                <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
-                  {showPassword ? credential.account_password : "●".repeat(credential.account_password.length)}
-                </code>
-                <button
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="flex-shrink-0 p-3 rounded-lg bg-card hover:bg-card/80 transition-colors border border-border"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-foreground" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-foreground" />
-                  )}
-                </button>
-                <button
-                  onClick={() => handleCopy(credential.account_password, "password")}
-                  className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                  title="Copy password"
-                >
-                  {copiedField === "password" ? (
-                    <Check className="h-5 w-5" />
-                  ) : (
-                    <Copy className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
+
+              {!competitionStarted ? (
+                <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Lock className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-amber-600 mb-1">
+                        Password locked until competition starts
+                      </p>
+                      <p className="text-xs text-amber-600/80 mb-3">
+                        Your password will be available once the competition begins on <strong>{getFormattedCompetitionStartDate()}</strong>.
+                        This ensures fair play for all participants.
+                      </p>
+                      <div className="flex flex-wrap gap-3 text-xs font-medium text-amber-600">
+                        <div>
+                          <span className="text-lg font-bold">{String(timeUntilStart.days).padStart(2, '0')}</span>
+                          <span className="text-xs"> days</span>
+                        </div>
+                        <div>
+                          <span className="text-lg font-bold">{String(timeUntilStart.hours).padStart(2, '0')}</span>
+                          <span className="text-xs"> hours</span>
+                        </div>
+                        <div>
+                          <span className="text-lg font-bold">{String(timeUntilStart.minutes).padStart(2, '0')}</span>
+                          <span className="text-xs"> minutes</span>
+                        </div>
+                        <div>
+                          <span className="text-lg font-bold">{String(timeUntilStart.seconds).padStart(2, '0')}</span>
+                          <span className="text-xs"> seconds</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
+                    {showPassword ? credential.account_password : "●".repeat(credential.account_password.length)}
+                  </code>
+                  <button
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="flex-shrink-0 p-3 rounded-lg bg-card hover:bg-card/80 transition-colors border border-border"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-foreground" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-foreground" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleCopy(credential.account_password, "password")}
+                    className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                    title="Copy password"
+                  >
+                    {copiedField === "password" ? (
+                      <Check className="h-5 w-5" />
+                    ) : (
+                      <Copy className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
