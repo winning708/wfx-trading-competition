@@ -40,7 +40,42 @@ export default function AdminLoginPage() {
       });
 
       console.log("[AdminLogin] Response status:", response.status);
-      const data = await response.json();
+      console.log("[AdminLogin] Response headers:", response.headers);
+
+      // Check if response has content
+      const contentLength = response.headers.get("content-length");
+      const contentType = response.headers.get("content-type");
+      console.log("[AdminLogin] Content-Length:", contentLength);
+      console.log("[AdminLogin] Content-Type:", contentType);
+
+      if (!response.ok) {
+        console.error("[AdminLogin] HTTP error:", response.status);
+        if (response.status === 401) {
+          setError("Incorrect admin password");
+        } else {
+          setError(`Server error: ${response.status}`);
+        }
+        return;
+      }
+
+      let data;
+      try {
+        const text = await response.text();
+        console.log("[AdminLogin] Response text:", text);
+
+        if (!text) {
+          console.error("[AdminLogin] Empty response body");
+          setError("Server returned empty response. Please try again.");
+          return;
+        }
+
+        data = JSON.parse(text);
+      } catch (parseErr) {
+        console.error("[AdminLogin] Failed to parse response:", parseErr);
+        setError("Invalid response from server. Please try again.");
+        return;
+      }
+
       console.log("[AdminLogin] Response data:", data);
 
       if (data.success) {
