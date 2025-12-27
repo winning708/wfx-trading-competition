@@ -1268,6 +1268,9 @@ export default function AdminPage() {
                         Broker
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
+                        Server
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-foreground">
                         Status
                       </th>
                       <th className="px-4 py-3 text-right text-sm font-semibold text-foreground">
