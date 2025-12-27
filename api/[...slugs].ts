@@ -14,7 +14,7 @@ async function getApp() {
 
 // Catch-all handler for all /api/* routes
 export default async (req: VercelRequest, res: VercelResponse) => {
-  const app = getApp();
+  const app = await getApp();
 
   console.log("[Vercel API] Incoming request:");
   console.log("  Method:", req.method);
