@@ -1272,7 +1272,7 @@ export default function AdminPage() {
                     </p>
                   </div>
                 ) : (
-                  credentials.map((cred) => (
+                  credentials.map((cred, index) => (
                     <div
                       key={cred.id}
                       className="rounded-lg border border-border bg-card p-4 space-y-3"
@@ -1280,6 +1280,9 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-muted-foreground mb-1">
+                            Credential #{index + 1}
+                          </p>
+                          <p className="text-xs text-muted-foreground mb-2">
                             Username
                           </p>
                           <p className="font-medium text-foreground text-sm break-all">
