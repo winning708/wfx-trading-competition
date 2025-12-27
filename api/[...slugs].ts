@@ -38,10 +38,13 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   }
 
   return new Promise<void>((resolve) => {
-    // Handle response completion
+    // Timeout safeguard (Vercel has 26s timeout for Pro, 10s for Hobby)
+    let timeoutHandle: NodeJS.Timeout | null = null;
+
     const onFinish = () => {
       console.log("[Vercel API] Response sent with status:", res.statusCode);
       res.removeListener("finish", onFinish);
+      if (timeoutHandle) clearTimeout(timeoutHandle);
       resolve();
     };
 
@@ -50,17 +53,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Pass request to Express
     app(req as any, res as any);
 
-    // Timeout safeguard (Vercel has 26s timeout for Pro, 10s for Hobby)
-    const timeout = setTimeout(() => {
+    timeoutHandle = setTimeout(() => {
       if (!res.headersSent) {
         console.error("[Vercel API] Request timeout - sending 504");
         res.status(504).json({ error: "Request timeout" });
       }
-      resolve();
     }, 25000);
-
-    res.on("finish", () => {
-      clearTimeout(timeout);
-    });
   });
 };
