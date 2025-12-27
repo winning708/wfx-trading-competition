@@ -19,24 +19,14 @@ export default defineConfig({
     {
       name: "express-middleware",
       apply: "serve",
-      configResolved(resolvedConfig) {
-        // Store the resolved config for later use
-      },
       async configureServer(server) {
         // Import and setup Express after Vite is initialized
         const { createServer } = await import("./server/index");
         const app = createServer();
 
-        // Return middleware to handle API routes before Vite's own handling
+        // Use the Express app as middleware for all requests
         return () => {
-          server.middlewares.use((req, res, next) => {
-            // Only handle API routes with Express
-            if (req.url?.startsWith("/api/")) {
-              app(req, res, next);
-            } else {
-              next();
-            }
-          });
+          server.middlewares.use(app);
         };
       },
     },
