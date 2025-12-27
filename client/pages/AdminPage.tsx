@@ -1411,7 +1411,7 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingCredentials ? (
                       <tr>
-                        <td colSpan={7} className="px-4 py-6 text-center">
+                        <td colSpan={8} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">
                             Loading credentials...
                           </p>
@@ -1419,18 +1419,21 @@ export default function AdminPage() {
                       </tr>
                     ) : credentials.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-4 py-6 text-center">
+                        <td colSpan={8} className="px-4 py-6 text-center">
                           <p className="text-sm text-muted-foreground">
                             No credentials uploaded yet
                           </p>
                         </td>
                       </tr>
                     ) : (
-                      credentials.map((cred) => (
+                      credentials.map((cred, index) => (
                         <tr
                           key={cred.id}
                           className="border-b border-border hover:bg-card/50 transition-colors"
                         >
+                          <td className="px-4 py-3 text-muted-foreground text-sm">
+                            #{index + 1}
+                          </td>
                           <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {cred.account_username}
                           </td>
