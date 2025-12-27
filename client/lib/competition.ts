@@ -27,10 +27,10 @@ export function getCompetitionStartDate(): Date {
  * @returns Formatted string like "January 5, 2026"
  */
 export function getFormattedCompetitionStartDate(): string {
-  return COMPETITION_START_DATE.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  return COMPETITION_START_DATE.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -49,7 +49,9 @@ export function getTimeUntilStart(): {
   const difference = Math.max(COMPETITION_START_DATE.getTime() - now, 0);
 
   const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const hours = Math.floor(
+    (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+  );
   const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 

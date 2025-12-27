@@ -1,9 +1,9 @@
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 // Log Supabase initialization
-console.log('[Credentials] Supabase client initialized:', {
+console.log("[Credentials] Supabase client initialized:", {
   url: import.meta.env.VITE_SUPABASE_URL,
-  keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0
+  keyLength: import.meta.env.VITE_SUPABASE_ANON_KEY?.length || 0,
 });
 
 export interface TradingCredential {
@@ -35,80 +35,89 @@ export interface CredentialAssignment {
 async function getUnassignedTraders(): Promise<any[]> {
   try {
     const { data: allTraders, error: tradersError } = await supabase
-      .from('traders')
-      .select('id, full_name, email')
-      .order('registered_at', { ascending: true });
+      .from("traders")
+      .select("id, full_name, email")
+      .order("registered_at", { ascending: true });
 
     if (tradersError) {
-      console.error('Error fetching traders:', tradersError);
+      console.error("Error fetching traders:", tradersError);
       return [];
     }
 
     const { data: assignments, error: assignError } = await supabase
-      .from('credential_assignments')
-      .select('trader_id');
+      .from("credential_assignments")
+      .select("trader_id");
 
     if (assignError) {
-      console.error('Error fetching assignments:', assignError);
+      console.error("Error fetching assignments:", assignError);
       return [];
     }
 
-    const assignedTraderIds = new Set(assignments?.map((a: any) => a.trader_id) || []);
+    const assignedTraderIds = new Set(
+      assignments?.map((a: any) => a.trader_id) || [],
+    );
 
-    return (allTraders || []).filter((trader: any) => !assignedTraderIds.has(trader.id));
+    return (allTraders || []).filter(
+      (trader: any) => !assignedTraderIds.has(trader.id),
+    );
   } catch (error) {
-    console.error('Error getting unassigned traders:', error);
+    console.error("Error getting unassigned traders:", error);
     return [];
   }
 }
 
 // Upload a new trading credential and auto-assign to first unassigned trader
 export async function uploadCredential(
-  credential: Omit<TradingCredential, 'id' | 'created_at' | 'updated_at'>
-): Promise<{ credential: TradingCredential | null; assignedTo?: string; error?: string }> {
+  credential: Omit<TradingCredential, "id" | "created_at" | "updated_at">,
+): Promise<{
+  credential: TradingCredential | null;
+  assignedTo?: string;
+  error?: string;
+}> {
   try {
     // 1. Check if a credential with this account_number already exists
     const { data: existingByNumber } = await supabase
-      .from('trading_credentials')
-      .select('id, account_number, account_username')
-      .eq('account_number', credential.account_number)
+      .from("trading_credentials")
+      .select("id, account_number, account_username")
+      .eq("account_number", credential.account_number)
       .maybeSingle();
 
     if (existingByNumber) {
       const msg = `A credential with account number "${credential.account_number}" already exists in the system. Each account number must be unique.`;
-      console.warn('Duplicate account number:', msg);
+      console.warn("Duplicate account number:", msg);
       return { credential: null, error: msg };
     }
 
     // 2. Check if a credential with this account_username already exists
     const { data: existingByUsername } = await supabase
-      .from('trading_credentials')
-      .select('id, account_number, account_username')
-      .eq('account_username', credential.account_username)
+      .from("trading_credentials")
+      .select("id, account_number, account_username")
+      .eq("account_username", credential.account_username)
       .maybeSingle();
 
     if (existingByUsername) {
       const msg = `A credential with account username "${credential.account_username}" already exists in the system. Each username must be unique.`;
-      console.warn('Duplicate account username:', msg);
+      console.warn("Duplicate account username:", msg);
       return { credential: null, error: msg };
     }
 
     // 3. Upload credential
     const { data: credentialData, error: credError } = await supabase
-      .from('trading_credentials')
+      .from("trading_credentials")
       .insert([credential])
       .select()
       .single();
 
     if (credError) {
       const errorMsg = credError.message || JSON.stringify(credError);
-      console.error('Error uploading credential:', errorMsg);
+      console.error("Error uploading credential:", errorMsg);
 
       // Provide more helpful error messages for common Postgres errors
-      if (errorMsg.includes('duplicate key')) {
+      if (errorMsg.includes("duplicate key")) {
         return {
           credential: null,
-          error: 'This credential already exists in the system. Please use a different account number or username.'
+          error:
+            "This credential already exists in the system. Please use a different account number or username.",
         };
       }
 
@@ -116,7 +125,7 @@ export async function uploadCredential(
     }
 
     if (!credentialData) {
-      const msg = 'No credential data returned from database';
+      const msg = "No credential data returned from database";
       console.error(msg);
       return { credential: null, error: msg };
     }
@@ -125,14 +134,14 @@ export async function uploadCredential(
     const unassignedTraders = await getUnassignedTraders();
 
     if (unassignedTraders.length === 0) {
-      console.warn('No unassigned traders available');
+      console.warn("No unassigned traders available");
       return { credential: credentialData };
     }
 
     // 5. Assign to first unassigned trader
     const targetTrader = unassignedTraders[0];
     const { error: assignError } = await supabase
-      .from('credential_assignments')
+      .from("credential_assignments")
       .insert([
         {
           trader_id: targetTrader.id,
@@ -142,11 +151,13 @@ export async function uploadCredential(
 
     if (assignError) {
       const errorMsg = assignError.message || JSON.stringify(assignError);
-      console.error('Error assigning credential:', errorMsg);
+      console.error("Error assigning credential:", errorMsg);
       return { credential: credentialData };
     }
 
-    console.log(`Credential assigned to ${targetTrader.full_name} (${targetTrader.email})`);
+    console.log(
+      `Credential assigned to ${targetTrader.full_name} (${targetTrader.email})`,
+    );
 
     // Note: Credentials are now displayed on the user's dashboard instead of being sent via email
     // No email notification is needed
@@ -154,7 +165,7 @@ export async function uploadCredential(
     return { credential: credentialData, assignedTo: targetTrader.full_name };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Error uploading credential:', errorMsg);
+    console.error("Error uploading credential:", errorMsg);
     return { credential: null, error: errorMsg };
   }
 }
@@ -162,14 +173,14 @@ export async function uploadCredential(
 // Get all trading credentials
 export async function getAllCredentials(): Promise<TradingCredential[]> {
   try {
-    console.log('[getAllCredentials] Starting fetch...');
+    console.log("[getAllCredentials] Starting fetch...");
     const { data, error } = await supabase
-      .from('trading_credentials')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("trading_credentials")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('[getAllCredentials] Supabase error:', {
+      console.error("[getAllCredentials] Supabase error:", {
         code: error.code,
         message: error.message,
         details: error.details,
@@ -178,11 +189,15 @@ export async function getAllCredentials(): Promise<TradingCredential[]> {
       return [];
     }
 
-    console.log('[getAllCredentials] Successfully fetched', (data || []).length, 'credentials');
+    console.log(
+      "[getAllCredentials] Successfully fetched",
+      (data || []).length,
+      "credentials",
+    );
     return data || [];
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('[getAllCredentials] Exception caught:', errorMsg, error);
+    console.error("[getAllCredentials] Exception caught:", errorMsg, error);
     // Return empty array on any error to prevent app crash
     return [];
   }
@@ -192,19 +207,19 @@ export async function getAllCredentials(): Promise<TradingCredential[]> {
 export async function getUnassignedCredentials(): Promise<TradingCredential[]> {
   try {
     const { data, error } = await supabase
-      .from('trading_credentials')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      .from("trading_credentials")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching unassigned credentials:', error);
+      console.error("Error fetching unassigned credentials:", error);
       return [];
     }
 
     return data || [];
   } catch (error) {
-    console.error('Error fetching unassigned credentials:', error);
+    console.error("Error fetching unassigned credentials:", error);
     return [];
   }
 }
@@ -212,30 +227,30 @@ export async function getUnassignedCredentials(): Promise<TradingCredential[]> {
 // Assign credential to trader
 export async function assignCredentialToTrader(
   traderId: string,
-  credentialId: string
+  credentialId: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Validate inputs
     if (!traderId || !credentialId) {
-      const msg = 'Missing trader ID or credential ID';
-      console.error('Error assigning credential:', msg);
+      const msg = "Missing trader ID or credential ID";
+      console.error("Error assigning credential:", msg);
       return { success: false, error: msg };
     }
 
     // First, remove any existing assignment for this trader
     const { error: deleteError } = await supabase
-      .from('credential_assignments')
+      .from("credential_assignments")
       .delete()
-      .eq('trader_id', traderId);
+      .eq("trader_id", traderId);
 
     if (deleteError) {
       const errorMsg = deleteError.message || JSON.stringify(deleteError);
-      console.error('Error removing old assignment:', errorMsg);
+      console.error("Error removing old assignment:", errorMsg);
     }
 
     // Then create new assignment
     const { error: insertError } = await supabase
-      .from('credential_assignments')
+      .from("credential_assignments")
       .insert([
         {
           trader_id: traderId,
@@ -245,10 +260,10 @@ export async function assignCredentialToTrader(
 
     if (insertError) {
       const errorMsg = insertError.message || JSON.stringify(insertError);
-      console.error('Error assigning credential:', errorMsg);
+      console.error("Error assigning credential:", errorMsg);
       return {
         success: false,
-        error: `Failed to assign credential: ${errorMsg}`
+        error: `Failed to assign credential: ${errorMsg}`,
       };
     }
 
@@ -258,10 +273,10 @@ export async function assignCredentialToTrader(
     return { success: true };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Error assigning credential:', errorMsg);
+    console.error("Error assigning credential:", errorMsg);
     return {
       success: false,
-      error: `Exception: ${errorMsg}`
+      error: `Exception: ${errorMsg}`,
     };
   }
 }
@@ -271,9 +286,13 @@ export async function assignCredentialToTrader(
  * NOTE: Email functionality has been removed. Credentials are now displayed on the user's dashboard.
  * This function is deprecated and kept only for backwards compatibility.
  */
-export async function sendCredentialsEmailToTrader(traderId: string): Promise<boolean> {
+export async function sendCredentialsEmailToTrader(
+  traderId: string,
+): Promise<boolean> {
   // Credentials are now displayed on the user's dashboard instead of being sent via email
-  console.log('[Deprecated] sendCredentialsEmailToTrader called but email feature is disabled. Credentials are available on user dashboard.');
+  console.log(
+    "[Deprecated] sendCredentialsEmailToTrader called but email feature is disabled. Credentials are available on user dashboard.",
+  );
   return true;
 }
 
@@ -281,19 +300,21 @@ export async function sendCredentialsEmailToTrader(traderId: string): Promise<bo
 export async function getAssignments(): Promise<CredentialAssignment[]> {
   try {
     const { data, error } = await supabase
-      .from('credential_assignments')
-      .select(`
+      .from("credential_assignments")
+      .select(
+        `
         id,
         trader_id,
         credential_id,
         assigned_at,
         traders(full_name, email),
         trading_credentials(*)
-      `)
-      .order('assigned_at', { ascending: false });
+      `,
+      )
+      .order("assigned_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching assignments:', error);
+      console.error("Error fetching assignments:", error);
       return [];
     }
 
@@ -306,62 +327,67 @@ export async function getAssignments(): Promise<CredentialAssignment[]> {
       credential: item.trading_credentials,
     }));
   } catch (error) {
-    console.error('Error fetching assignments:', error);
+    console.error("Error fetching assignments:", error);
     return [];
   }
 }
 
 // Remove credential assignment
-export async function removeAssignment(assignmentId: string): Promise<{ success: boolean; error?: string }> {
+export async function removeAssignment(
+  assignmentId: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     const { error } = await supabase
-      .from('credential_assignments')
+      .from("credential_assignments")
       .delete()
-      .eq('id', assignmentId);
+      .eq("id", assignmentId);
 
     if (error) {
       const errorMsg = error.message || JSON.stringify(error);
-      console.error('Error removing assignment:', errorMsg);
+      console.error("Error removing assignment:", errorMsg);
       return { success: false, error: errorMsg };
     }
 
     return { success: true };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Error removing assignment:', errorMsg);
+    console.error("Error removing assignment:", errorMsg);
     return { success: false, error: errorMsg };
   }
 }
 
 // Delete credential
-export async function deleteCredential(credentialId: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteCredential(
+  credentialId: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     // First remove all assignments
     const { error: deleteAssignError } = await supabase
-      .from('credential_assignments')
+      .from("credential_assignments")
       .delete()
-      .eq('credential_id', credentialId);
+      .eq("credential_id", credentialId);
 
     if (deleteAssignError) {
-      console.error('Error deleting assignments:', deleteAssignError);
+      console.error("Error deleting assignments:", deleteAssignError);
     }
 
     // Then delete credential
     const { error: deleteCredError } = await supabase
-      .from('trading_credentials')
+      .from("trading_credentials")
       .delete()
-      .eq('id', credentialId);
+      .eq("id", credentialId);
 
     if (deleteCredError) {
-      const errorMsg = deleteCredError.message || JSON.stringify(deleteCredError);
-      console.error('Error deleting credential:', errorMsg);
+      const errorMsg =
+        deleteCredError.message || JSON.stringify(deleteCredError);
+      console.error("Error deleting credential:", errorMsg);
       return { success: false, error: errorMsg };
     }
 
     return { success: true };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
-    console.error('Error deleting credential:', errorMsg);
+    console.error("Error deleting credential:", errorMsg);
     return { success: false, error: errorMsg };
   }
 }
@@ -369,27 +395,27 @@ export async function deleteCredential(credentialId: string): Promise<{ success:
 // Update credential
 export async function updateCredential(
   credentialId: string,
-  updates: Partial<Omit<TradingCredential, 'id' | 'created_at' | 'updated_at'>>
+  updates: Partial<Omit<TradingCredential, "id" | "created_at" | "updated_at">>,
 ): Promise<TradingCredential | null> {
   try {
     const { data, error } = await supabase
-      .from('trading_credentials')
+      .from("trading_credentials")
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', credentialId)
+      .eq("id", credentialId)
       .select()
       .single();
 
     if (error) {
-      console.error('Error updating credential:', error);
+      console.error("Error updating credential:", error);
       return null;
     }
 
     return data;
   } catch (error) {
-    console.error('Error updating credential:', error);
+    console.error("Error updating credential:", error);
     return null;
   }
 }

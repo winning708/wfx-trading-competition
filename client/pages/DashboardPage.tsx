@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
-import { Copy, Check, LogOut, Eye, EyeOff, Lock, AlertCircle } from "lucide-react";
+import {
+  Copy,
+  Check,
+  LogOut,
+  Eye,
+  EyeOff,
+  Lock,
+  AlertCircle,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { hasCompetitionStarted, getFormattedCompetitionStartDate, getTimeUntilStart } from "@/lib/competition";
+import {
+  hasCompetitionStarted,
+  getFormattedCompetitionStartDate,
+  getTimeUntilStart,
+} from "@/lib/competition";
 
 interface Trader {
   id: string;
@@ -33,7 +45,9 @@ interface CredentialAssignment {
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [trader, setTrader] = useState<Trader | null>(null);
-  const [assignment, setAssignment] = useState<CredentialAssignment | null>(null);
+  const [assignment, setAssignment] = useState<CredentialAssignment | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -79,7 +93,10 @@ export default function DashboardPage() {
           .maybeSingle();
 
         if (traderError) {
-          console.error("Error fetching trader:", traderError.message || traderError);
+          console.error(
+            "Error fetching trader:",
+            traderError.message || traderError,
+          );
           setError("Trader not found");
           setIsLoading(false);
           return;
@@ -94,8 +111,10 @@ export default function DashboardPage() {
 
         // Check if payment is approved FIRST
         const paymentStatus = traderData?.payment_status;
-        if (paymentStatus !== 'approved') {
-          setError("Your payment is still pending approval by our admin team. Once approved, you'll be able to access your trading credentials. Please check back soon.");
+        if (paymentStatus !== "approved") {
+          setError(
+            "Your payment is still pending approval by our admin team. Once approved, you'll be able to access your trading credentials. Please check back soon.",
+          );
           setIsLoading(false);
           return;
         }
@@ -105,7 +124,8 @@ export default function DashboardPage() {
         // Fetch credential assignment with credential details
         const { data: assignmentData, error: assignmentError } = await supabase
           .from("credential_assignments")
-          .select(`
+          .select(
+            `
             id,
             trader_id,
             credential_id,
@@ -118,19 +138,25 @@ export default function DashboardPage() {
               broker,
               server_name
             )
-          `)
+          `,
+          )
           .eq("trader_id", traderData.id)
           .maybeSingle();
 
         if (assignmentError) {
-          console.error("Error fetching assignment:", assignmentError.message || assignmentError);
+          console.error(
+            "Error fetching assignment:",
+            assignmentError.message || assignmentError,
+          );
           setError("Could not load your credentials");
           setIsLoading(false);
           return;
         }
 
         if (!assignmentData) {
-          setError("No trading credentials assigned yet. Please contact support.");
+          setError(
+            "No trading credentials assigned yet. Please contact support.",
+          );
           setIsLoading(false);
           return;
         }
@@ -223,7 +249,9 @@ export default function DashboardPage() {
         <Header />
         <div className="flex items-center justify-center px-4 py-20 md:py-32">
           <div className="text-center">
-            <p className="text-lg text-muted-foreground">Loading your credentials...</p>
+            <p className="text-lg text-muted-foreground">
+              Loading your credentials...
+            </p>
           </div>
         </div>
       </div>
@@ -238,11 +266,17 @@ export default function DashboardPage() {
         <Header />
         <div className="flex items-center justify-center px-4 py-20 md:py-32">
           <div className="w-full max-w-md">
-            <div className={`rounded-lg border p-6 ${isPendingPayment ? 'border-amber-500/50 bg-amber-500/10' : 'border-destructive/50 bg-destructive/10'}`}>
-              <p className={`text-lg font-semibold mb-2 ${isPendingPayment ? 'text-amber-600 dark:text-amber-400' : 'text-destructive'}`}>
-                {isPendingPayment ? '⏳ Payment Pending Approval' : '❌ Error'}
+            <div
+              className={`rounded-lg border p-6 ${isPendingPayment ? "border-amber-500/50 bg-amber-500/10" : "border-destructive/50 bg-destructive/10"}`}
+            >
+              <p
+                className={`text-lg font-semibold mb-2 ${isPendingPayment ? "text-amber-600 dark:text-amber-400" : "text-destructive"}`}
+              >
+                {isPendingPayment ? "⏳ Payment Pending Approval" : "❌ Error"}
               </p>
-              <p className={`text-sm mb-4 ${isPendingPayment ? 'text-amber-600/90 dark:text-amber-400/90' : 'text-destructive/90'}`}>
+              <p
+                className={`text-sm mb-4 ${isPendingPayment ? "text-amber-600/90 dark:text-amber-400/90" : "text-destructive/90"}`}
+              >
                 {error}
               </p>
               <div className="space-y-3">
@@ -275,9 +309,12 @@ export default function DashboardPage() {
         <div className="flex items-center justify-center px-4 py-20 md:py-32">
           <div className="w-full max-w-md">
             <div className="rounded-lg border border-border bg-card p-6 text-center">
-              <p className="text-lg font-semibold text-foreground mb-2">No Credentials Found</p>
+              <p className="text-lg font-semibold text-foreground mb-2">
+                No Credentials Found
+              </p>
               <p className="text-sm text-muted-foreground mb-4">
-                Your trading credentials have not been assigned yet. Please contact support.
+                Your trading credentials have not been assigned yet. Please
+                contact support.
               </p>
               <button
                 onClick={handleLogout}
@@ -311,14 +348,19 @@ export default function DashboardPage() {
           </div>
 
           {/* Payment Approved Banner */}
-          {trader.payment_status === 'approved' && !competitionStarted && (
+          {trader.payment_status === "approved" && !competitionStarted && (
             <div className="mb-8 rounded-lg border-2 border-blue-500/50 bg-blue-500/10 p-4 md:p-6">
               <div className="flex items-start gap-3">
                 <div className="text-2xl">📋</div>
                 <div className="flex-1">
-                  <p className="font-semibold text-blue-600 mb-1">Payment Approved - Ready for Competition!</p>
+                  <p className="font-semibold text-blue-600 mb-1">
+                    Payment Approved - Ready for Competition!
+                  </p>
                   <p className="text-sm text-blue-600/90">
-                    Your payment has been approved. Your credentials are reserved below. You'll be able to access your password once the competition starts on <strong>{getFormattedCompetitionStartDate()}</strong>.
+                    Your payment has been approved. Your credentials are
+                    reserved below. You'll be able to access your password once
+                    the competition starts on{" "}
+                    <strong>{getFormattedCompetitionStartDate()}</strong>.
                   </p>
                 </div>
               </div>
@@ -326,14 +368,17 @@ export default function DashboardPage() {
           )}
 
           {/* Payment Approved Banner (Competition Started) */}
-          {trader.payment_status === 'approved' && competitionStarted && (
+          {trader.payment_status === "approved" && competitionStarted && (
             <div className="mb-8 rounded-lg border-2 border-success/50 bg-success/10 p-4 md:p-6">
               <div className="flex items-start gap-3">
                 <div className="text-2xl">✅</div>
                 <div className="flex-1">
-                  <p className="font-semibold text-success mb-1">Payment Approved! Competition Started!</p>
+                  <p className="font-semibold text-success mb-1">
+                    Payment Approved! Competition Started!
+                  </p>
                   <p className="text-sm text-success/90">
-                    Your trading credentials are now fully available. Log in to your trading platform and start trading!
+                    Your trading credentials are now fully available. Log in to
+                    your trading platform and start trading!
                   </p>
                 </div>
               </div>
@@ -347,7 +392,10 @@ export default function DashboardPage() {
                 <div className="flex items-start gap-2">
                   <AlertCircle className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs md:text-sm text-blue-600">
-                    Your account number and username are available now. Your password will unlock on <strong>{getFormattedCompetitionStartDate()}</strong> to prevent early trading.
+                    Your account number and username are available now. Your
+                    password will unlock on{" "}
+                    <strong>{getFormattedCompetitionStartDate()}</strong> to
+                    prevent early trading.
                   </p>
                 </div>
               </div>
@@ -384,7 +432,9 @@ export default function DashboardPage() {
                   {credential.account_number}
                 </code>
                 <button
-                  onClick={() => handleCopy(credential.account_number, "account_number")}
+                  onClick={() =>
+                    handleCopy(credential.account_number, "account_number")
+                  }
                   className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   title="Copy account number"
                 >
@@ -407,7 +457,9 @@ export default function DashboardPage() {
                   {credential.account_username}
                 </code>
                 <button
-                  onClick={() => handleCopy(credential.account_username, "username")}
+                  onClick={() =>
+                    handleCopy(credential.account_username, "username")
+                  }
                   className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                   title="Copy username"
                 >
@@ -435,24 +487,34 @@ export default function DashboardPage() {
                         Password locked until competition starts
                       </p>
                       <p className="text-xs text-amber-600/80 mb-3">
-                        Your password will be available once the competition begins on <strong>{getFormattedCompetitionStartDate()}</strong>.
+                        Your password will be available once the competition
+                        begins on{" "}
+                        <strong>{getFormattedCompetitionStartDate()}</strong>.
                         This ensures fair play for all participants.
                       </p>
                       <div className="flex flex-wrap gap-3 text-xs font-medium text-amber-600">
                         <div>
-                          <span className="text-lg font-bold">{String(timeUntilStart.days).padStart(2, '0')}</span>
+                          <span className="text-lg font-bold">
+                            {String(timeUntilStart.days).padStart(2, "0")}
+                          </span>
                           <span className="text-xs"> days</span>
                         </div>
                         <div>
-                          <span className="text-lg font-bold">{String(timeUntilStart.hours).padStart(2, '0')}</span>
+                          <span className="text-lg font-bold">
+                            {String(timeUntilStart.hours).padStart(2, "0")}
+                          </span>
                           <span className="text-xs"> hours</span>
                         </div>
                         <div>
-                          <span className="text-lg font-bold">{String(timeUntilStart.minutes).padStart(2, '0')}</span>
+                          <span className="text-lg font-bold">
+                            {String(timeUntilStart.minutes).padStart(2, "0")}
+                          </span>
                           <span className="text-xs"> minutes</span>
                         </div>
                         <div>
-                          <span className="text-lg font-bold">{String(timeUntilStart.seconds).padStart(2, '0')}</span>
+                          <span className="text-lg font-bold">
+                            {String(timeUntilStart.seconds).padStart(2, "0")}
+                          </span>
                           <span className="text-xs"> seconds</span>
                         </div>
                       </div>
@@ -462,7 +524,9 @@ export default function DashboardPage() {
               ) : (
                 <div className="flex items-center gap-2">
                   <code className="flex-1 bg-background rounded-lg px-4 py-3 font-mono text-sm md:text-base text-foreground break-all border border-border">
-                    {showPassword ? credential.account_password : "●".repeat(credential.account_password.length)}
+                    {showPassword
+                      ? credential.account_password
+                      : "●".repeat(credential.account_password.length)}
                   </code>
                   <button
                     onClick={() => setShowPassword(!showPassword)}
@@ -476,7 +540,9 @@ export default function DashboardPage() {
                     )}
                   </button>
                   <button
-                    onClick={() => handleCopy(credential.account_password, "password")}
+                    onClick={() =>
+                      handleCopy(credential.account_password, "password")
+                    }
                     className="flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                     title="Copy password"
                   >
@@ -499,12 +565,16 @@ export default function DashboardPage() {
                 className="w-full px-4 py-3 rounded-lg border border-border hover:bg-card/50 transition-colors text-sm font-medium text-foreground text-left flex items-center justify-between"
               >
                 <span>🔐 Manage Your Account Password</span>
-                <span className="text-xs text-muted-foreground">Click to change</span>
+                <span className="text-xs text-muted-foreground">
+                  Click to change
+                </span>
               </button>
             ) : (
               <div className="rounded-lg border border-border bg-card p-6 space-y-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-foreground">Change Your Password</h3>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Change Your Password
+                  </h3>
                   <button
                     onClick={() => {
                       setShowChangePassword(false);
@@ -520,13 +590,17 @@ export default function DashboardPage() {
 
                 {passwordSuccess && (
                   <div className="rounded-lg border border-success/50 bg-success/10 p-4">
-                    <p className="text-sm font-medium text-success">✓ Password updated successfully!</p>
+                    <p className="text-sm font-medium text-success">
+                      ✓ Password updated successfully!
+                    </p>
                   </div>
                 )}
 
                 {passwordError && (
                   <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-                    <p className="text-sm font-medium text-destructive">✕ {passwordError}</p>
+                    <p className="text-sm font-medium text-destructive">
+                      ✕ {passwordError}
+                    </p>
                   </div>
                 )}
 
@@ -596,7 +670,9 @@ export default function DashboardPage() {
                 <li>Download MT4 or MT5 from your broker's website</li>
                 <li>Launch the platform and select {credential.broker}</li>
                 <li>Click "Login" and enter your credentials above</li>
-                <li>Start trading and monitor your progress on the leaderboard</li>
+                <li>
+                  Start trading and monitor your progress on the leaderboard
+                </li>
               </ol>
             </div>
           </div>

@@ -13,13 +13,13 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError(null);
 
-    console.log('[AdminLogin] Login attempt');
-    console.log('[AdminLogin] Password value:', password);
-    console.log('[AdminLogin] Password length:', password.length);
-    console.log('[AdminLogin] Password trimmed:', password.trim());
+    console.log("[AdminLogin] Login attempt");
+    console.log("[AdminLogin] Password value:", password);
+    console.log("[AdminLogin] Password length:", password.length);
+    console.log("[AdminLogin] Password trimmed:", password.trim());
 
     if (!password || !password.trim()) {
-      console.log('[AdminLogin] Password is empty');
+      console.log("[AdminLogin] Password is empty");
       setError("Please enter the admin password");
       return;
     }
@@ -28,7 +28,10 @@ export default function AdminLoginPage() {
 
     try {
       const passwordToSend = password.trim();
-      console.log('[AdminLogin] Sending password, length:', passwordToSend.length);
+      console.log(
+        "[AdminLogin] Sending password, length:",
+        passwordToSend.length,
+      );
 
       const response = await fetch("/api/admin/verify-password", {
         method: "POST",
@@ -36,19 +39,19 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ password: passwordToSend }),
       });
 
-      console.log('[AdminLogin] Response status:', response.status);
+      console.log("[AdminLogin] Response status:", response.status);
       const data = await response.json();
-      console.log('[AdminLogin] Response data:', data);
+      console.log("[AdminLogin] Response data:", data);
 
       if (data.success) {
         // Store admin token in localStorage
         localStorage.setItem("admin_token", data.token);
         localStorage.setItem("admin_authenticated", "true");
-        console.log('[AdminLogin] ✅ Login successful, redirecting to /admin');
+        console.log("[AdminLogin] ✅ Login successful, redirecting to /admin");
         // Redirect to admin panel
         navigate("/admin");
       } else {
-        console.log('[AdminLogin] Login failed:', data.message);
+        console.log("[AdminLogin] Login failed:", data.message);
         setError(data.message || "Incorrect admin password");
       }
     } catch (err) {
@@ -88,7 +91,9 @@ export default function AdminLoginPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-destructive">Access Denied</p>
+                    <p className="font-semibold text-destructive">
+                      Access Denied
+                    </p>
                     <p className="text-sm text-destructive/90">{error}</p>
                   </div>
                 </div>
@@ -98,7 +103,10 @@ export default function AdminLoginPage() {
             {/* Login Form */}
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-foreground mb-2"
+                >
                   Admin Password
                 </label>
                 <div className="relative">
@@ -138,7 +146,9 @@ export default function AdminLoginPage() {
             {/* Info Box */}
             <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4">
               <p className="text-xs text-blue-600 dark:text-blue-400">
-                <strong>🔐 Secure Access:</strong> Your admin password is required to access the admin control panel. Keep it secret and secure.
+                <strong>🔐 Secure Access:</strong> Your admin password is
+                required to access the admin control panel. Keep it secret and
+                secure.
               </p>
             </div>
           </div>

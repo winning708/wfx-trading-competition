@@ -68,7 +68,13 @@ interface Trader {
 export default function AdminPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
-    "traders" | "credentials" | "assignments" | "monitoring" | "payments" | "passwords" | "password-requests"
+    | "traders"
+    | "credentials"
+    | "assignments"
+    | "monitoring"
+    | "payments"
+    | "passwords"
+    | "password-requests"
   >("traders");
 
   // Password management state
@@ -78,11 +84,14 @@ export default function AdminPage() {
 
   // Password reset requests state
   const [passwordResetRequests, setPasswordResetRequests] = useState<any[]>([]);
-  const [isLoadingPasswordRequests, setIsLoadingPasswordRequests] = useState(false);
+  const [isLoadingPasswordRequests, setIsLoadingPasswordRequests] =
+    useState(false);
   const [passwordRequestSearch, setPasswordRequestSearch] = useState("");
 
   // Credential password visibility state
-  const [visibleCredentialPasswords, setVisibleCredentialPasswords] = useState<Set<string>>(new Set());
+  const [visibleCredentialPasswords, setVisibleCredentialPasswords] = useState<
+    Set<string>
+  >(new Set());
 
   // Traders state
   const [traders, setTraders] = useState<Trader[]>([]);
@@ -109,12 +118,15 @@ export default function AdminPage() {
   const [selectedCredential, setSelectedCredential] = useState<string>("");
 
   // Monitoring state
-  const [forexFactoryIntegrations, setForexFactoryIntegrations] = useState<any[]>([]);
+  const [forexFactoryIntegrations, setForexFactoryIntegrations] = useState<
+    any[]
+  >([]);
   const [isLoadingMonitoring, setIsLoadingMonitoring] = useState(false);
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [syncHistory, setSyncHistory] = useState<SyncHistoryRecord[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [selectedCredentialForLink, setSelectedCredentialForLink] = useState<string>("");
+  const [selectedCredentialForLink, setSelectedCredentialForLink] =
+    useState<string>("");
   const [forexFactoryForm, setForexFactoryForm] = useState({
     ff_account_username: "",
     ff_api_key: "",
@@ -129,12 +141,17 @@ export default function AdminPage() {
 
   // Payment approval state
   const [pendingPayments, setPendingPayments] = useState<any[]>([]);
-  const [isLoadingPendingPayments, setIsLoadingPendingPayments] = useState(false);
-  const [approvingPaymentId, setApprovingPaymentId] = useState<string | null>(null);
+  const [isLoadingPendingPayments, setIsLoadingPendingPayments] =
+    useState(false);
+  const [approvingPaymentId, setApprovingPaymentId] = useState<string | null>(
+    null,
+  );
 
   // Payment settings state
-  const [paymentSettings, setPaymentSettings] = useState<AdminPaymentSettings | null>(null);
-  const [isLoadingPaymentSettings, setIsLoadingPaymentSettings] = useState(false);
+  const [paymentSettings, setPaymentSettings] =
+    useState<AdminPaymentSettings | null>(null);
+  const [isLoadingPaymentSettings, setIsLoadingPaymentSettings] =
+    useState(false);
   const [showPaymentSettingsForm, setShowPaymentSettingsForm] = useState(false);
   const [paymentSettingsForm, setPaymentSettingsForm] = useState({
     nigerian_bank_name: "",
@@ -153,9 +170,9 @@ export default function AdminPage() {
     const loadTraders = async () => {
       try {
         setIsLoadingTraders(true);
-        console.log('[AdminPage] Loading traders...');
+        console.log("[AdminPage] Loading traders...");
         const data = await getLeaderboard();
-        console.log('[AdminPage] Loaded', data.length, 'traders');
+        console.log("[AdminPage] Loaded", data.length, "traders");
         setTraders(data);
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
@@ -216,7 +233,7 @@ export default function AdminPage() {
   const loadTradersWithPasswords = async () => {
     setIsLoadingPasswords(true);
     try {
-      const response = await fetch('/api/admin/traders-with-passwords');
+      const response = await fetch("/api/admin/traders-with-passwords");
       const data = await response.json();
       if (data.success) {
         setTradersWithPasswords(data.traders || []);
@@ -232,7 +249,7 @@ export default function AdminPage() {
   const loadPasswordResetRequests = async () => {
     setIsLoadingPasswordRequests(true);
     try {
-      const response = await fetch('/api/admin/password-reset-requests');
+      const response = await fetch("/api/admin/password-reset-requests");
       const data = await response.json();
       if (data.success) {
         setPasswordResetRequests(data.requests || []);
@@ -245,7 +262,7 @@ export default function AdminPage() {
     }
   };
 
-  const filteredTradersWithPasswords = tradersWithPasswords.filter(trader => {
+  const filteredTradersWithPasswords = tradersWithPasswords.filter((trader) => {
     const searchLower = passwordSearch.toLowerCase();
     return (
       trader.username?.toLowerCase().includes(searchLower) ||
@@ -254,18 +271,20 @@ export default function AdminPage() {
     );
   });
 
-  const filteredPasswordResetRequests = passwordResetRequests.filter(request => {
-    const searchLower = passwordRequestSearch.toLowerCase();
-    return (
-      request.email?.toLowerCase().includes(searchLower) ||
-      request.full_name?.toLowerCase().includes(searchLower)
-    );
-  });
+  const filteredPasswordResetRequests = passwordResetRequests.filter(
+    (request) => {
+      const searchLower = passwordRequestSearch.toLowerCase();
+      return (
+        request.email?.toLowerCase().includes(searchLower) ||
+        request.full_name?.toLowerCase().includes(searchLower)
+      );
+    },
+  );
 
   const loadPendingPayments = async () => {
     setIsLoadingPendingPayments(true);
     try {
-      const response = await fetch('/api/admin/payments/pending');
+      const response = await fetch("/api/admin/payments/pending");
       const data = await response.json();
       if (data.success) {
         setPendingPayments(data.payments || []);
@@ -305,9 +324,9 @@ export default function AdminPage() {
   const loadCredentials = async () => {
     setIsLoadingCredentials(true);
     try {
-      console.log('[AdminPage] Loading credentials...');
+      console.log("[AdminPage] Loading credentials...");
       const data = await getAllCredentials();
-      console.log('[AdminPage] Loaded', data.length, 'credentials');
+      console.log("[AdminPage] Loaded", data.length, "credentials");
       setCredentials(data);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
@@ -322,9 +341,9 @@ export default function AdminPage() {
   const loadAssignments = async () => {
     setIsLoadingAssignments(true);
     try {
-      console.log('[AdminPage] Loading assignments...');
+      console.log("[AdminPage] Loading assignments...");
       const data = await getAssignments();
-      console.log('[AdminPage] Loaded', data.length, 'assignments');
+      console.log("[AdminPage] Loaded", data.length, "assignments");
       setAssignments(data);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
@@ -374,9 +393,13 @@ export default function AdminPage() {
       await loadAssignments();
 
       if (result.assignedTo) {
-        alert(`✅ Credential uploaded and automatically assigned to ${result.assignedTo}!`);
+        alert(
+          `✅ Credential uploaded and automatically assigned to ${result.assignedTo}!`,
+        );
       } else {
-        alert("✅ Credential uploaded successfully! No traders available for auto-assignment.");
+        alert(
+          "✅ Credential uploaded successfully! No traders available for auto-assignment.",
+        );
       }
     } else {
       const errorMsg = result.error || "Account number may already exist";
@@ -385,15 +408,19 @@ export default function AdminPage() {
   };
 
   const handleApprovePayment = async (traderId: string, fullName: string) => {
-    if (!window.confirm(`Approve payment for ${fullName}? They will see their trading credentials on their dashboard.`)) {
+    if (
+      !window.confirm(
+        `Approve payment for ${fullName}? They will see their trading credentials on their dashboard.`,
+      )
+    ) {
       return;
     }
 
     setApprovingPaymentId(traderId);
     try {
       const response = await fetch(`/api/admin/payments/${traderId}/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
 
       const data = await response.json();
@@ -405,22 +432,26 @@ export default function AdminPage() {
         alert(`❌ Error: ${data.message}`);
       }
     } catch (error) {
-      alert(`❌ Error approving payment: ${error instanceof Error ? error.message : String(error)}`);
+      alert(
+        `❌ Error approving payment: ${error instanceof Error ? error.message : String(error)}`,
+      );
     } finally {
       setApprovingPaymentId(null);
     }
   };
 
   const handleRejectPayment = async (traderId: string, fullName: string) => {
-    const reason = window.prompt(`Reject payment for ${fullName}? (Reason will be noted)`);
+    const reason = window.prompt(
+      `Reject payment for ${fullName}? (Reason will be noted)`,
+    );
     if (reason === null) {
       return; // User cancelled
     }
 
     try {
       const response = await fetch(`/api/admin/payments/${traderId}/reject`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       });
 
@@ -432,14 +463,20 @@ export default function AdminPage() {
         alert(`❌ Error: ${data.message}`);
       }
     } catch (error) {
-      alert(`❌ Error rejecting payment: ${error instanceof Error ? error.message : String(error)}`);
+      alert(
+        `❌ Error rejecting payment: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const handleSavePaymentSettings = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!paymentSettingsForm.nigerian_account_number || !paymentSettingsForm.binance_pay_id || !paymentSettingsForm.bybit_wallet_address) {
+    if (
+      !paymentSettingsForm.nigerian_account_number ||
+      !paymentSettingsForm.binance_pay_id ||
+      !paymentSettingsForm.bybit_wallet_address
+    ) {
       alert("Please fill in all required payment account details");
       return;
     }
@@ -453,17 +490,25 @@ export default function AdminPage() {
         setShowPaymentSettingsForm(false);
         alert("✅ Payment settings updated successfully!");
       } else {
-        alert(`❌ Error: ${result.message || "Failed to update payment settings"}`);
+        alert(
+          `❌ Error: ${result.message || "Failed to update payment settings"}`,
+        );
       }
     } catch (error) {
-      alert(`❌ Error saving payment settings: ${error instanceof Error ? error.message : String(error)}`);
+      alert(
+        `❌ Error saving payment settings: ${error instanceof Error ? error.message : String(error)}`,
+      );
     } finally {
       setIsSavingPaymentSettings(false);
     }
   };
 
   const handleDeleteTrader = async (trader: Trader) => {
-    if (!window.confirm(`Are you sure you want to delete ${trader.username}? This action cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${trader.username}? This action cannot be undone.`,
+      )
+    ) {
       return;
     }
 
@@ -484,21 +529,30 @@ export default function AdminPage() {
         alert(`❌ Error: ${result.message || "Failed to delete trader"}`);
       }
     } catch (error) {
-      alert(`❌ Error deleting trader: ${error instanceof Error ? error.message : String(error)}`);
+      alert(
+        `❌ Error deleting trader: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const loadMonitoring = async () => {
     setIsLoadingMonitoring(true);
     try {
-      console.log('[AdminPage] Loading monitoring data...');
+      console.log("[AdminPage] Loading monitoring data...");
       const integrations = await getForexFactoryIntegrationsWithDetails();
-      console.log('[AdminPage] Loaded', integrations.length, 'Forex Factory integrations');
+      console.log(
+        "[AdminPage] Loaded",
+        integrations.length,
+        "Forex Factory integrations",
+      );
       setForexFactoryIntegrations(integrations);
 
       // Load sync history from the first integration if available
       if (integrations.length > 0) {
-        const recentSyncs = await getRecentForexFactorySyncs(integrations[0].id, 10);
+        const recentSyncs = await getRecentForexFactorySyncs(
+          integrations[0].id,
+          10,
+        );
         setSyncHistory(recentSyncs);
       }
     } catch (error) {
@@ -515,14 +569,19 @@ export default function AdminPage() {
   const handleLinkForexFactory = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('[Admin] Forex Factory Form Data:', {
+    console.log("[Admin] Forex Factory Form Data:", {
       selectedCredentialForLink,
       ff_account_username: forexFactoryForm.ff_account_username,
-      ff_api_key: forexFactoryForm.ff_api_key ? '***' : 'empty',
+      ff_api_key: forexFactoryForm.ff_api_key ? "***" : "empty",
       ff_system_id: forexFactoryForm.ff_system_id,
     });
 
-    if (!selectedCredentialForLink || !forexFactoryForm.ff_account_username || !forexFactoryForm.ff_api_key || !forexFactoryForm.ff_system_id) {
+    if (
+      !selectedCredentialForLink ||
+      !forexFactoryForm.ff_account_username ||
+      !forexFactoryForm.ff_api_key ||
+      !forexFactoryForm.ff_system_id
+    ) {
       alert("Please fill in all required fields");
       return;
     }
@@ -531,7 +590,7 @@ export default function AdminPage() {
     const testResult = await testForexFactoryConnection(
       forexFactoryForm.ff_account_username,
       forexFactoryForm.ff_api_key,
-      forexFactoryForm.ff_system_id
+      forexFactoryForm.ff_system_id,
     );
 
     if (!testResult.success) {
@@ -543,7 +602,7 @@ export default function AdminPage() {
       selectedCredentialForLink,
       forexFactoryForm.ff_account_username,
       forexFactoryForm.ff_api_key,
-      forexFactoryForm.ff_system_id
+      forexFactoryForm.ff_system_id,
     );
 
     if (result.success) {
@@ -569,12 +628,14 @@ export default function AdminPage() {
         await loadMonitoring();
         alert("✅ Sync triggered! Data will be updated shortly.");
       } else {
-        const errorMsg = result.error || 'Unknown error - check server logs';
-        alert(`❌ Sync failed:\n\n${errorMsg}\n\n📋 TROUBLESHOOTING TIPS:\n\n1. MetaApi Users:\n   - Server Endpoint should be: https://api.metaapi.cloud/v1/accounts\n   - NOT the configuration page URL\n   - MT5 Account ID should be your MetaApi account ID\n\n2. Broker API Users:\n   - Verify the API endpoint URL is correct\n   - Check if Account ID is a number (not UUID)\n   - Confirm API Token/Password hasn't expired\n\n3. General:\n   - Test the endpoint URL in your browser\n   - Check that the Account ID exists and is active\n   - Verify the API credentials have proper permissions`);
+        const errorMsg = result.error || "Unknown error - check server logs";
+        alert(
+          `❌ Sync failed:\n\n${errorMsg}\n\n📋 TROUBLESHOOTING TIPS:\n\n1. MetaApi Users:\n   - Server Endpoint should be: https://api.metaapi.cloud/v1/accounts\n   - NOT the configuration page URL\n   - MT5 Account ID should be your MetaApi account ID\n\n2. Broker API Users:\n   - Verify the API endpoint URL is correct\n   - Check if Account ID is a number (not UUID)\n   - Confirm API Token/Password hasn't expired\n\n3. General:\n   - Test the endpoint URL in your browser\n   - Check that the Account ID exists and is active\n   - Verify the API credentials have proper permissions`,
+        );
       }
     } catch (error) {
       console.error("Error triggering sync:", error);
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg = error instanceof Error ? error.message : "Unknown error";
       alert(`❌ Error triggering sync:\n\n${errorMsg}`);
     } finally {
       setIsSyncing(false);
@@ -591,12 +652,12 @@ export default function AdminPage() {
         await loadMonitoring();
         alert(`✅ Sync triggered for ${result.synced} integration(s)!`);
       } else {
-        const errorMsg = result.error || 'Unknown error';
+        const errorMsg = result.error || "Unknown error";
         alert(`❌ Sync failed:\n\n${errorMsg}`);
       }
     } catch (error) {
       console.error("Error syncing all:", error);
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg = error instanceof Error ? error.message : "Unknown error";
       alert(`❌ Error syncing:\n\n${errorMsg}`);
     } finally {
       setIsSyncing(false);
@@ -614,7 +675,7 @@ export default function AdminPage() {
     setUploadSuccess(false);
 
     try {
-      console.log('[AdminPage] Parsing CSV data...');
+      console.log("[AdminPage] Parsing CSV data...");
       const traders = parseForexFactoryCSV(csvInput);
 
       if (traders.length === 0) {
@@ -626,7 +687,7 @@ export default function AdminPage() {
       console.log(`[AdminPage] Uploading ${traders.length} traders...`);
 
       // Use first credential as default, or let user select
-      const credId = credentials.length > 0 ? credentials[0].id : '';
+      const credId = credentials.length > 0 ? credentials[0].id : "";
       if (!credId) {
         alert("❌ No credentials available. Please create a credential first.");
         setIsUploadingBulk(false);
@@ -635,7 +696,7 @@ export default function AdminPage() {
 
       const result = await uploadForexFactoryTraderData(traders, credId);
 
-      console.log('[AdminPage] Upload result:', result);
+      console.log("[AdminPage] Upload result:", result);
 
       if (result.updatedCount > 0) {
         setUploadSuccess(true);
@@ -676,15 +737,18 @@ export default function AdminPage() {
     }
 
     // Validate UUID format (basic check)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(selectedTrader)) {
-      alert(`❌ Error: Invalid trader ID format. Selected ID: "${selectedTrader}". Please refresh and try again.`);
+      alert(
+        `❌ Error: Invalid trader ID format. Selected ID: "${selectedTrader}". Please refresh and try again.`,
+      );
       return;
     }
 
     const result = await assignCredentialToTrader(
       selectedTrader,
-      selectedCredential
+      selectedCredential,
     );
 
     if (result.success) {
@@ -714,7 +778,9 @@ export default function AdminPage() {
 
   const handleDeleteCredential = async (credentialId: string) => {
     if (
-      !confirm("Are you sure? This will remove all assignments for this credential.")
+      !confirm(
+        "Are you sure? This will remove all assignments for this credential.",
+      )
     ) {
       return;
     }
@@ -731,14 +797,14 @@ export default function AdminPage() {
 
   // Get available credentials (not yet assigned)
   const availableCredentials = credentials.filter(
-    (cred) => !assignments.some((a) => a.credential_id === cred.id)
+    (cred) => !assignments.some((a) => a.credential_id === cred.id),
   );
 
   // Get traders without assigned credentials (and with valid IDs)
   const tradersWithoutCredentials = traders.filter(
     (trader) =>
       trader.id && // Must have a valid ID (UUID format)
-      !assignments.some((a) => a.trader_id === trader.id)
+      !assignments.some((a) => a.trader_id === trader.id),
   );
 
   return (
@@ -856,8 +922,7 @@ export default function AdminPage() {
               }`}
               title="Password Requests"
             >
-              ❓
-              <span className="hidden sm:inline ml-1">Password Requests</span>
+              ❓<span className="hidden sm:inline ml-1">Password Requests</span>
             </button>
           </div>
 
@@ -872,7 +937,9 @@ export default function AdminPage() {
                   </div>
                 ) : traders.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">No traders registered yet</p>
+                    <p className="text-muted-foreground">
+                      No traders registered yet
+                    </p>
                   </div>
                 ) : (
                   traders.map((trader, index) => (
@@ -882,8 +949,12 @@ export default function AdminPage() {
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-foreground truncate">{trader.username}</p>
-                          <p className="text-xs text-muted-foreground break-all">{trader.email || "N/A"}</p>
+                          <p className="font-semibold text-foreground truncate">
+                            {trader.username}
+                          </p>
+                          <p className="text-xs text-muted-foreground break-all">
+                            {trader.email || "N/A"}
+                          </p>
                         </div>
                         <button
                           onClick={() => handleDeleteTrader(trader)}
@@ -895,12 +966,20 @@ export default function AdminPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <p className="text-muted-foreground mb-1">Start Balance</p>
-                          <p className="font-medium text-foreground">${trader.startingBalance.toFixed(2)}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Start Balance
+                          </p>
+                          <p className="font-medium text-foreground">
+                            ${trader.startingBalance.toFixed(2)}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground mb-1">Current Balance</p>
-                          <p className="font-medium text-foreground">${trader.currentBalance.toFixed(2)}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Current Balance
+                          </p>
+                          <p className="font-medium text-foreground">
+                            ${trader.currentBalance.toFixed(2)}
+                          </p>
                         </div>
                         <div className="col-span-2">
                           <p className="text-muted-foreground mb-1">Profit %</p>
@@ -950,13 +1029,17 @@ export default function AdminPage() {
                     {isLoadingTraders ? (
                       <tr>
                         <td colSpan={6} className="px-4 py-8 text-center">
-                          <p className="text-muted-foreground text-sm">Loading traders...</p>
+                          <p className="text-muted-foreground text-sm">
+                            Loading traders...
+                          </p>
                         </td>
                       </tr>
                     ) : traders.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-4 py-8 text-center">
-                          <p className="text-muted-foreground text-sm">No traders registered yet</p>
+                          <p className="text-muted-foreground text-sm">
+                            No traders registered yet
+                          </p>
                         </td>
                       </tr>
                     ) : (
@@ -1016,7 +1099,8 @@ export default function AdminPage() {
                     Trading Account Credentials
                   </h2>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                    Upload credentials and they will be automatically assigned to unregistered traders
+                    Upload credentials and they will be automatically assigned
+                    to unregistered traders
                   </p>
                 </div>
                 <button
@@ -1036,7 +1120,8 @@ export default function AdminPage() {
                     Upload New Trading Credential
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-                    When uploaded, this credential will be automatically assigned to the first unassigned trader
+                    When uploaded, this credential will be automatically
+                    assigned to the first unassigned trader
                   </p>
 
                   <form onSubmit={handleUploadCredential} className="space-y-4">
@@ -1167,11 +1252,15 @@ export default function AdminPage() {
               <div className="md:hidden space-y-3">
                 {isLoadingCredentials ? (
                   <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">Loading credentials...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Loading credentials...
+                    </p>
                   </div>
                 ) : credentials.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
+                    <p className="text-sm text-muted-foreground">
+                      No credentials uploaded yet
+                    </p>
                   </div>
                 ) : (
                   credentials.map((cred) => (
@@ -1181,8 +1270,12 @@ export default function AdminPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-muted-foreground mb-1">Username</p>
-                          <p className="font-medium text-foreground text-sm break-all">{cred.account_username}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Username
+                          </p>
+                          <p className="font-medium text-foreground text-sm break-all">
+                            {cred.account_username}
+                          </p>
                         </div>
                         <button
                           onClick={() => handleDeleteCredential(cred.id)}
@@ -1195,38 +1288,60 @@ export default function AdminPage() {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Account #</p>
-                          <p className="text-sm text-foreground font-mono break-all">{cred.account_number}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Account #
+                          </p>
+                          <p className="text-sm text-foreground font-mono break-all">
+                            {cred.account_number}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Broker</p>
-                          <p className="text-sm text-foreground">{cred.broker}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Broker
+                          </p>
+                          <p className="text-sm text-foreground">
+                            {cred.broker}
+                          </p>
                         </div>
                       </div>
 
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">Server</p>
-                        <p className="text-sm text-foreground font-mono">{cred.server_name}</p>
+                        <p className="text-xs text-muted-foreground mb-1">
+                          Server
+                        </p>
+                        <p className="text-sm text-foreground font-mono">
+                          {cred.server_name}
+                        </p>
                       </div>
 
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-xs text-muted-foreground">Password</p>
+                          <p className="text-xs text-muted-foreground">
+                            Password
+                          </p>
                           <button
                             onClick={() => togglePasswordVisibility(cred.id)}
                             className="p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded transition-colors"
-                            title={visibleCredentialPasswords.has(cred.id) ? "Hide password" : "Show password"}
+                            title={
+                              visibleCredentialPasswords.has(cred.id)
+                                ? "Hide password"
+                                : "Show password"
+                            }
                           >
                             <Eye className="h-3 w-3" />
                           </button>
                         </div>
                         <p className="text-sm text-foreground font-mono break-all">
-                          {visibleCredentialPasswords.has(cred.id) ? cred.account_password : "••••••••"}
+                          {visibleCredentialPasswords.has(cred.id)
+                            ? cred.account_password
+                            : "••••••••"}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs text-muted-foreground mb-2">Status</p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Status
+                        </p>
                         <span
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
                             cred.is_active
@@ -1282,13 +1397,17 @@ export default function AdminPage() {
                     {isLoadingCredentials ? (
                       <tr>
                         <td colSpan={7} className="px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">Loading credentials...</p>
+                          <p className="text-sm text-muted-foreground">
+                            Loading credentials...
+                          </p>
                         </td>
                       </tr>
                     ) : credentials.length === 0 ? (
                       <tr>
                         <td colSpan={7} className="px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">No credentials uploaded yet</p>
+                          <p className="text-sm text-muted-foreground">
+                            No credentials uploaded yet
+                          </p>
                         </td>
                       </tr>
                     ) : (
@@ -1306,12 +1425,20 @@ export default function AdminPage() {
                           <td className="px-4 py-3 text-foreground text-sm font-mono">
                             <div className="flex items-center gap-2">
                               <span>
-                                {visibleCredentialPasswords.has(cred.id) ? cred.account_password : "••••••••"}
+                                {visibleCredentialPasswords.has(cred.id)
+                                  ? cred.account_password
+                                  : "••••••••"}
                               </span>
                               <button
-                                onClick={() => togglePasswordVisibility(cred.id)}
+                                onClick={() =>
+                                  togglePasswordVisibility(cred.id)
+                                }
                                 className="p-1 text-muted-foreground hover:text-foreground hover:bg-accent rounded transition-colors"
-                                title={visibleCredentialPasswords.has(cred.id) ? "Hide password" : "Show password"}
+                                title={
+                                  visibleCredentialPasswords.has(cred.id)
+                                    ? "Hide password"
+                                    : "Show password"
+                                }
                               >
                                 <Eye className="h-4 w-4" />
                               </button>
@@ -1366,7 +1493,12 @@ export default function AdminPage() {
               {/* Info Box */}
               <div className="rounded-lg border border-success/50 bg-success/5 p-3 sm:p-4">
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  <strong className="text-foreground">ℹ️ Auto-Assignment:</strong> When you upload a new credential, it's automatically assigned to the first unassigned trader. Use this section to reassign credentials between traders if needed.
+                  <strong className="text-foreground">
+                    ℹ️ Auto-Assignment:
+                  </strong>{" "}
+                  When you upload a new credential, it's automatically assigned
+                  to the first unassigned trader. Use this section to reassign
+                  credentials between traders if needed.
                 </p>
               </div>
 
@@ -1428,11 +1560,15 @@ export default function AdminPage() {
               <div className="md:hidden space-y-3">
                 {isLoadingAssignments ? (
                   <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">Loading assignments...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Loading assignments...
+                    </p>
                   </div>
                 ) : assignments.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">No assignments yet</p>
+                    <p className="text-sm text-muted-foreground">
+                      No assignments yet
+                    </p>
                   </div>
                 ) : (
                   assignments.map((assignment) => (
@@ -1442,7 +1578,9 @@ export default function AdminPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-muted-foreground mb-1">Trader</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Trader
+                          </p>
                           <p className="font-medium text-foreground text-sm break-words">
                             {assignment.trader?.full_name || "Unknown"}
                           </p>
@@ -1458,20 +1596,38 @@ export default function AdminPage() {
 
                       <div className="space-y-2 border-t border-border pt-3">
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Email</p>
-                          <p className="text-sm text-foreground break-all">{assignment.trader?.email || "N/A"}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Email
+                          </p>
+                          <p className="text-sm text-foreground break-all">
+                            {assignment.trader?.email || "N/A"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Account Username</p>
-                          <p className="text-sm text-foreground font-mono break-all">{assignment.credential?.account_username || "N/A"}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Account Username
+                          </p>
+                          <p className="text-sm text-foreground font-mono break-all">
+                            {assignment.credential?.account_username || "N/A"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Account #</p>
-                          <p className="text-sm text-foreground font-mono break-all">{assignment.credential?.account_number || "N/A"}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Account #
+                          </p>
+                          <p className="text-sm text-foreground font-mono break-all">
+                            {assignment.credential?.account_number || "N/A"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs text-muted-foreground mb-1">Assigned Date</p>
-                          <p className="text-sm text-foreground">{new Date(assignment.assigned_at).toLocaleDateString()}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Assigned Date
+                          </p>
+                          <p className="text-sm text-foreground">
+                            {new Date(
+                              assignment.assigned_at,
+                            ).toLocaleDateString()}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -1508,13 +1664,17 @@ export default function AdminPage() {
                     {isLoadingAssignments ? (
                       <tr>
                         <td colSpan={6} className="px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">Loading assignments...</p>
+                          <p className="text-sm text-muted-foreground">
+                            Loading assignments...
+                          </p>
                         </td>
                       </tr>
                     ) : assignments.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">No assignments yet</p>
+                          <p className="text-sm text-muted-foreground">
+                            No assignments yet
+                          </p>
                         </td>
                       </tr>
                     ) : (
@@ -1536,11 +1696,15 @@ export default function AdminPage() {
                             {assignment.credential?.account_number || "N/A"}
                           </td>
                           <td className="px-4 py-3 text-sm text-muted-foreground">
-                            {new Date(assignment.assigned_at).toLocaleDateString()}
+                            {new Date(
+                              assignment.assigned_at,
+                            ).toLocaleDateString()}
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button
-                              onClick={() => handleRemoveAssignment(assignment.id)}
+                              onClick={() =>
+                                handleRemoveAssignment(assignment.id)
+                              }
                               className="inline-flex items-center gap-1 px-3 py-1 rounded text-sm text-destructive hover:bg-destructive/10 transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -1561,32 +1725,56 @@ export default function AdminPage() {
             <div className="space-y-6">
               {/* Info Box */}
               <div className="rounded-lg border border-primary/50 bg-primary/5 p-3 sm:p-4">
-                <h3 className="font-semibold text-sm sm:text-base text-foreground mb-2">📊 Forex Factory Manual Data Upload</h3>
+                <h3 className="font-semibold text-sm sm:text-base text-foreground mb-2">
+                  📊 Forex Factory Manual Data Upload
+                </h3>
                 <p className="text-xs sm:text-sm text-muted-foreground mb-3">
-                  Upload your top Forex Factory traders daily. Copy the top 10 traders from Forex Factory Trade Explorer and paste the data below to update the leaderboard.
+                  Upload your top Forex Factory traders daily. Copy the top 10
+                  traders from Forex Factory Trade Explorer and paste the data
+                  below to update the leaderboard.
                 </p>
                 <details className="text-sm text-muted-foreground">
                   <summary className="cursor-pointer font-medium text-foreground hover:text-primary">
                     📖 How to upload Forex Factory trader data
                   </summary>
                   <div className="mt-3 space-y-2 ml-2 border-l-2 border-primary/30 pl-3">
-                    <p><strong>Step 1:</strong> Go to <a href="https://www.forexfactory.com/trade-explorer" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Forex Factory Trade Explorer</a></p>
-                    <p><strong>Step 2:</strong> Copy your top 10 traders data in this format (one per line):</p>
+                    <p>
+                      <strong>Step 1:</strong> Go to{" "}
+                      <a
+                        href="https://www.forexfactory.com/trade-explorer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        Forex Factory Trade Explorer
+                      </a>
+                    </p>
+                    <p>
+                      <strong>Step 2:</strong> Copy your top 10 traders data in
+                      this format (one per line):
+                    </p>
                     <code className="text-xs bg-background p-2 rounded block my-2">
                       rank,trader_name,trader_username,balance,profit_percent,trades
                     </code>
-                    <p><strong>Example:</strong></p>
+                    <p>
+                      <strong>Example:</strong>
+                    </p>
                     <code className="text-xs bg-background p-2 rounded block my-2">
                       1,John Doe,johndoe,25000,45.5,120
                     </code>
-                    <p><strong>Step 3:</strong> Paste below and click "Upload Traders"</p>
+                    <p>
+                      <strong>Step 3:</strong> Paste below and click "Upload
+                      Traders"
+                    </p>
                   </div>
                 </details>
               </div>
 
               {/* Bulk Upload Form */}
               <div className="rounded-lg border border-border bg-card p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-4">📤 Upload Forex Factory Traders</h2>
+                <h2 className="text-xl font-semibold text-foreground mb-4">
+                  📤 Upload Forex Factory Traders
+                </h2>
 
                 <div className="space-y-4">
                   <div>
@@ -1615,13 +1803,17 @@ export default function AdminPage() {
 
                   {uploadSuccess && (
                     <div className="p-3 rounded-lg bg-success/10 text-success border border-success/30">
-                      <p className="text-sm font-medium">✅ Upload successful! Traders updated.</p>
+                      <p className="text-sm font-medium">
+                        ✅ Upload successful! Traders updated.
+                      </p>
                     </div>
                   )}
 
                   {uploadErrors.length > 0 && (
                     <div className="p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/30">
-                      <p className="text-sm font-medium mb-2">⚠️ Upload errors:</p>
+                      <p className="text-sm font-medium mb-2">
+                        ⚠️ Upload errors:
+                      </p>
                       <ul className="text-xs space-y-1">
                         {uploadErrors.map((error, idx) => (
                           <li key={idx}>• {error}</li>
@@ -1657,49 +1849,90 @@ export default function AdminPage() {
               {/* Upload History */}
               {/* Mobile Card View */}
               <div className="md:hidden space-y-3">
-                <h3 className="text-base font-semibold text-foreground mb-3">📋 Recent Uploads</h3>
+                <h3 className="text-base font-semibold text-foreground mb-3">
+                  📋 Recent Uploads
+                </h3>
                 {isLoadingMonitoring ? (
                   <div className="text-center py-6">
-                    <p className="text-sm text-muted-foreground">Loading integrations...</p>
+                    <p className="text-sm text-muted-foreground">
+                      Loading integrations...
+                    </p>
                   </div>
                 ) : forexFactoryIntegrations.length === 0 ? (
                   <div className="text-center py-6">
-                    <p className="text-sm text-muted-foreground">No Forex Factory integrations yet</p>
+                    <p className="text-sm text-muted-foreground">
+                      No Forex Factory integrations yet
+                    </p>
                   </div>
                 ) : (
                   forexFactoryIntegrations.map((integration) => (
-                    <div key={integration.id} className="rounded-lg border border-border bg-card p-3 space-y-2">
+                    <div
+                      key={integration.id}
+                      className="rounded-lg border border-border bg-card p-3 space-y-2"
+                    >
                       <div className="flex justify-between items-start gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-mono text-xs text-foreground truncate">{integration.credential?.account_username || "N/A"}</p>
-                          <p className="font-mono text-xs text-muted-foreground truncate">{integration.ff_account_username}</p>
+                          <p className="font-mono text-xs text-foreground truncate">
+                            {integration.credential?.account_username || "N/A"}
+                          </p>
+                          <p className="font-mono text-xs text-muted-foreground truncate">
+                            {integration.ff_account_username}
+                          </p>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <p className="text-muted-foreground mb-1">Status</p>
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                            integration.sync_status === 'success'
-                              ? 'bg-success/10 text-success'
-                              : integration.sync_status === 'error'
-                              ? 'bg-destructive/10 text-destructive'
-                              : integration.sync_status === 'syncing'
-                              ? 'bg-primary/10 text-primary'
-                              : 'bg-muted text-muted-foreground'
-                          }`}>
-                            {integration.sync_status === 'syncing' && <RefreshCw className="h-3 w-3 animate-spin" />}
-                            {integration.sync_status === 'success' && <Check className="h-3 w-3" />}
-                            {integration.sync_status === 'error' && <AlertCircle className="h-3 w-3" />}
-                            {integration.sync_status.charAt(0).toUpperCase() + integration.sync_status.slice(1)}
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              integration.sync_status === "success"
+                                ? "bg-success/10 text-success"
+                                : integration.sync_status === "error"
+                                  ? "bg-destructive/10 text-destructive"
+                                  : integration.sync_status === "syncing"
+                                    ? "bg-primary/10 text-primary"
+                                    : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            {integration.sync_status === "syncing" && (
+                              <RefreshCw className="h-3 w-3 animate-spin" />
+                            )}
+                            {integration.sync_status === "success" && (
+                              <Check className="h-3 w-3" />
+                            )}
+                            {integration.sync_status === "error" && (
+                              <AlertCircle className="h-3 w-3" />
+                            )}
+                            {integration.sync_status.charAt(0).toUpperCase() +
+                              integration.sync_status.slice(1)}
                           </span>
                         </div>
                         <div>
                           <p className="text-muted-foreground mb-1">Updated</p>
-                          <p className="text-xs text-muted-foreground">{integration.last_sync ? new Date(integration.last_sync).toLocaleDateString() : 'Never'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {integration.last_sync
+                              ? new Date(
+                                  integration.last_sync,
+                                ).toLocaleDateString()
+                              : "Never"}
+                          </p>
                         </div>
                         <div className="col-span-2 flex gap-2 justify-end">
-                          <button onClick={() => handleManualSync(integration.id)} disabled={isSyncing} className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"><RefreshCw className="h-3 w-3" /></button>
-                          <button onClick={() => handleDeleteIntegration(integration.id)} className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"><Trash2 className="h-3 w-3" /></button>
+                          <button
+                            onClick={() => handleManualSync(integration.id)}
+                            disabled={isSyncing}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-primary hover:bg-primary/10 transition-colors disabled:opacity-50"
+                          >
+                            <RefreshCw className="h-3 w-3" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDeleteIntegration(integration.id)
+                            }
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1710,7 +1943,9 @@ export default function AdminPage() {
               {/* Desktop Table View */}
               <div className="hidden md:block rounded-lg border border-border bg-card overflow-x-auto">
                 <div className="px-4 py-3 border-b border-border">
-                  <h3 className="text-base sm:text-lg font-semibold text-foreground">📋 Recent Uploads</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                    📋 Recent Uploads
+                  </h3>
                 </div>
                 <table className="w-full">
                   <thead>
@@ -1735,14 +1970,24 @@ export default function AdminPage() {
                   <tbody>
                     {isLoadingMonitoring ? (
                       <tr>
-                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">Loading integrations...</p>
+                        <td
+                          colSpan={5}
+                          className="px-3 sm:px-4 py-6 text-center"
+                        >
+                          <p className="text-sm text-muted-foreground">
+                            Loading integrations...
+                          </p>
                         </td>
                       </tr>
                     ) : forexFactoryIntegrations.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="px-3 sm:px-4 py-6 text-center">
-                          <p className="text-sm text-muted-foreground">No Forex Factory integrations yet</p>
+                        <td
+                          colSpan={5}
+                          className="px-3 sm:px-4 py-6 text-center"
+                        >
+                          <p className="text-sm text-muted-foreground">
+                            No Forex Factory integrations yet
+                          </p>
                         </td>
                       </tr>
                     ) : (
@@ -1760,42 +2005,51 @@ export default function AdminPage() {
                           <td className="px-3 sm:px-4 py-3">
                             <div
                               className="group relative inline-block"
-                              title={integration.last_error ? `Error: ${integration.last_error}` : undefined}
+                              title={
+                                integration.last_error
+                                  ? `Error: ${integration.last_error}`
+                                  : undefined
+                              }
                             >
                               <span
                                 className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium cursor-help ${
-                                  integration.sync_status === 'success'
-                                    ? 'bg-success/10 text-success'
-                                    : integration.sync_status === 'error'
-                                    ? 'bg-destructive/10 text-destructive'
-                                    : integration.sync_status === 'syncing'
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'bg-muted text-muted-foreground'
+                                  integration.sync_status === "success"
+                                    ? "bg-success/10 text-success"
+                                    : integration.sync_status === "error"
+                                      ? "bg-destructive/10 text-destructive"
+                                      : integration.sync_status === "syncing"
+                                        ? "bg-primary/10 text-primary"
+                                        : "bg-muted text-muted-foreground"
                                 }`}
                               >
-                                {integration.sync_status === 'syncing' && (
+                                {integration.sync_status === "syncing" && (
                                   <RefreshCw className="h-3 w-3 animate-spin" />
                                 )}
-                                {integration.sync_status === 'success' && (
+                                {integration.sync_status === "success" && (
                                   <Check className="h-3 w-3" />
                                 )}
-                                {integration.sync_status === 'error' && (
+                                {integration.sync_status === "error" && (
                                   <AlertCircle className="h-3 w-3" />
                                 )}
-                                {integration.sync_status.charAt(0).toUpperCase() +
+                                {integration.sync_status
+                                  .charAt(0)
+                                  .toUpperCase() +
                                   integration.sync_status.slice(1)}
                               </span>
-                              {integration.sync_status === 'error' && integration.last_error && (
-                                <div className="invisible group-hover:visible absolute left-0 bottom-full mb-2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                                  {integration.last_error.substring(0, 100)}
-                                </div>
-                              )}
+                              {integration.sync_status === "error" &&
+                                integration.last_error && (
+                                  <div className="invisible group-hover:visible absolute left-0 bottom-full mb-2 bg-destructive text-destructive-foreground text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                                    {integration.last_error.substring(0, 100)}
+                                  </div>
+                                )}
                             </div>
                           </td>
                           <td className="px-3 sm:px-4 py-3 text-xs sm:text-sm text-muted-foreground">
                             {integration.last_sync
-                              ? new Date(integration.last_sync).toLocaleDateString()
-                              : 'Never'}
+                              ? new Date(
+                                  integration.last_sync,
+                                ).toLocaleDateString()
+                              : "Never"}
                           </td>
                           <td className="px-3 sm:px-4 py-3 text-right space-x-1 sm:space-x-2">
                             <button
@@ -1807,7 +2061,9 @@ export default function AdminPage() {
                               <span className="hidden sm:inline">Sync</span>
                             </button>
                             <button
-                              onClick={() => handleDeleteIntegration(integration.id)}
+                              onClick={() =>
+                                handleDeleteIntegration(integration.id)
+                              }
                               className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors"
                             >
                               <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -1823,37 +2079,55 @@ export default function AdminPage() {
 
               {/* Sync History */}
               <div>
-                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Recent Sync History</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">
+                  Recent Sync History
+                </h3>
 
                 {/* Mobile Card View */}
                 <div className="md:hidden space-y-3">
                   {syncHistory.length === 0 ? (
                     <div className="text-center py-6">
-                      <p className="text-sm text-muted-foreground">No sync history yet</p>
+                      <p className="text-sm text-muted-foreground">
+                        No sync history yet
+                      </p>
                     </div>
                   ) : (
                     syncHistory.map((sync) => (
-                      <div key={sync.id} className="rounded-lg border border-border bg-card p-3 space-y-2">
+                      <div
+                        key={sync.id}
+                        className="rounded-lg border border-border bg-card p-3 space-y-2"
+                      >
                         <div className="flex justify-between items-center gap-2">
-                          <span className="font-medium text-foreground text-sm capitalize">{sync.sync_type}</span>
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                            sync.status === 'success'
-                              ? 'bg-success/10 text-success'
-                              : sync.status === 'error'
-                              ? 'bg-destructive/10 text-destructive'
-                              : 'bg-primary/10 text-primary'
-                          }`}>
-                            {sync.status.charAt(0).toUpperCase() + sync.status.slice(1)}
+                          <span className="font-medium text-foreground text-sm capitalize">
+                            {sync.sync_type}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                              sync.status === "success"
+                                ? "bg-success/10 text-success"
+                                : sync.status === "error"
+                                  ? "bg-destructive/10 text-destructive"
+                                  : "bg-primary/10 text-primary"
+                            }`}
+                          >
+                            {sync.status.charAt(0).toUpperCase() +
+                              sync.status.slice(1)}
                           </span>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
-                            <p className="text-muted-foreground mb-1">Records</p>
-                            <p className="font-medium text-foreground">{sync.records_updated}</p>
+                            <p className="text-muted-foreground mb-1">
+                              Records
+                            </p>
+                            <p className="font-medium text-foreground">
+                              {sync.records_updated}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground mb-1">Synced</p>
-                            <p className="text-xs text-muted-foreground">{new Date(sync.synced_at).toLocaleDateString()}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(sync.synced_at).toLocaleDateString()}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1884,7 +2158,9 @@ export default function AdminPage() {
                       {syncHistory.length === 0 ? (
                         <tr>
                           <td colSpan={4} className="px-4 py-6 text-center">
-                            <p className="text-sm text-muted-foreground">No sync history yet</p>
+                            <p className="text-sm text-muted-foreground">
+                              No sync history yet
+                            </p>
                           </td>
                         </tr>
                       ) : (
@@ -1899,14 +2175,15 @@ export default function AdminPage() {
                             <td className="px-4 py-3">
                               <span
                                 className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                                  sync.status === 'success'
-                                    ? 'bg-success/10 text-success'
-                                    : sync.status === 'error'
-                                    ? 'bg-destructive/10 text-destructive'
-                                    : 'bg-primary/10 text-primary'
+                                  sync.status === "success"
+                                    ? "bg-success/10 text-success"
+                                    : sync.status === "error"
+                                      ? "bg-destructive/10 text-destructive"
+                                      : "bg-primary/10 text-primary"
                                 }`}
                               >
-                                {sync.status.charAt(0).toUpperCase() + sync.status.slice(1)}
+                                {sync.status.charAt(0).toUpperCase() +
+                                  sync.status.slice(1)}
                               </span>
                             </td>
                             <td className="px-4 py-3 text-xs sm:text-sm text-muted-foreground">
@@ -1936,25 +2213,39 @@ export default function AdminPage() {
                       💰 Payment Account Settings
                     </h2>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      Configure your bank account for Nigerian payments and crypto wallets for international payments
+                      Configure your bank account for Nigerian payments and
+                      crypto wallets for international payments
                     </p>
                   </div>
                   <button
-                    onClick={() => setShowPaymentSettingsForm(!showPaymentSettingsForm)}
+                    onClick={() =>
+                      setShowPaymentSettingsForm(!showPaymentSettingsForm)
+                    }
                     className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium whitespace-nowrap flex-shrink-0"
                   >
                     <CreditCard className="h-4 w-4 flex-shrink-0" />
-                    <span className="hidden sm:inline">{showPaymentSettingsForm ? "Cancel" : "Edit Settings"}</span>
-                    <span className="sm:hidden">{showPaymentSettingsForm ? "✕" : "✎"}</span>
+                    <span className="hidden sm:inline">
+                      {showPaymentSettingsForm ? "Cancel" : "Edit Settings"}
+                    </span>
+                    <span className="sm:hidden">
+                      {showPaymentSettingsForm ? "✕" : "✎"}
+                    </span>
                   </button>
                 </div>
 
                 {showPaymentSettingsForm ? (
-                  <form onSubmit={handleSavePaymentSettings} className="space-y-6">
+                  <form
+                    onSubmit={handleSavePaymentSettings}
+                    className="space-y-6"
+                  >
                     {/* Nigerian Bank Account Section */}
                     <div className="space-y-4">
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground">🇳🇬 Nigerian Bank Account</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to users from Nigeria</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                        🇳🇬 Nigerian Bank Account
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        These details will be shown to users from Nigeria
+                      </p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -2029,8 +2320,12 @@ export default function AdminPage() {
 
                     {/* Binance Section */}
                     <div className="space-y-4 border-t border-border pt-6">
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground">₿ Binance Pay</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to international users</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                        ₿ Binance Pay
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        These details will be shown to international users
+                      </p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -2071,8 +2366,12 @@ export default function AdminPage() {
 
                     {/* Bybit Section */}
                     <div className="space-y-4 border-t border-border pt-6">
-                      <h3 className="text-base sm:text-lg font-semibold text-foreground">Bybit Wallet</h3>
-                      <p className="text-xs sm:text-sm text-muted-foreground">These details will be shown to international users</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-foreground">
+                        Bybit Wallet
+                      </h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        These details will be shown to international users
+                      </p>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
@@ -2125,7 +2424,9 @@ export default function AdminPage() {
                         disabled={isSavingPaymentSettings}
                         className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm font-medium"
                       >
-                        {isSavingPaymentSettings ? "Saving..." : "Save Settings"}
+                        {isSavingPaymentSettings
+                          ? "Saving..."
+                          : "Save Settings"}
                       </button>
                     </div>
                   </form>
@@ -2133,48 +2434,80 @@ export default function AdminPage() {
                   <div className="space-y-6">
                     {/* Nigerian Account Info */}
                     <div>
-                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">🇳🇬 Nigerian Account</h3>
+                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">
+                        🇳🇬 Nigerian Account
+                      </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                         <div className="text-xs sm:text-sm">
                           <p className="text-muted-foreground mb-1">Bank</p>
-                          <p className="font-medium text-foreground break-words">{paymentSettings.nigerian_bank_name || "—"}</p>
+                          <p className="font-medium text-foreground break-words">
+                            {paymentSettings.nigerian_bank_name || "—"}
+                          </p>
                         </div>
                         <div className="text-xs sm:text-sm">
-                          <p className="text-muted-foreground mb-1">Account Name</p>
-                          <p className="font-medium text-foreground break-words">{paymentSettings.nigerian_account_name || "—"}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Account Name
+                          </p>
+                          <p className="font-medium text-foreground break-words">
+                            {paymentSettings.nigerian_account_name || "—"}
+                          </p>
                         </div>
                         <div className="text-xs sm:text-sm">
-                          <p className="text-muted-foreground mb-1">Account Number</p>
-                          <p className="font-medium text-foreground font-mono break-all">{paymentSettings.nigerian_account_number || "—"}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Account Number
+                          </p>
+                          <p className="font-medium text-foreground font-mono break-all">
+                            {paymentSettings.nigerian_account_number || "—"}
+                          </p>
                         </div>
                         <div className="text-xs sm:text-sm">
                           <p className="text-muted-foreground mb-1">SWIFT</p>
-                          <p className="font-medium text-foreground font-mono break-all">{paymentSettings.nigerian_swift_code || "—"}</p>
+                          <p className="font-medium text-foreground font-mono break-all">
+                            {paymentSettings.nigerian_swift_code || "—"}
+                          </p>
                         </div>
                       </div>
                     </div>
 
                     {/* Crypto Wallets Info */}
                     <div>
-                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">💱 International Payment Methods</h3>
+                      <h3 className="text-sm sm:text-base font-semibold text-foreground mb-3">
+                        💱 International Payment Methods
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="text-xs sm:text-sm border border-border rounded-lg p-3">
-                          <p className="text-muted-foreground mb-1">Binance Pay ID</p>
-                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.binance_pay_id || "—"}</p>
-                          <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.binance_network || "—"}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Binance Pay ID
+                          </p>
+                          <p className="font-medium text-foreground font-mono text-xs break-all">
+                            {paymentSettings.binance_pay_id || "—"}
+                          </p>
+                          <p className="text-muted-foreground text-xs mt-1">
+                            Network: {paymentSettings.binance_network || "—"}
+                          </p>
                         </div>
                         <div className="text-xs sm:text-sm border border-border rounded-lg p-3">
-                          <p className="text-muted-foreground mb-1">Bybit Wallet</p>
-                          <p className="font-medium text-foreground font-mono text-xs break-all">{paymentSettings.bybit_wallet_address || "—"}</p>
-                          <p className="text-muted-foreground text-xs mt-1">Network: {paymentSettings.bybit_network || "—"}</p>
+                          <p className="text-muted-foreground mb-1">
+                            Bybit Wallet
+                          </p>
+                          <p className="font-medium text-foreground font-mono text-xs break-all">
+                            {paymentSettings.bybit_wallet_address || "—"}
+                          </p>
+                          <p className="text-muted-foreground text-xs mt-1">
+                            Network: {paymentSettings.bybit_network || "—"}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">No payment settings configured yet</p>
-                    <p className="text-sm text-muted-foreground mt-2">Click "Edit Settings" to add your payment details</p>
+                    <p className="text-muted-foreground">
+                      No payment settings configured yet
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Click "Edit Settings" to add your payment details
+                    </p>
                   </div>
                 )}
               </div>
@@ -2187,16 +2520,22 @@ export default function AdminPage() {
 
                 {isLoadingPendingPayments ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">Loading pending payments...</p>
+                    <p className="text-muted-foreground">
+                      Loading pending payments...
+                    </p>
                   </div>
-                ) : pendingPayments.filter((p) => p.payment_method === 'bank-transfer').length === 0 ? (
+                ) : pendingPayments.filter(
+                    (p) => p.payment_method === "bank-transfer",
+                  ).length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">No pending bank transfer payments at this time</p>
+                    <p className="text-muted-foreground">
+                      No pending bank transfer payments at this time
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {pendingPayments
-                      .filter((p) => p.payment_method === 'bank-transfer')
+                      .filter((p) => p.payment_method === "bank-transfer")
                       .map((payment) => (
                         <div
                           key={payment.id}
@@ -2204,19 +2543,33 @@ export default function AdminPage() {
                         >
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
                             <div className="min-w-0">
-                              <p className="text-xs text-muted-foreground">Name</p>
-                              <p className="font-medium text-foreground text-sm truncate">{payment.full_name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Name
+                              </p>
+                              <p className="font-medium text-foreground text-sm truncate">
+                                {payment.full_name}
+                              </p>
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs text-muted-foreground">Email</p>
-                              <p className="font-medium text-foreground break-all text-xs sm:text-sm">{payment.email}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Email
+                              </p>
+                              <p className="font-medium text-foreground break-all text-xs sm:text-sm">
+                                {payment.email}
+                              </p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Country</p>
-                              <p className="font-medium text-foreground text-sm">{payment.country}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Country
+                              </p>
+                              <p className="font-medium text-foreground text-sm">
+                                {payment.country}
+                              </p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Payment</p>
+                              <p className="text-xs text-muted-foreground">
+                                Payment
+                              </p>
                               <span className="px-2 py-1 rounded-full text-xs font-medium inline-block bg-blue-500/20 text-blue-700">
                                 🏦 Bank Transfer
                               </span>
@@ -2225,48 +2578,79 @@ export default function AdminPage() {
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 pb-4 border-b border-border">
                             <div>
-                              <p className="text-xs text-muted-foreground">Amount</p>
-                              <p className="font-medium text-foreground text-sm">$15 USD</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-muted-foreground">Registered</p>
-                              <p className="font-medium text-foreground text-xs sm:text-sm">
-                                {new Date(payment.registered_at).toLocaleDateString()}
+                              <p className="text-xs text-muted-foreground">
+                                Amount
+                              </p>
+                              <p className="font-medium text-foreground text-sm">
+                                $15 USD
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Status</p>
+                              <p className="text-xs text-muted-foreground">
+                                Registered
+                              </p>
+                              <p className="font-medium text-foreground text-xs sm:text-sm">
+                                {new Date(
+                                  payment.registered_at,
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">
+                                Status
+                              </p>
                               <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded text-xs inline-block">
                                 Pending
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">ID</p>
-                              <p className="font-medium text-foreground text-xs font-mono">{payment.id.substring(0, 8)}...</p>
+                              <p className="text-xs text-muted-foreground">
+                                ID
+                              </p>
+                              <p className="font-medium text-foreground text-xs font-mono">
+                                {payment.id.substring(0, 8)}...
+                              </p>
                             </div>
                           </div>
 
                           <div className="flex flex-col sm:flex-row gap-2 justify-end">
                             <button
-                              onClick={() => handleApprovePayment(payment.id, payment.full_name)}
+                              onClick={() =>
+                                handleApprovePayment(
+                                  payment.id,
+                                  payment.full_name,
+                                )
+                              }
                               disabled={approvingPaymentId === payment.id}
                               className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start gap-2"
                             >
                               {approvingPaymentId === payment.id ? (
                                 <>
-                                  <RefreshCw size={16} className="animate-spin" />
-                                  <span className="hidden sm:inline">Processing...</span>
+                                  <RefreshCw
+                                    size={16}
+                                    className="animate-spin"
+                                  />
+                                  <span className="hidden sm:inline">
+                                    Processing...
+                                  </span>
                                 </>
                               ) : (
                                 <>
                                   <Check size={16} />
-                                  <span className="hidden md:inline">Approve & Send Credentials</span>
+                                  <span className="hidden md:inline">
+                                    Approve & Send Credentials
+                                  </span>
                                   <span className="md:hidden">Approve</span>
                                 </>
                               )}
                             </button>
                             <button
-                              onClick={() => handleRejectPayment(payment.id, payment.full_name)}
+                              onClick={() =>
+                                handleRejectPayment(
+                                  payment.id,
+                                  payment.full_name,
+                                )
+                              }
                               disabled={approvingPaymentId === payment.id}
                               className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
@@ -2286,11 +2670,29 @@ export default function AdminPage() {
                   <strong>ℹ️ Bank Transfer Approval Workflow</strong>
                 </p>
                 <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-2 list-disc list-inside">
-                  <li>Users who select "Bank Transfer" during registration will appear in the "Pending Bank Transfer Payments" section above</li>
-                  <li>Check your bank account to confirm the user has sent their payment</li>
-                  <li>Click the <span className="font-semibold">"Approve & Send Credentials"</span> button once payment is confirmed</li>
-                  <li>The user's payment status will be updated to "approved" and they'll immediately receive their trading credentials</li>
-                  <li>Use the "Reject" button if the payment is fraudulent or if you need to deny the registration</li>
+                  <li>
+                    Users who select "Bank Transfer" during registration will
+                    appear in the "Pending Bank Transfer Payments" section above
+                  </li>
+                  <li>
+                    Check your bank account to confirm the user has sent their
+                    payment
+                  </li>
+                  <li>
+                    Click the{" "}
+                    <span className="font-semibold">
+                      "Approve & Send Credentials"
+                    </span>{" "}
+                    button once payment is confirmed
+                  </li>
+                  <li>
+                    The user's payment status will be updated to "approved" and
+                    they'll immediately receive their trading credentials
+                  </li>
+                  <li>
+                    Use the "Reject" button if the payment is fraudulent or if
+                    you need to deny the registration
+                  </li>
                 </ul>
               </div>
 
@@ -2302,21 +2704,33 @@ export default function AdminPage() {
 
                 {isLoadingPendingPayments ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">Loading pending payments...</p>
+                    <p className="text-muted-foreground">
+                      Loading pending payments...
+                    </p>
                   </div>
-                ) : pendingPayments.filter((p) => p.payment_method === 'binance' || p.payment_method === 'bybit').length === 0 ? (
+                ) : pendingPayments.filter(
+                    (p) =>
+                      p.payment_method === "binance" ||
+                      p.payment_method === "bybit",
+                  ).length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground">No pending Binance or Bybit payments at this time</p>
+                    <p className="text-muted-foreground">
+                      No pending Binance or Bybit payments at this time
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {pendingPayments
-                      .filter((p) => p.payment_method === 'binance' || p.payment_method === 'bybit')
+                      .filter(
+                        (p) =>
+                          p.payment_method === "binance" ||
+                          p.payment_method === "bybit",
+                      )
                       .map((payment) => {
                         const methodBadgeClass =
-                          payment.payment_method === 'binance'
-                            ? 'bg-yellow-500/20 text-yellow-700'
-                            : 'bg-purple-500/20 text-purple-700';
+                          payment.payment_method === "binance"
+                            ? "bg-yellow-500/20 text-yellow-700"
+                            : "bg-purple-500/20 text-purple-700";
 
                         return (
                           <div
@@ -2325,69 +2739,118 @@ export default function AdminPage() {
                           >
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
                               <div className="min-w-0">
-                                <p className="text-xs text-muted-foreground">Name</p>
-                                <p className="font-medium text-foreground text-sm truncate">{payment.full_name}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Name
+                                </p>
+                                <p className="font-medium text-foreground text-sm truncate">
+                                  {payment.full_name}
+                                </p>
                               </div>
                               <div className="min-w-0">
-                                <p className="text-xs text-muted-foreground">Email</p>
-                                <p className="font-medium text-foreground break-all text-xs sm:text-sm">{payment.email}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Email
+                                </p>
+                                <p className="font-medium text-foreground break-all text-xs sm:text-sm">
+                                  {payment.email}
+                                </p>
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">Country</p>
-                                <p className="font-medium text-foreground text-sm">{payment.country}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Country
+                                </p>
+                                <p className="font-medium text-foreground text-sm">
+                                  {payment.country}
+                                </p>
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">Payment</p>
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${methodBadgeClass}`}>
-                                  {payment.payment_method === 'binance' ? '🟡 Binance' : '💜 Bybit'}
+                                <p className="text-xs text-muted-foreground">
+                                  Payment
+                                </p>
+                                <span
+                                  className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${methodBadgeClass}`}
+                                >
+                                  {payment.payment_method === "binance"
+                                    ? "🟡 Binance"
+                                    : "💜 Bybit"}
                                 </span>
                               </div>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 pb-4 border-b border-border">
                               <div>
-                                <p className="text-xs text-muted-foreground">Amount</p>
-                                <p className="font-medium text-foreground text-sm">$15 USD</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-muted-foreground">Registered</p>
-                                <p className="font-medium text-foreground text-xs sm:text-sm">
-                                  {new Date(payment.registered_at).toLocaleDateString()}
+                                <p className="text-xs text-muted-foreground">
+                                  Amount
+                                </p>
+                                <p className="font-medium text-foreground text-sm">
+                                  $15 USD
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">Status</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Registered
+                                </p>
+                                <p className="font-medium text-foreground text-xs sm:text-sm">
+                                  {new Date(
+                                    payment.registered_at,
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-muted-foreground">
+                                  Status
+                                </p>
                                 <p className="font-medium text-amber-600 bg-amber-500/10 px-2 py-1 rounded text-xs inline-block">
                                   Pending
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs text-muted-foreground">ID</p>
-                                <p className="font-medium text-foreground text-xs font-mono">{payment.id.substring(0, 8)}...</p>
+                                <p className="text-xs text-muted-foreground">
+                                  ID
+                                </p>
+                                <p className="font-medium text-foreground text-xs font-mono">
+                                  {payment.id.substring(0, 8)}...
+                                </p>
                               </div>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-2 justify-end">
                               <button
-                                onClick={() => handleApprovePayment(payment.id, payment.full_name)}
+                                onClick={() =>
+                                  handleApprovePayment(
+                                    payment.id,
+                                    payment.full_name,
+                                  )
+                                }
                                 disabled={approvingPaymentId === payment.id}
                                 className="px-3 py-2 rounded-lg bg-green-600 text-white font-medium text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start gap-2"
                               >
                                 {approvingPaymentId === payment.id ? (
                                   <>
-                                    <RefreshCw size={16} className="animate-spin" />
-                                    <span className="hidden sm:inline">Processing...</span>
+                                    <RefreshCw
+                                      size={16}
+                                      className="animate-spin"
+                                    />
+                                    <span className="hidden sm:inline">
+                                      Processing...
+                                    </span>
                                   </>
                                 ) : (
                                   <>
                                     <Check size={16} />
-                                    <span className="hidden md:inline">Approve & Send Credentials</span>
+                                    <span className="hidden md:inline">
+                                      Approve & Send Credentials
+                                    </span>
                                     <span className="md:hidden">Approve</span>
                                   </>
                                 )}
                               </button>
                               <button
-                                onClick={() => handleRejectPayment(payment.id, payment.full_name)}
+                                onClick={() =>
+                                  handleRejectPayment(
+                                    payment.id,
+                                    payment.full_name,
+                                  )
+                                }
                                 disabled={approvingPaymentId === payment.id}
                                 className="px-3 py-2 rounded-lg bg-red-600 text-white font-medium text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                               >
@@ -2432,7 +2895,8 @@ export default function AdminPage() {
                   🔐 Trader Account Passwords
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-                  Search traders by username, email, or full name to view their account passwords
+                  Search traders by username, email, or full name to view their
+                  account passwords
                 </p>
 
                 <div className="relative mb-6">
@@ -2467,18 +2931,28 @@ export default function AdminPage() {
                         {/* Trader Info Row */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Username</p>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              Username
+                            </p>
                             <p className="font-medium text-foreground text-sm break-words">
                               {trader.username}
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Email</p>
-                            <p className="text-sm text-foreground break-all">{trader.email}</p>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              Email
+                            </p>
+                            <p className="text-sm text-foreground break-all">
+                              {trader.email}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Full Name</p>
-                            <p className="font-medium text-foreground text-sm">{trader.full_name}</p>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              Full Name
+                            </p>
+                            <p className="font-medium text-foreground text-sm">
+                              {trader.full_name}
+                            </p>
                           </div>
                         </div>
 
@@ -2494,7 +2968,9 @@ export default function AdminPage() {
                             <button
                               onClick={() => {
                                 if (trader.trader_password) {
-                                  navigator.clipboard.writeText(trader.trader_password);
+                                  navigator.clipboard.writeText(
+                                    trader.trader_password,
+                                  );
                                   alert("Password copied to clipboard!");
                                 }
                               }}
@@ -2512,7 +2988,10 @@ export default function AdminPage() {
                             Payment Status: {trader.payment_status || "Unknown"}
                           </span>
                           <span className="text-muted-foreground">
-                            Registered: {new Date(trader.registered_at).toLocaleDateString()}
+                            Registered:{" "}
+                            {new Date(
+                              trader.registered_at,
+                            ).toLocaleDateString()}
                           </span>
                         </div>
                       </div>
@@ -2527,9 +3006,17 @@ export default function AdminPage() {
                   <strong>ℹ️ Password Management Guide</strong>
                 </p>
                 <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
-                  <li>Use the search bar to quickly find traders by username, email, or name</li>
-                  <li>Click "Copy" to copy a trader's password to your clipboard</li>
-                  <li>Share passwords securely with traders who have forgotten theirs</li>
+                  <li>
+                    Use the search bar to quickly find traders by username,
+                    email, or name
+                  </li>
+                  <li>
+                    Click "Copy" to copy a trader's password to your clipboard
+                  </li>
+                  <li>
+                    Share passwords securely with traders who have forgotten
+                    theirs
+                  </li>
                   <li>Passwords are displayed here for admin reference only</li>
                 </ul>
               </div>
@@ -2561,7 +3048,9 @@ export default function AdminPage() {
               {/* Loading State */}
               {isLoadingPasswordRequests ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">Loading password reset requests...</p>
+                  <p className="text-muted-foreground">
+                    Loading password reset requests...
+                  </p>
                 </div>
               ) : filteredPasswordResetRequests.length === 0 ? (
                 <div className="text-center py-8">
@@ -2580,41 +3069,65 @@ export default function AdminPage() {
                     >
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Email</p>
-                          <p className="font-medium text-foreground break-all">{request.email}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Email
+                          </p>
+                          <p className="font-medium text-foreground break-all">
+                            {request.email}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Name</p>
-                          <p className="font-medium text-foreground">{request.full_name || 'N/A'}</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Name
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {request.full_name || "N/A"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Status</p>
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            request.status === 'pending'
-                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                              : request.status === 'resolved'
-                              ? 'bg-success/10 text-success'
-                              : 'bg-destructive/10 text-destructive'
-                          }`}>
-                            {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Status
+                          </p>
+                          <span
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              request.status === "pending"
+                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                : request.status === "resolved"
+                                  ? "bg-success/10 text-success"
+                                  : "bg-destructive/10 text-destructive"
+                            }`}
+                          >
+                            {request.status.charAt(0).toUpperCase() +
+                              request.status.slice(1)}
                           </span>
                         </div>
                         <div>
-                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">Requested</p>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Requested
+                          </p>
                           <p className="text-xs text-muted-foreground">
-                            {new Date(request.requested_at).toLocaleDateString()} {new Date(request.requested_at).toLocaleTimeString()}
+                            {new Date(
+                              request.requested_at,
+                            ).toLocaleDateString()}{" "}
+                            {new Date(
+                              request.requested_at,
+                            ).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
 
                       {request.notes && (
                         <div className="mb-4 p-3 rounded bg-card/50 border border-border/50">
-                          <p className="text-xs text-muted-foreground mb-1">Admin Notes</p>
-                          <p className="text-sm text-foreground">{request.notes}</p>
+                          <p className="text-xs text-muted-foreground mb-1">
+                            Admin Notes
+                          </p>
+                          <p className="text-sm text-foreground">
+                            {request.notes}
+                          </p>
                         </div>
                       )}
 
-                      {request.status === 'pending' && (
+                      {request.status === "pending" && (
                         <div className="flex flex-col sm:flex-row gap-2">
                           <button
                             onClick={async () => {
@@ -2622,20 +3135,25 @@ export default function AdminPage() {
                                 const response = await fetch(
                                   `/api/admin/password-reset-requests/${request.id}/resolve`,
                                   {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
+                                    method: "POST",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
                                     body: JSON.stringify({
-                                      status: 'resolved',
-                                      resolvedBy: 'Admin',
-                                      notes: 'Password reset completed'
-                                    })
-                                  }
+                                      status: "resolved",
+                                      resolvedBy: "Admin",
+                                      notes: "Password reset completed",
+                                    }),
+                                  },
                                 );
                                 if (response.ok) {
                                   loadPasswordResetRequests();
                                 }
                               } catch (error) {
-                                console.error('Error resolving password request:', error);
+                                console.error(
+                                  "Error resolving password request:",
+                                  error,
+                                );
                               }
                             }}
                             className="flex-1 px-4 py-2 rounded-lg bg-success/10 text-success hover:bg-success/20 transition-colors text-sm font-medium"
@@ -2648,19 +3166,24 @@ export default function AdminPage() {
                                 const response = await fetch(
                                   `/api/admin/password-reset-requests/${request.id}/resolve`,
                                   {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
+                                    method: "POST",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
                                     body: JSON.stringify({
-                                      status: 'rejected',
-                                      resolvedBy: 'Admin'
-                                    })
-                                  }
+                                      status: "rejected",
+                                      resolvedBy: "Admin",
+                                    }),
+                                  },
                                 );
                                 if (response.ok) {
                                   loadPasswordResetRequests();
                                 }
                               } catch (error) {
-                                console.error('Error rejecting password request:', error);
+                                console.error(
+                                  "Error rejecting password request:",
+                                  error,
+                                );
                               }
                             }}
                             className="flex-1 px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-sm font-medium"
@@ -2680,9 +3203,17 @@ export default function AdminPage() {
                   <strong>ℹ️ Password Reset Management</strong>
                 </p>
                 <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
-                  <li>Users can submit password reset requests from the login page</li>
-                  <li>Review each request and contact the user directly via their email</li>
-                  <li>After helping reset their password, mark the request as "Resolved"</li>
+                  <li>
+                    Users can submit password reset requests from the login page
+                  </li>
+                  <li>
+                    Review each request and contact the user directly via their
+                    email
+                  </li>
+                  <li>
+                    After helping reset their password, mark the request as
+                    "Resolved"
+                  </li>
                   <li>Use "Reject" to dismiss invalid or spam requests</li>
                 </ul>
               </div>

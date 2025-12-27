@@ -54,14 +54,18 @@ export function createServer() {
 
   // Add debugging middleware AFTER json parser to log parsed bodies
   app.use((req, res, next) => {
-    console.log('[Express] Request processed:');
-    console.log('  Method:', req.method);
-    console.log('  Path:', req.path);
-    console.log('  Body present:', !!req.body);
-    if (req.body && typeof req.body === 'object') {
-      console.log('  Body keys:', Object.keys(req.body));
+    console.log("[Express] Request processed:");
+    console.log("  Method:", req.method);
+    console.log("  Path:", req.path);
+    console.log("  Body present:", !!req.body);
+    if (req.body && typeof req.body === "object") {
+      console.log("  Body keys:", Object.keys(req.body));
       if (req.body.password) {
-        console.log('  Password in body:', 'Yes, length:', req.body.password.length);
+        console.log(
+          "  Password in body:",
+          "Yes, length:",
+          req.body.password.length,
+        );
       }
     }
     next();
@@ -77,13 +81,16 @@ export function createServer() {
   app.get("/api/test-env", (_req, res) => {
     const adminPasswordSet = !!process.env.ADMIN_PASSWORD;
     const adminPasswordLength = process.env.ADMIN_PASSWORD?.length || 0;
-    const adminPasswordFirstChars = process.env.ADMIN_PASSWORD?.substring(0, 3) || '';
+    const adminPasswordFirstChars =
+      process.env.ADMIN_PASSWORD?.substring(0, 3) || "";
 
     res.json({
       adminPasswordExists: adminPasswordSet,
       adminPasswordLength,
       adminPasswordFirstChars,
-      allEnvKeys: Object.keys(process.env).filter(k => k.includes('ADMIN') || k.includes('SUPABASE'))
+      allEnvKeys: Object.keys(process.env).filter(
+        (k) => k.includes("ADMIN") || k.includes("SUPABASE"),
+      ),
     });
   });
 
@@ -101,11 +108,17 @@ export function createServer() {
 
   // Forex Factory Sync routes
   app.post("/api/sync/forex-factory/trigger", handleForexFactorySyncAll);
-  app.post("/api/sync/forex-factory/trigger/:integrationId", handleForexFactorySyncIntegration);
+  app.post(
+    "/api/sync/forex-factory/trigger/:integrationId",
+    handleForexFactorySyncIntegration,
+  );
   app.post("/api/sync/forex-factory/test", handleForexFactoryTestConnection);
 
   // Payment routes
-  app.post("/api/payment/webhooks/flutterwave", handleFlutterwaveWebhookRequest);
+  app.post(
+    "/api/payment/webhooks/flutterwave",
+    handleFlutterwaveWebhookRequest,
+  );
   app.post("/api/payment/webhooks/binance", handleBinanceWebhookRequest);
   app.post("/api/payment/webhooks/bybit", handleBybitWebhookRequest);
   app.get("/api/payment/success", handlePaymentSuccess);
@@ -132,7 +145,10 @@ export function createServer() {
   app.get("/api/admin/traders-with-passwords", getTradersWithPasswords);
   app.post("/api/admin/password-reset-request", handlePasswordResetRequest);
   app.get("/api/admin/password-reset-requests", getPasswordResetRequests);
-  app.post("/api/admin/password-reset-requests/:requestId/resolve", updatePasswordResetRequestStatus);
+  app.post(
+    "/api/admin/password-reset-requests/:requestId/resolve",
+    updatePasswordResetRequestStatus,
+  );
 
   return app;
 }
