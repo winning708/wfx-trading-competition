@@ -1107,6 +1107,23 @@ export default function AdminPage() {
                           }
                         />
                       </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Server Name
+                        </label>
+                        <Input
+                          type="text"
+                          value={credentialForm.server_name}
+                          onChange={(e) =>
+                            setCredentialForm({
+                              ...credentialForm,
+                              server_name: e.target.value,
+                            })
+                          }
+                          placeholder="e.g., JustMarkets-Demo"
+                        />
+                      </div>
                     </div>
 
                     <div>
