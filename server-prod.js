@@ -24,8 +24,8 @@ app.get("/api/ping", (req, res) => {
 const distPath = path.join(__dirname, "dist/spa");
 app.use(express.static(distPath));
 
-// Fallback to index.html for SPA routes
-app.get("*", (req, res) => {
+// Fallback to index.html for SPA routes (using regex for all other paths)
+app.get(/^(?!\/api\/).*/, (req, res) => {
   const indexPath = path.join(distPath, "index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
