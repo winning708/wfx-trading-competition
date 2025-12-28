@@ -27,20 +27,12 @@ coverage
 *.tmp.*
 log.txt
 
-.DS_Store
-node_modules
-**/node_modules/**
 build
 data
-.env
 load-ids.txt
 
-server
 tmp
 types
-.git
-.gitignore
-dist
 service
 tests
 fixtures-pages
@@ -53,10 +45,6 @@ packages/ml-air/bin
 packages/ml-air/project
 packages/ml-air/share
 packages/ml-air/random_forest_classification/
-packages/ml-air/__pycache__/
 packages/ml-air/app/__pycache__/
 packages/vcp-common/native-bridge/build
 packages/vcp-common/_tests_/dataset-ranking.csv
-node_modules/
-Dockerfile
-.gitignore
