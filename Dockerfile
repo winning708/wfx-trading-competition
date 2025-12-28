@@ -41,9 +41,11 @@ FROM base
 
 # Copy built application and dependencies from build stage
 COPY --from=build /app/dist /app/dist
-COPY --from=build /app/server /app/server
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package.json /app/package.json
+
+# Copy server source code (tsx will run it directly)
+COPY --from=build /app/server /app/server
 
 # Copy public folder if it exists and is needed at runtime
 COPY --from=build /app/public /app/public
