@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for wfx-trading-competition-km6guq on 2025-12-28T22:14:31Z
+# fly.toml app configuration file generated for wfx-trading-competition-y-9k8q on 2025-12-28T22:50:22Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'wfx-trading-competition-km6guq'
+app = 'wfx-trading-competition-y-9k8q'
 primary_region = 'jnb'
 
 [build]
