@@ -1,9 +1,13 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+import express from "express";
+import cors from "cors";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
-require("dotenv").config();
+dotenv.config();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 const port = process.env.PORT || 3000;
