@@ -3,9 +3,13 @@
  * Handles sending confirmation and receipt emails
  */
 
-import { RequestHandler } from 'express';
-import { sendConfirmationEmailToUser, sendPaymentReceiptEmail, sendTradingCredentialsEmail } from '../lib/email-service.js';
-import { sendCredentialsEmailToTrader } from '../lib/supabase-client.js';
+import { RequestHandler } from "express";
+import {
+  sendConfirmationEmailToUser,
+  sendPaymentReceiptEmail,
+  sendTradingCredentialsEmail,
+} from "../lib/email-service.js";
+import { sendCredentialsEmailToTrader } from "../lib/supabase-client.js";
 
 /**
  * Send Confirmation Email
@@ -19,25 +23,25 @@ export const sendConfirmationEmail: RequestHandler = async (req, res) => {
     if (!email || !fullName) {
       return res.status(400).json({
         success: false,
-        message: 'Email and fullName are required',
+        message: "Email and fullName are required",
       });
     }
 
-    console.log('[Email] Sending confirmation email to:', email);
+    console.log("[Email] Sending confirmation email to:", email);
 
     const success = await sendConfirmationEmailToUser(email, fullName);
 
     if (!success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to send email',
+        message: "Failed to send email",
       });
     }
 
-    res.json({ success: true, message: 'Confirmation email sent' });
+    res.json({ success: true, message: "Confirmation email sent" });
   } catch (error) {
-    console.error('[Email] Error in sendConfirmationEmail:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("[Email] Error in sendConfirmationEmail:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -53,31 +57,31 @@ export const sendPaymentReceipt: RequestHandler = async (req, res) => {
     if (!email || !fullName || !amount || !paymentMethod || !transactionId) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required',
+        message: "All fields are required",
       });
     }
 
-    console.log('[Email] Sending payment receipt to:', email);
+    console.log("[Email] Sending payment receipt to:", email);
 
     const success = await sendPaymentReceiptEmail(
       email,
       fullName,
       amount,
       paymentMethod,
-      transactionId
+      transactionId,
     );
 
     if (!success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to send receipt',
+        message: "Failed to send receipt",
       });
     }
 
-    res.json({ success: true, message: 'Receipt email sent' });
+    res.json({ success: true, message: "Receipt email sent" });
   } catch (error) {
-    console.error('[Email] Error in sendPaymentReceipt:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    console.error("[Email] Error in sendPaymentReceipt:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -93,36 +97,37 @@ export const sendCredentialsEmail: RequestHandler = async (req, res) => {
     if (!traderId) {
       return res.status(400).json({
         success: false,
-        message: 'Trader ID is required',
+        message: "Trader ID is required",
       });
     }
 
-    console.log('[Email] Sending credentials email for trader:', traderId);
+    console.log("[Email] Sending credentials email for trader:", traderId);
 
     const success = await sendCredentialsEmailToTrader(traderId);
 
     if (!success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to send credentials email. Check server logs for details.',
-        hint: 'This may be due to: (1) No credential assignment found for this trader, (2) Resend API not verified for email domain, or (3) Server configuration issue'
+        message:
+          "Failed to send credentials email. Check server logs for details.",
+        hint: "This may be due to: (1) No credential assignment found for this trader, (2) Resend API not verified for email domain, or (3) Server configuration issue",
       });
     }
 
     res.json({
       success: true,
-      message: 'Credentials email sent successfully'
+      message: "Credentials email sent successfully",
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Email] Error in sendCredentialsEmail:', errorMessage);
+    console.error("[Email] Error in sendCredentialsEmail:", errorMessage);
     if (error instanceof Error && error.stack) {
-      console.error('[Email] Stack trace:', error.stack);
+      console.error("[Email] Stack trace:", error.stack);
     }
     res.status(500).json({
       success: false,
-      message: 'Internal server error - check server logs for details',
-      error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      message: "Internal server error - check server logs for details",
+      error: process.env.NODE_ENV === "development" ? errorMessage : undefined,
     });
   }
 };

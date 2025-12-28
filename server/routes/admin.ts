@@ -5,7 +5,10 @@
 
 import { RequestHandler } from "express";
 import { createClient } from "@supabase/supabase-js";
-import { sendAdminNotification, sendApprovalEmail } from "../lib/email-service.js";
+import {
+  sendAdminNotification,
+  sendApprovalEmail,
+} from "../lib/email-service.js";
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || "",

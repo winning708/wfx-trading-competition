@@ -13,10 +13,13 @@
  * - GET /api/sync/status - Get sync status
  */
 
-import { RequestHandler } from 'express';
-import { syncMyFXBookAccount } from '../lib/myfxbook-client.js';
-import { syncMT5Account } from '../lib/mt5-client.js';
-import { syncForexFactoryAccount, testForexFactoryConnection } from '../lib/forex-factory-client.js';
+import { RequestHandler } from "express";
+import { syncMyFXBookAccount } from "../lib/myfxbook-client.js";
+import { syncMT5Account } from "../lib/mt5-client.js";
+import {
+  syncForexFactoryAccount,
+  testForexFactoryConnection,
+} from "../lib/forex-factory-client.js";
 import {
   getActiveIntegrations,
   getActiveMT5Integrations,
@@ -28,7 +31,7 @@ import {
   updateMT5IntegrationSyncStatus,
   updateForexFactoryIntegrationSyncStatus,
   getTraderStartingBalance,
-} from '../lib/supabase-client.js';
+} from "../lib/supabase-client.js";
 
 interface SyncResponse {
   success: boolean;
@@ -43,15 +46,15 @@ interface SyncResponse {
  */
 export const handleSyncAll: RequestHandler = async (req, res) => {
   try {
-    console.log('[Sync] Starting full sync of all integrations...');
+    console.log("[Sync] Starting full sync of all integrations...");
 
     const integrations = await getActiveIntegrations();
 
     if (integrations.length === 0) {
-      console.log('[Sync] No active integrations found');
+      console.log("[Sync] No active integrations found");
       return res.json({
         success: true,
-        message: 'No active integrations to sync',
+        message: "No active integrations to sync",
         synced: 0,
       } as SyncResponse);
     }
@@ -75,14 +78,18 @@ export const handleSyncAll: RequestHandler = async (req, res) => {
         }
       } catch (error) {
         failedCount++;
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg =
+          error instanceof Error ? error.message : "Unknown error";
         errors.push(`Integration ${integration.id}: ${errorMsg}`);
-        console.error(`[Sync] Error syncing integration ${integration.id}:`, error);
+        console.error(
+          `[Sync] Error syncing integration ${integration.id}:`,
+          error,
+        );
       }
     }
 
     console.log(
-      `[Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`
+      `[Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`,
     );
 
     res.json({
@@ -93,8 +100,8 @@ export const handleSyncAll: RequestHandler = async (req, res) => {
       errors: errors.length > 0 ? errors : undefined,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Sync] Error in handleSyncAll:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[Sync] Error in handleSyncAll:", error);
 
     res.status(500).json({
       success: false,
@@ -113,7 +120,7 @@ export const handleSyncIntegration: RequestHandler = async (req, res) => {
     if (!integrationId) {
       return res.status(400).json({
         success: false,
-        message: 'integrationId parameter required',
+        message: "integrationId parameter required",
       } as SyncResponse);
     }
 
@@ -125,7 +132,7 @@ export const handleSyncIntegration: RequestHandler = async (req, res) => {
     if (!integration) {
       return res.status(404).json({
         success: false,
-        message: 'Integration not found',
+        message: "Integration not found",
       } as SyncResponse);
     }
 
@@ -133,12 +140,12 @@ export const handleSyncIntegration: RequestHandler = async (req, res) => {
 
     res.json({
       success: result,
-      message: result ? 'Sync successful' : 'Sync failed',
+      message: result ? "Sync successful" : "Sync failed",
       synced: result ? 1 : 0,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Sync] Error in handleSyncIntegration:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[Sync] Error in handleSyncIntegration:", error);
 
     res.status(500).json({
       success: false,
@@ -167,8 +174,8 @@ export const handleSyncStatus: RequestHandler = async (req, res) => {
       total: status.length,
     });
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Sync] Error in handleSyncStatus:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[Sync] Error in handleSyncStatus:", error);
 
     res.status(500).json({
       success: false,
@@ -190,16 +197,16 @@ async function syncIntegration(integration: any): Promise<boolean> {
     console.log(`[Sync] Syncing integration ${integrationId}...`);
 
     // Step 1: Log sync start
-    await logSyncAttempt(integrationId, 'automatic', 'in_progress');
+    await logSyncAttempt(integrationId, "automatic", "in_progress");
 
     // Step 2: Get trader info
     const traderData = await getTraderByCredentialId(credentialId);
 
     if (!traderData || !traderData.traders) {
-      const errorMsg = 'No trader associated with this credential';
+      const errorMsg = "No trader associated with this credential";
       console.error(`[Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateIntegrationSyncStatus(integrationId, "error", errorMsg);
       return false;
     }
 
@@ -211,47 +218,48 @@ async function syncIntegration(integration: any): Promise<boolean> {
     // Step 3: Fetch account data from MyFXBook
     const syncResult = await syncMyFXBookAccount(
       myfxbookAccountId,
-      myfxbookPassword
+      myfxbookPassword,
     );
 
     if (!syncResult.success) {
-      const errorMsg = syncResult.error || 'Unknown error fetching MyFXBook data';
+      const errorMsg =
+        syncResult.error || "Unknown error fetching MyFXBook data";
       console.error(`[Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateIntegrationSyncStatus(integrationId, "error", errorMsg);
       return false;
     }
 
     console.log(
-      `[Sync] MyFXBook data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`
+      `[Sync] MyFXBook data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`,
     );
 
     // Step 4: Update performance data
     const updateSuccess = await updatePerformanceData(
       traderId,
       syncResult.currentBalance,
-      syncResult.profitPercentage
+      syncResult.profitPercentage,
     );
 
     if (!updateSuccess) {
-      const errorMsg = 'Failed to update performance data';
+      const errorMsg = "Failed to update performance data";
       console.error(`[Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateIntegrationSyncStatus(integrationId, "error", errorMsg);
       return false;
     }
 
     // Step 5: Log successful sync
-    await logSyncAttempt(integrationId, 'automatic', 'success', 1);
-    await updateIntegrationSyncStatus(integrationId, 'success');
+    await logSyncAttempt(integrationId, "automatic", "success", 1);
+    await updateIntegrationSyncStatus(integrationId, "success");
 
     console.log(`[Sync] Successfully synced integration ${integrationId}`);
     return true;
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     console.error(`[Sync] Error in syncIntegration:`, error);
-    await logSyncAttempt(integration.id, 'automatic', 'error', 0, errorMsg);
-    await updateIntegrationSyncStatus(integration.id, 'error', errorMsg);
+    await logSyncAttempt(integration.id, "automatic", "error", 0, errorMsg);
+    await updateIntegrationSyncStatus(integration.id, "error", errorMsg);
     return false;
   }
 }
@@ -261,20 +269,22 @@ async function syncIntegration(integration: any): Promise<boolean> {
  */
 export const handleMT5SyncAll: RequestHandler = async (req, res) => {
   try {
-    console.log('[MT5 Sync] Starting full sync of all MT5 integrations...');
+    console.log("[MT5 Sync] Starting full sync of all MT5 integrations...");
 
     const integrations = await getActiveMT5Integrations();
 
     if (integrations.length === 0) {
-      console.log('[MT5 Sync] No active MT5 integrations found');
+      console.log("[MT5 Sync] No active MT5 integrations found");
       return res.json({
         success: true,
-        message: 'No active MT5 integrations to sync',
+        message: "No active MT5 integrations to sync",
         synced: 0,
       } as SyncResponse);
     }
 
-    console.log(`[MT5 Sync] Found ${integrations.length} active MT5 integration(s)`);
+    console.log(
+      `[MT5 Sync] Found ${integrations.length} active MT5 integration(s)`,
+    );
 
     let syncedCount = 0;
     let failedCount = 0;
@@ -289,18 +299,24 @@ export const handleMT5SyncAll: RequestHandler = async (req, res) => {
           syncedCount++;
         } else {
           failedCount++;
-          errors.push(`MT5 Integration ${integration.id}: ${result.error || 'Unknown error'}`);
+          errors.push(
+            `MT5 Integration ${integration.id}: ${result.error || "Unknown error"}`,
+          );
         }
       } catch (error) {
         failedCount++;
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg =
+          error instanceof Error ? error.message : "Unknown error";
         errors.push(`MT5 Integration ${integration.id}: ${errorMsg}`);
-        console.error(`[MT5 Sync] Error syncing integration ${integration.id}:`, error);
+        console.error(
+          `[MT5 Sync] Error syncing integration ${integration.id}:`,
+          error,
+        );
       }
     }
 
     console.log(
-      `[MT5 Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`
+      `[MT5 Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`,
     );
 
     res.json({
@@ -311,8 +327,8 @@ export const handleMT5SyncAll: RequestHandler = async (req, res) => {
       errors: errors.length > 0 ? errors : undefined,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[MT5 Sync] Error in handleMT5SyncAll:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[MT5 Sync] Error in handleMT5SyncAll:", error);
 
     res.status(500).json({
       success: false,
@@ -331,23 +347,31 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
     if (!integrationId) {
       return res.status(400).json({
         success: false,
-        message: 'integrationId parameter required',
+        message: "integrationId parameter required",
       } as SyncResponse);
     }
 
-    console.log(`[MT5 Sync] Starting sync for MT5 integration: ${integrationId}`);
+    console.log(
+      `[MT5 Sync] Starting sync for MT5 integration: ${integrationId}`,
+    );
 
     const integrations = await getActiveMT5Integrations();
-    console.log(`[MT5 Sync] Found ${integrations.length} active integration(s)`);
-    console.log(`[MT5 Sync] Integration IDs: ${integrations.map((i) => i.id).join(', ')}`);
+    console.log(
+      `[MT5 Sync] Found ${integrations.length} active integration(s)`,
+    );
+    console.log(
+      `[MT5 Sync] Integration IDs: ${integrations.map((i) => i.id).join(", ")}`,
+    );
 
     const integration = integrations.find((i) => i.id === integrationId);
 
     if (!integration) {
-      console.error(`[MT5 Sync] Integration ${integrationId} not found in active integrations`);
+      console.error(
+        `[MT5 Sync] Integration ${integrationId} not found in active integrations`,
+      );
       return res.status(404).json({
         success: false,
-        message: 'MT5 Integration not found',
+        message: "MT5 Integration not found",
       } as SyncResponse);
     }
 
@@ -355,13 +379,15 @@ export const handleMT5SyncIntegration: RequestHandler = async (req, res) => {
 
     res.json({
       success: result.success,
-      message: result.success ? 'MT5 Sync successful' : `MT5 Sync failed: ${result.error}`,
+      message: result.success
+        ? "MT5 Sync successful"
+        : `MT5 Sync failed: ${result.error}`,
       synced: result.success ? 1 : 0,
       error: result.error,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[MT5 Sync] Error in handleMT5SyncIntegration:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[MT5 Sync] Error in handleMT5SyncIntegration:", error);
 
     res.status(500).json({
       success: false,
@@ -380,38 +406,43 @@ export const handleMT5TestConnection: RequestHandler = async (req, res) => {
     if (!mt5_account_id || !mt5_api_token || !mt5_server_endpoint) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required parameters: mt5_account_id, mt5_api_token, mt5_server_endpoint',
+        message:
+          "Missing required parameters: mt5_account_id, mt5_api_token, mt5_server_endpoint",
       });
     }
 
-    console.log('[MT5 Test] Testing connection with provided credentials...');
-    console.log('[MT5 Test] Account ID:', mt5_account_id);
-    console.log('[MT5 Test] Endpoint:', mt5_server_endpoint);
-    console.log('[MT5 Test] Token length:', mt5_api_token.length);
+    console.log("[MT5 Test] Testing connection with provided credentials...");
+    console.log("[MT5 Test] Account ID:", mt5_account_id);
+    console.log("[MT5 Test] Endpoint:", mt5_server_endpoint);
+    console.log("[MT5 Test] Token length:", mt5_api_token.length);
 
-    const { testMT5Connection } = await import('../lib/mt5-client');
+    const { testMT5Connection } = await import("../lib/mt5-client");
     const testResult = await testMT5Connection(
       mt5_account_id,
       mt5_api_token,
-      mt5_server_endpoint
+      mt5_server_endpoint,
     );
 
     if (testResult.success) {
-      console.log('[MT5 Test] Connection successful!');
+      console.log("[MT5 Test] Connection successful!");
       return res.json({
         success: true,
-        message: testResult.message || 'MT5 connection test successful! Your configuration is correct.',
+        message:
+          testResult.message ||
+          "MT5 connection test successful! Your configuration is correct.",
       });
     } else {
-      console.log('[MT5 Test] Connection failed');
+      console.log("[MT5 Test] Connection failed");
       return res.json({
         success: false,
-        message: testResult.message || 'MT5 connection test failed. Check your credentials and endpoint URL.',
+        message:
+          testResult.message ||
+          "MT5 connection test failed. Check your credentials and endpoint URL.",
       });
     }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[MT5 Test] Error:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[MT5 Test] Error:", error);
 
     res.status(500).json({
       success: false,
@@ -423,7 +454,9 @@ export const handleMT5TestConnection: RequestHandler = async (req, res) => {
 /**
  * Internal function to sync a single MT5 integration
  */
-async function syncMT5Integration(integration: any): Promise<{ success: boolean; error?: string }> {
+async function syncMT5Integration(
+  integration: any,
+): Promise<{ success: boolean; error?: string }> {
   try {
     const integrationId = integration.id;
     const credentialId = integration.credential_id;
@@ -436,29 +469,31 @@ async function syncMT5Integration(integration: any): Promise<{ success: boolean;
     // Validate required fields
     if (!mt5AccountId || !mt5ApiToken || !mt5ServerEndpoint) {
       const missing = [
-        !mt5AccountId ? 'MT5 Account ID' : null,
-        !mt5ApiToken ? 'MT5 API Token' : null,
-        !mt5ServerEndpoint ? 'MT5 Server Endpoint' : null,
-      ].filter(Boolean).join(', ');
+        !mt5AccountId ? "MT5 Account ID" : null,
+        !mt5ApiToken ? "MT5 API Token" : null,
+        !mt5ServerEndpoint ? "MT5 Server Endpoint" : null,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const errorMsg = `Missing required MT5 configuration: ${missing}`;
       console.error(`[MT5 Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, "error", errorMsg);
       return { success: false, error: errorMsg };
     }
 
     // Step 1: Log sync start
-    await logSyncAttempt(integrationId, 'automatic', 'in_progress');
+    await logSyncAttempt(integrationId, "automatic", "in_progress");
 
     // Step 2: Get trader info
     const traderData = await getTraderByCredentialId(credentialId);
 
     if (!traderData || !traderData.traders) {
-      const errorMsg = 'No trader associated with this credential';
+      const errorMsg = "No trader associated with this credential";
       console.error(`[MT5 Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, "error", errorMsg);
       return { success: false, error: errorMsg };
     }
 
@@ -466,54 +501,56 @@ async function syncMT5Integration(integration: any): Promise<{ success: boolean;
     const traderName = traderData.traders.full_name;
 
     console.log(`[MT5 Sync] Syncing for trader: ${traderName} (${traderId})`);
-    console.log(`[MT5 Sync] Using MT5 Account: ${mt5AccountId}, Endpoint: ${mt5ServerEndpoint}`);
+    console.log(
+      `[MT5 Sync] Using MT5 Account: ${mt5AccountId}, Endpoint: ${mt5ServerEndpoint}`,
+    );
 
     // Step 3: Fetch account data from MT5
     const syncResult = await syncMT5Account(
       mt5AccountId,
       mt5ApiToken,
       mt5ServerEndpoint,
-      1000
+      1000,
     );
 
     if (!syncResult.success) {
-      const errorMsg = syncResult.error || 'Unknown error fetching MT5 data';
+      const errorMsg = syncResult.error || "Unknown error fetching MT5 data";
       console.error(`[MT5 Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, "error", errorMsg);
       return { success: false, error: errorMsg };
     }
 
     console.log(
-      `[MT5 Sync] MT5 data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`
+      `[MT5 Sync] MT5 data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`,
     );
 
     // Step 4: Update performance data
     const updateSuccess = await updatePerformanceData(
       traderId,
       syncResult.currentBalance,
-      syncResult.profitPercentage
+      syncResult.profitPercentage,
     );
 
     if (!updateSuccess) {
-      const errorMsg = 'Failed to update performance data';
+      const errorMsg = "Failed to update performance data";
       console.error(`[MT5 Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateMT5IntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateMT5IntegrationSyncStatus(integrationId, "error", errorMsg);
       return { success: false, error: errorMsg };
     }
 
     // Step 5: Log successful sync
-    await logSyncAttempt(integrationId, 'automatic', 'success', 1);
-    await updateMT5IntegrationSyncStatus(integrationId, 'success');
+    await logSyncAttempt(integrationId, "automatic", "success", 1);
+    await updateMT5IntegrationSyncStatus(integrationId, "success");
 
     console.log(`[MT5 Sync] Successfully synced integration ${integrationId}`);
     return { success: true };
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
     console.error(`[MT5 Sync] Error in syncMT5Integration:`, error);
-    await logSyncAttempt(integration.id, 'automatic', 'error', 0, errorMsg);
-    await updateMT5IntegrationSyncStatus(integration.id, 'error', errorMsg);
+    await logSyncAttempt(integration.id, "automatic", "error", 0, errorMsg);
+    await updateMT5IntegrationSyncStatus(integration.id, "error", errorMsg);
     return { success: false, error: errorMsg };
   }
 }
@@ -523,20 +560,26 @@ async function syncMT5Integration(integration: any): Promise<{ success: boolean;
  */
 export const handleForexFactorySyncAll: RequestHandler = async (req, res) => {
   try {
-    console.log('[Forex Factory Sync] Starting full sync of all Forex Factory integrations...');
+    console.log(
+      "[Forex Factory Sync] Starting full sync of all Forex Factory integrations...",
+    );
 
     const integrations = await getActiveForexFactoryIntegrations();
 
     if (integrations.length === 0) {
-      console.log('[Forex Factory Sync] No active Forex Factory integrations found');
+      console.log(
+        "[Forex Factory Sync] No active Forex Factory integrations found",
+      );
       return res.json({
         success: true,
-        message: 'No active Forex Factory integrations to sync',
+        message: "No active Forex Factory integrations to sync",
         synced: 0,
       } as SyncResponse);
     }
 
-    console.log(`[Forex Factory Sync] Found ${integrations.length} active integration(s)`);
+    console.log(
+      `[Forex Factory Sync] Found ${integrations.length} active integration(s)`,
+    );
 
     let syncedCount = 0;
     let failedCount = 0;
@@ -551,18 +594,24 @@ export const handleForexFactorySyncAll: RequestHandler = async (req, res) => {
           syncedCount++;
         } else {
           failedCount++;
-          errors.push(`Forex Factory Integration ${integration.id}: ${result.error || 'Unknown error'}`);
+          errors.push(
+            `Forex Factory Integration ${integration.id}: ${result.error || "Unknown error"}`,
+          );
         }
       } catch (error) {
         failedCount++;
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        const errorMsg =
+          error instanceof Error ? error.message : "Unknown error";
         errors.push(`Forex Factory Integration ${integration.id}: ${errorMsg}`);
-        console.error(`[Forex Factory Sync] Error syncing integration ${integration.id}:`, error);
+        console.error(
+          `[Forex Factory Sync] Error syncing integration ${integration.id}:`,
+          error,
+        );
       }
     }
 
     console.log(
-      `[Forex Factory Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`
+      `[Forex Factory Sync] Sync complete. Synced: ${syncedCount}, Failed: ${failedCount}`,
     );
 
     res.json({
@@ -573,8 +622,11 @@ export const handleForexFactorySyncAll: RequestHandler = async (req, res) => {
       errors: errors.length > 0 ? errors : undefined,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Forex Factory Sync] Error in handleForexFactorySyncAll:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      "[Forex Factory Sync] Error in handleForexFactorySyncAll:",
+      error,
+    );
 
     res.status(500).json({
       success: false,
@@ -586,30 +638,41 @@ export const handleForexFactorySyncAll: RequestHandler = async (req, res) => {
 /**
  * Sync a specific Forex Factory integration
  */
-export const handleForexFactorySyncIntegration: RequestHandler = async (req, res) => {
+export const handleForexFactorySyncIntegration: RequestHandler = async (
+  req,
+  res,
+) => {
   try {
     const { integrationId } = req.params;
 
     if (!integrationId) {
       return res.status(400).json({
         success: false,
-        message: 'integrationId parameter required',
+        message: "integrationId parameter required",
       } as SyncResponse);
     }
 
-    console.log(`[Forex Factory Sync] Starting sync for Forex Factory integration: ${integrationId}`);
+    console.log(
+      `[Forex Factory Sync] Starting sync for Forex Factory integration: ${integrationId}`,
+    );
 
     const integrations = await getActiveForexFactoryIntegrations();
-    console.log(`[Forex Factory Sync] Found ${integrations.length} active integration(s)`);
-    console.log(`[Forex Factory Sync] Integration IDs: ${integrations.map((i) => i.id).join(', ')}`);
+    console.log(
+      `[Forex Factory Sync] Found ${integrations.length} active integration(s)`,
+    );
+    console.log(
+      `[Forex Factory Sync] Integration IDs: ${integrations.map((i) => i.id).join(", ")}`,
+    );
 
     const integration = integrations.find((i) => i.id === integrationId);
 
     if (!integration) {
-      console.error(`[Forex Factory Sync] Integration ${integrationId} not found in active integrations`);
+      console.error(
+        `[Forex Factory Sync] Integration ${integrationId} not found in active integrations`,
+      );
       return res.status(404).json({
         success: false,
-        message: 'Forex Factory Integration not found',
+        message: "Forex Factory Integration not found",
       } as SyncResponse);
     }
 
@@ -617,13 +680,18 @@ export const handleForexFactorySyncIntegration: RequestHandler = async (req, res
 
     res.json({
       success: result.success,
-      message: result.success ? 'Forex Factory Sync successful' : `Forex Factory Sync failed: ${result.error}`,
+      message: result.success
+        ? "Forex Factory Sync successful"
+        : `Forex Factory Sync failed: ${result.error}`,
       synced: result.success ? 1 : 0,
       error: result.error,
     } as SyncResponse);
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Forex Factory Sync] Error in handleForexFactorySyncIntegration:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      "[Forex Factory Sync] Error in handleForexFactorySyncIntegration:",
+      error,
+    );
 
     res.status(500).json({
       success: false,
@@ -635,44 +703,54 @@ export const handleForexFactorySyncIntegration: RequestHandler = async (req, res
 /**
  * Test Forex Factory connection with provided credentials
  */
-export const handleForexFactoryTestConnection: RequestHandler = async (req, res) => {
+export const handleForexFactoryTestConnection: RequestHandler = async (
+  req,
+  res,
+) => {
   try {
     const { ff_account_username, ff_api_key, ff_system_id } = req.body;
 
     if (!ff_account_username || !ff_api_key || !ff_system_id) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required parameters: ff_account_username, ff_api_key, ff_system_id',
+        message:
+          "Missing required parameters: ff_account_username, ff_api_key, ff_system_id",
       });
     }
 
-    console.log('[Forex Factory Test] Testing connection with provided credentials...');
-    console.log('[Forex Factory Test] Account Username:', ff_account_username);
-    console.log('[Forex Factory Test] System ID:', ff_system_id);
-    console.log('[Forex Factory Test] API Key length:', ff_api_key.length);
+    console.log(
+      "[Forex Factory Test] Testing connection with provided credentials...",
+    );
+    console.log("[Forex Factory Test] Account Username:", ff_account_username);
+    console.log("[Forex Factory Test] System ID:", ff_system_id);
+    console.log("[Forex Factory Test] API Key length:", ff_api_key.length);
 
     const testResult = await testForexFactoryConnection(
       ff_account_username,
       ff_api_key,
-      ff_system_id
+      ff_system_id,
     );
 
     if (testResult.success) {
-      console.log('[Forex Factory Test] Connection successful!');
+      console.log("[Forex Factory Test] Connection successful!");
       return res.json({
         success: true,
-        message: testResult.message || 'Forex Factory connection test successful! Your configuration is correct.',
+        message:
+          testResult.message ||
+          "Forex Factory connection test successful! Your configuration is correct.",
       });
     } else {
-      console.log('[Forex Factory Test] Connection failed');
+      console.log("[Forex Factory Test] Connection failed");
       return res.json({
         success: false,
-        message: testResult.message || 'Forex Factory connection test failed. Check your credentials.',
+        message:
+          testResult.message ||
+          "Forex Factory connection test failed. Check your credentials.",
       });
     }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[Forex Factory Test] Error:', error);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("[Forex Factory Test] Error:", error);
 
     res.status(500).json({
       success: false,
@@ -684,7 +762,9 @@ export const handleForexFactoryTestConnection: RequestHandler = async (req, res)
 /**
  * Internal function to sync a single Forex Factory integration
  */
-async function syncForexFactoryIntegration(integration: any): Promise<{ success: boolean; error?: string }> {
+async function syncForexFactoryIntegration(
+  integration: any,
+): Promise<{ success: boolean; error?: string }> {
   try {
     const integrationId = integration.id;
     const credentialId = integration.credential_id;
@@ -697,84 +777,116 @@ async function syncForexFactoryIntegration(integration: any): Promise<{ success:
     // Validate required fields
     if (!ffAccountUsername || !ffApiKey || !ffSystemId) {
       const missing = [
-        !ffAccountUsername ? 'Forex Factory Account Username' : null,
-        !ffApiKey ? 'Forex Factory API Key' : null,
-        !ffSystemId ? 'Forex Factory System ID' : null,
-      ].filter(Boolean).join(', ');
+        !ffAccountUsername ? "Forex Factory Account Username" : null,
+        !ffApiKey ? "Forex Factory API Key" : null,
+        !ffSystemId ? "Forex Factory System ID" : null,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const errorMsg = `Missing required Forex Factory configuration: ${missing}`;
       console.error(`[Forex Factory Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateForexFactoryIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateForexFactoryIntegrationSyncStatus(
+        integrationId,
+        "error",
+        errorMsg,
+      );
       return { success: false, error: errorMsg };
     }
 
     // Step 1: Log sync start
-    await logSyncAttempt(integrationId, 'automatic', 'in_progress');
+    await logSyncAttempt(integrationId, "automatic", "in_progress");
 
     // Step 2: Get trader info
     const traderData = await getTraderByCredentialId(credentialId);
 
     if (!traderData || !traderData.traders) {
-      const errorMsg = 'No trader associated with this credential';
+      const errorMsg = "No trader associated with this credential";
       console.error(`[Forex Factory Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateForexFactoryIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateForexFactoryIntegrationSyncStatus(
+        integrationId,
+        "error",
+        errorMsg,
+      );
       return { success: false, error: errorMsg };
     }
 
     const traderId = traderData.traders.id;
     const traderName = traderData.traders.full_name;
 
-    console.log(`[Forex Factory Sync] Syncing for trader: ${traderName} (${traderId})`);
-    console.log(`[Forex Factory Sync] Using Forex Factory Account: ${ffAccountUsername}, System: ${ffSystemId}`);
+    console.log(
+      `[Forex Factory Sync] Syncing for trader: ${traderName} (${traderId})`,
+    );
+    console.log(
+      `[Forex Factory Sync] Using Forex Factory Account: ${ffAccountUsername}, System: ${ffSystemId}`,
+    );
 
     // Step 3: Fetch account data from Forex Factory
     const syncResult = await syncForexFactoryAccount(
       ffAccountUsername,
       ffApiKey,
       ffSystemId,
-      1000
+      1000,
     );
 
     if (!syncResult.success) {
-      const errorMsg = syncResult.error || 'Unknown error fetching Forex Factory data';
+      const errorMsg =
+        syncResult.error || "Unknown error fetching Forex Factory data";
       console.error(`[Forex Factory Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateForexFactoryIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateForexFactoryIntegrationSyncStatus(
+        integrationId,
+        "error",
+        errorMsg,
+      );
       return { success: false, error: errorMsg };
     }
 
     console.log(
-      `[Forex Factory Sync] Forex Factory data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`
+      `[Forex Factory Sync] Forex Factory data: Balance=${syncResult.currentBalance}, Profit=${syncResult.profitPercentage}%`,
     );
 
     // Step 4: Update performance data
     const updateSuccess = await updatePerformanceData(
       traderId,
       syncResult.currentBalance,
-      syncResult.profitPercentage
+      syncResult.profitPercentage,
     );
 
     if (!updateSuccess) {
-      const errorMsg = 'Failed to update performance data';
+      const errorMsg = "Failed to update performance data";
       console.error(`[Forex Factory Sync] ${errorMsg}`);
-      await logSyncAttempt(integrationId, 'automatic', 'error', 0, errorMsg);
-      await updateForexFactoryIntegrationSyncStatus(integrationId, 'error', errorMsg);
+      await logSyncAttempt(integrationId, "automatic", "error", 0, errorMsg);
+      await updateForexFactoryIntegrationSyncStatus(
+        integrationId,
+        "error",
+        errorMsg,
+      );
       return { success: false, error: errorMsg };
     }
 
     // Step 5: Log successful sync
-    await logSyncAttempt(integrationId, 'automatic', 'success', 1);
-    await updateForexFactoryIntegrationSyncStatus(integrationId, 'success');
+    await logSyncAttempt(integrationId, "automatic", "success", 1);
+    await updateForexFactoryIntegrationSyncStatus(integrationId, "success");
 
-    console.log(`[Forex Factory Sync] Successfully synced integration ${integrationId}`);
+    console.log(
+      `[Forex Factory Sync] Successfully synced integration ${integrationId}`,
+    );
     return { success: true };
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    console.error(`[Forex Factory Sync] Error in syncForexFactoryIntegration:`, error);
-    await logSyncAttempt(integration.id, 'automatic', 'error', 0, errorMsg);
-    await updateForexFactoryIntegrationSyncStatus(integration.id, 'error', errorMsg);
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error(
+      `[Forex Factory Sync] Error in syncForexFactoryIntegration:`,
+      error,
+    );
+    await logSyncAttempt(integration.id, "automatic", "error", 0, errorMsg);
+    await updateForexFactoryIntegrationSyncStatus(
+      integration.id,
+      "error",
+      errorMsg,
+    );
     return { success: false, error: errorMsg };
   }
 }
