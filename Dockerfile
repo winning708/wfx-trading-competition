@@ -6,18 +6,15 @@ FROM node:${NODE_VERSION}-slim AS builder
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.14.0
 
-# Copy package files
-COPY .npmrc package.json pnpm-lock.yaml ./
-
-# Install all dependencies (including dev for build)
-RUN pnpm install --frozen-lockfile
-
-# Copy application code
+# Copy all files first
 COPY . .
 
-# Build frontend only
+# Install all dependencies
+RUN pnpm install
+
+# Build frontend
 RUN pnpm run build
 
 
@@ -26,26 +23,25 @@ FROM node:${NODE_VERSION}-slim
 
 WORKDIR /app
 
-# Set production environment
 ENV NODE_ENV="production"
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.14.0
 
 # Copy package files
-COPY .npmrc package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install ONLY production dependencies
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --prod
 
-# Copy built frontend from builder
+# Copy built frontend
 COPY --from=builder /app/dist ./dist
 
-# Copy the simple production server
+# Copy production server
 COPY server-prod.js .
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the simple JavaScript server
+# Start server
 CMD [ "node", "server-prod.js" ]
