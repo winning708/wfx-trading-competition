@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { handleDemo } from "./routes/demo";
+import { handleDemo } from "./routes/demo.js";
 import {
   handleSyncAll,
   handleSyncIntegration,
@@ -12,7 +12,7 @@ import {
   handleForexFactorySyncAll,
   handleForexFactorySyncIntegration,
   handleForexFactoryTestConnection,
-} from "./routes/sync";
+} from "./routes/sync.js";
 import {
   handleFlutterwaveWebhookRequest,
   handleBinanceWebhookRequest,
@@ -23,12 +23,12 @@ import {
   initiateBinancePayment,
   initiateBybitPayment,
   confirmManualPayment,
-} from "./routes/payment";
+} from "./routes/payment.js";
 import {
   sendConfirmationEmail,
   sendPaymentReceipt,
   sendCredentialsEmail,
-} from "./routes/email";
+} from "./routes/email.js";
 import {
   verifyAdminPassword,
   getPendingPayments,
@@ -42,7 +42,7 @@ import {
   handlePasswordResetRequest,
   getPasswordResetRequests,
   updatePasswordResetRequestStatus,
-} from "./routes/admin";
+} from "./routes/admin.js";
 
 export function createServer() {
   const app = express();
