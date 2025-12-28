@@ -25,11 +25,14 @@ export default defineConfig({
         // Initialize Express app once
         if (!expressApp) {
           try {
-            const { createServer } = await import("./server/index.ts");
-            expressApp = createServer();
+            // Dynamically import only in dev mode to avoid build issues
+            const serverModule = await import("./server/index.ts");
+            expressApp = serverModule.createServer();
             console.log("[Vite] Express server middleware loaded");
           } catch (error) {
             console.error("[Vite] Failed to load Express server:", error);
+            // Don't fail the dev server if Express fails to load
+            return;
           }
         }
 
