@@ -14,9 +14,9 @@
  */
 
 import { RequestHandler } from 'express';
-import { syncMyFXBookAccount } from '../lib/myfxbook-client';
-import { syncMT5Account } from '../lib/mt5-client';
-import { syncForexFactoryAccount, testForexFactoryConnection } from '../lib/forex-factory-client';
+import { syncMyFXBookAccount } from '../lib/myfxbook-client.js';
+import { syncMT5Account } from '../lib/mt5-client.js';
+import { syncForexFactoryAccount, testForexFactoryConnection } from '../lib/forex-factory-client.js';
 import {
   getActiveIntegrations,
   getActiveMT5Integrations,
@@ -28,7 +28,7 @@ import {
   updateMT5IntegrationSyncStatus,
   updateForexFactoryIntegrationSyncStatus,
   getTraderStartingBalance,
-} from '../lib/supabase-client';
+} from '../lib/supabase-client.js';
 
 interface SyncResponse {
   success: boolean;
