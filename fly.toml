@@ -1,57 +1,23 @@
-# fly.toml app configuration file generated for wfx-trading-comp-winning on 2025-12-27T13:42:51Z
+# fly.toml app configuration file generated for wfx-trading-competition-km6guq on 2025-12-28T22:14:31Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'wfx-trading-comp-winning'
-primary_region = 'ord'
+app = 'wfx-trading-competition-km6guq'
+primary_region = 'jnb'
 
 [build]
-  builder = "docker"
-  buildpacks = []
 
-[env]
-  ADMIN_PASSWORD = "Winning@708"
-  VITE_SUPABASE_URL = "https://cujdemfiikeoamryjwza.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1amRlbWZpaWtlb2Ftcnlqd3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0OTE1OTEsImV4cCI6MjA4MjA2NzU5MX0.yfO_neHiPBBWx7AzYuk5sd4sIocv2BSvtkdzgmpDjC4"
-  SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1amRlbWZpaWtlb2Ftcnlqd3phIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjQ5MTU5MSwiZXhwIjoyMDgyMDY3NTkxfQ.OhYhBnz05h-LmUf2-RvyjJuggSdp_HmD0siIDuoVCBk"
-  RESEND_API_KEY = "re_5uzTUbXE_9DAFScadBWszUXrED2mnDE7v"
-  FLUTTERWAVE_PUBLIC_KEY = "FLWPUBK_84a33abb9577491b5bc7e1ce856de21a"
-  FLUTTERWAVE_SECRET_KEY = "FLWSECK_1036173a3165024b79ebf88a283d8fa7"
-  FLUTTERWAVE_SECRET_HASH = "wfx-contest-showdown-competition"
-  BINANCE_MERCHANT_ID = "48947748"
-  BYBIT_USDT_WALLET_ADDRESS = "TH9F2BfgD6C7gM5Jxo8gM3EpxU42kRUJm5"
-  EMAIL_FROM = "onboarding@resend.dev"
-  NODE_ENV = "production"
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
 
-[[services]]
-  protocol = "tcp"
-  internal_port = 3000
-  processes = ["app"]
-
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-
-  [services.http_checks]
-    enabled = true
-    interval = "10s"
-    timeout = "5s"
-    grace_period = "5s"
-    method = "GET"
-    path = "/api/ping"
-
-[checks]
-  [checks.release]
-    type = "exec"
-    command = "/usr/local/bin/node --version"
-    timeout = "10s"
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
