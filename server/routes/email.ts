@@ -4,8 +4,8 @@
  */
 
 import { RequestHandler } from 'express';
-import { sendConfirmationEmailToUser, sendPaymentReceiptEmail, sendTradingCredentialsEmail } from '../lib/email-service';
-import { sendCredentialsEmailToTrader } from '../lib/supabase-client';
+import { sendConfirmationEmailToUser, sendPaymentReceiptEmail, sendTradingCredentialsEmail } from '../lib/email-service.js';
+import { sendCredentialsEmailToTrader } from '../lib/supabase-client.js';
 
 /**
  * Send Confirmation Email
