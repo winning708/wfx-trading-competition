@@ -12,8 +12,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "start": "tsx server/node-build.ts",
+    "build": "vite build && tsc --outDir dist/server --module esnext --target es2020 server/node-build.ts server/index.ts server/routes/*.ts server/lib/*.ts",
+    "start": "node dist/server/node-build.js",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc"
