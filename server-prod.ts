@@ -194,19 +194,18 @@ async function startServer() {
   }
 }
 
-// Handle uncaught exceptions
-process.on("uncaughtException", (error) => {
-  console.error("[Server] Uncaught Exception:", error);
-  process.exit(1);
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("[Server] Unhandled Rejection at:", promise, "reason:", reason);
-  process.exit(1);
-});
-
 // Start the server
+console.log("[Server] Starting async initialization...");
 startServer().catch((error) => {
-  console.error("[Server] Failed to start:", error);
+  console.error("[Server] ========== STARTUP FAILED ==========");
+  console.error("[Server] Failed to start server:");
+  console.error("[Server]", error);
+
+  if (error instanceof Error) {
+    console.error("[Server] Message:", error.message);
+    console.error("[Server] Stack:", error.stack);
+  }
+
+  console.error("[Server] =========================================");
   process.exit(1);
 });
