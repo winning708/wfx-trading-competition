@@ -92,7 +92,7 @@ interface CurrencyInfo {
 
 export function getCurrencyInfoForCountry(country: string): CurrencyInfo {
   const currencyData = CURRENCY_MAP[country] || CURRENCY_MAP["United States"];
-  const amount = 15 * currencyData.rate; // $15 USD
+  const amount = 10 * currencyData.rate; // $10 USD
 
   return {
     ...currencyData,
@@ -115,7 +115,7 @@ export function getAllCurrencies(): Record<string, CurrencyInfo> {
   const result: Record<string, CurrencyInfo> = {};
 
   for (const [country, data] of Object.entries(CURRENCY_MAP)) {
-    const amount = 15 * data.rate;
+    const amount = 10 * data.rate;
     result[country] = {
       ...data,
       amount: amount,
