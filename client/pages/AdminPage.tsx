@@ -2600,7 +2600,7 @@ export default function AdminPage() {
                                 Amount
                               </p>
                               <p className="font-medium text-foreground text-sm">
-                                $15 USD
+                                $10 USD
                               </p>
                             </div>
                             <div>
@@ -2800,8 +2800,8 @@ export default function AdminPage() {
                                   Amount
                                 </p>
                                 <p className="font-medium text-foreground text-sm">
-                                  $15 USD
-                                </p>
+                                $10 USD
+                              </p>
                               </div>
                               <div>
                                 <p className="text-xs text-muted-foreground">
