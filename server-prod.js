@@ -4,7 +4,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { handleDemo } from "./server/routes/demo.js";
+import { handleDemo } from "./dist/server/routes/demo.js";
 import {
   handleSyncAll,
   handleSyncIntegration,
@@ -15,7 +15,7 @@ import {
   handleForexFactorySyncAll,
   handleForexFactorySyncIntegration,
   handleForexFactoryTestConnection,
-} from "./server/routes/sync.js";
+} from "./dist/server/routes/sync.js";
 import {
   handleFlutterwaveWebhookRequest,
   handleBinanceWebhookRequest,
@@ -26,12 +26,12 @@ import {
   initiateBinancePayment,
   initiateBybitPayment,
   confirmManualPayment,
-} from "./server/routes/payment.js";
+} from "./dist/server/routes/payment.js";
 import {
   sendConfirmationEmail,
   sendPaymentReceipt,
   sendCredentialsEmail,
-} from "./server/routes/email.js";
+} from "./dist/server/routes/email.js";
 import {
   verifyAdminPassword,
   getPendingPayments,
@@ -45,7 +45,7 @@ import {
   handlePasswordResetRequest,
   getPasswordResetRequests,
   updatePasswordResetRequestStatus,
-} from "./server/routes/admin.js";
+} from "./dist/server/routes/admin.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
