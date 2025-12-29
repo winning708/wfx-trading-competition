@@ -7,6 +7,12 @@ app = 'wfx-trading-competition-iqk2zw'
 primary_region = 'jnb'
 
 [build]
+  builder = "docker"
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  NODE_ENV = "production"
 
 [http_service]
   internal_port = 3000
