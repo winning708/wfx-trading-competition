@@ -98,17 +98,34 @@ async function startServer() {
       );
     }
 
-    // Setup Express static file serving
+    // Setup Express static file serving with SPA support
     if (spaExists) {
       console.log("[Server] ✓ Setting up static file serving for SPA...");
-      app.use(express.static(distPath));
+
+      // Serve actual static files (assets, images, etc)
+      app.use(express.static(distPath, {
+        // Don't send 404 for missing files - let our fallback handle it
+        fallthrough: true
+      }));
     }
 
-    // Fallback to index.html for SPA routes
-    console.log("[Server] Setting up SPA fallback route...");
-    app.get("*", (req: any, res: any) => {
+    // Fallback to index.html for SPA routes (MUST be after static middleware)
+    // This handles all routes like /admin-login, /dashboard, etc that don't match static files
+    console.log("[Server] Setting up SPA fallback route (catches all non-API routes)...");
+    app.use((req: any, res: any, next: any) => {
+      // Only handle GET requests for SPA routing
+      if (req.method !== "GET") {
+        return next();
+      }
+
+      // Skip API routes - let them fail with 404
+      if (req.path.startsWith("/api/")) {
+        return next();
+      }
+
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
+        console.log(`[Server] Serving SPA for route: ${req.path}`);
         res.sendFile(indexPath);
       } else {
         console.error(`[Server] index.html not found at: ${indexPath}`);
