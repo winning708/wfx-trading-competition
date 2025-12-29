@@ -47,5 +47,5 @@ COPY tsconfig.server.json .
 # Expose port 3000
 EXPOSE 3000
 
-# Start server with tsx
-CMD [ "node_modules/.bin/tsx", "server-prod.ts" ]
+# Start server with tsx - use shell to execute through path
+CMD [ "sh", "-c", "npx tsx server-prod.ts" ]
