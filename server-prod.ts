@@ -64,9 +64,7 @@ async function startServer() {
     const { createServer } = serverModule;
 
     if (!createServer) {
-      throw new Error(
-        "createServer function not found in server/index.ts",
-      );
+      throw new Error("createServer function not found in server/index.ts");
     }
 
     console.log("[Server] ✓ createServer imported successfully");
@@ -88,7 +86,10 @@ async function startServer() {
 
       try {
         const files = fs.readdirSync(distPath);
-        console.log(`[Server] Files in dist/spa (first 10):`, files.slice(0, 10));
+        console.log(
+          `[Server] Files in dist/spa (first 10):`,
+          files.slice(0, 10),
+        );
       } catch (err) {
         console.error("[Server] Could not list dist/spa files:", err);
       }
@@ -103,15 +104,19 @@ async function startServer() {
       console.log("[Server] ✓ Setting up static file serving for SPA...");
 
       // Serve actual static files (assets, images, etc)
-      app.use(express.static(distPath, {
-        // Don't send 404 for missing files - let our fallback handle it
-        fallthrough: true
-      }));
+      app.use(
+        express.static(distPath, {
+          // Don't send 404 for missing files - let our fallback handle it
+          fallthrough: true,
+        }),
+      );
     }
 
     // Fallback to index.html for SPA routes (MUST be after static middleware)
     // This handles all routes like /admin-login, /dashboard, etc that don't match static files
-    console.log("[Server] Setting up SPA fallback route (catches all non-API routes)...");
+    console.log(
+      "[Server] Setting up SPA fallback route (catches all non-API routes)...",
+    );
     app.use((req: any, res: any, next: any) => {
       // Only handle GET requests for SPA routing
       if (req.method !== "GET") {
@@ -140,7 +145,9 @@ async function startServer() {
       console.log(`========================================`);
       console.log(`🔗 Listening on: http://0.0.0.0:${port}`);
       console.log(`📁 SPA Path: ${distPath}`);
-      console.log(`🌍 Public URL: http://wfx-trading-competition-iqk2zw.fly.dev`);
+      console.log(
+        `🌍 Public URL: http://wfx-trading-competition-iqk2zw.fly.dev`,
+      );
       console.log(`========================================\n`);
     });
 
