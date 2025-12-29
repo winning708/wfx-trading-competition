@@ -4,7 +4,7 @@
  */
 
 import crypto from 'crypto';
-import { updateTraderPaymentStatus, sendConfirmationEmail, logPaymentTransaction } from './supabase-client';
+import { updateTraderPaymentStatus, sendConfirmationEmail, logPaymentTransaction } from './supabase-client.ts';
 
 interface PaymentWebhookPayload {
   event: string;
