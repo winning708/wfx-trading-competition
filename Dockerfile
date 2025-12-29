@@ -37,10 +37,10 @@ COPY package.json pnpm-lock.yaml ./
 # Install ONLY production dependencies
 RUN pnpm install --prod
 
-# Copy built frontend
+# Copy built frontend and server
 COPY --from=builder /app/dist ./dist
 
-# Copy production server
+# Copy production server entry point
 COPY server-prod.js .
 
 # Expose port 3000
