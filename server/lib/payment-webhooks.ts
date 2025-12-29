@@ -3,8 +3,12 @@
  * Handles payment verification from Flutterwave, Binance Pay, and Bybit
  */
 
-import crypto from 'crypto';
-import { updateTraderPaymentStatus, sendConfirmationEmail, logPaymentTransaction } from './supabase-client.ts';
+import crypto from "crypto";
+import {
+  updateTraderPaymentStatus,
+  sendConfirmationEmail,
+  logPaymentTransaction,
+} from "./supabase-client.ts";
 
 interface PaymentWebhookPayload {
   event: string;
@@ -67,17 +71,20 @@ interface BybitWebhookPayload {
 export function verifyFlutterwaveSignature(
   signature: string,
   payload: string,
-  secretHash: string
+  secretHash: string,
 ): boolean {
   try {
     const hash = crypto
-      .createHmac('sha256', secretHash)
+      .createHmac("sha256", secretHash)
       .update(payload)
-      .digest('hex');
+      .digest("hex");
 
     return signature === hash;
   } catch (error) {
-    console.error('[Payment] Flutterwave signature verification failed:', error);
+    console.error(
+      "[Payment] Flutterwave signature verification failed:",
+      error,
+    );
     return false;
   }
 }
@@ -88,17 +95,17 @@ export function verifyFlutterwaveSignature(
 export function verifyBinanceSignature(
   payload: string,
   signature: string,
-  secretKey: string
+  secretKey: string,
 ): boolean {
   try {
     const hash = crypto
-      .createHmac('sha256', secretKey)
+      .createHmac("sha256", secretKey)
       .update(payload)
-      .digest('hex');
+      .digest("hex");
 
     return signature === hash;
   } catch (error) {
-    console.error('[Payment] Binance signature verification failed:', error);
+    console.error("[Payment] Binance signature verification failed:", error);
     return false;
   }
 }
@@ -109,17 +116,17 @@ export function verifyBinanceSignature(
 export function verifyBybitSignature(
   payload: string,
   signature: string,
-  secretKey: string
+  secretKey: string,
 ): boolean {
   try {
     const hash = crypto
-      .createHmac('sha256', secretKey)
+      .createHmac("sha256", secretKey)
       .update(payload)
-      .digest('hex');
+      .digest("hex");
 
     return signature === hash;
   } catch (error) {
-    console.error('[Payment] Bybit signature verification failed:', error);
+    console.error("[Payment] Bybit signature verification failed:", error);
     return false;
   }
 }
@@ -128,13 +135,13 @@ export function verifyBybitSignature(
  * Handle Flutterwave webhook
  */
 export async function handleFlutterwaveWebhook(
-  payload: PaymentWebhookPayload
+  payload: PaymentWebhookPayload,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    console.log('[Payment] Flutterwave webhook received:', payload.event);
+    console.log("[Payment] Flutterwave webhook received:", payload.event);
 
-    if (payload.event !== 'charge.completed') {
-      return { success: false, message: 'Unsupported event type' };
+    if (payload.event !== "charge.completed") {
+      return { success: false, message: "Unsupported event type" };
     }
 
     const { data } = payload;
@@ -144,46 +151,52 @@ export async function handleFlutterwaveWebhook(
     const emailMatch = data.tx_ref?.match(/trader_(.+?)_\d+$/);
     const email = emailMatch ? emailMatch[1] : null;
 
-    if (data.status !== 'successful') {
-      console.warn('[Payment] Flutterwave payment not successful:', data.status);
+    if (data.status !== "successful") {
+      console.warn(
+        "[Payment] Flutterwave payment not successful:",
+        data.status,
+      );
 
       // Log failed payment
       if (email) {
         await logPaymentTransaction(
           email,
           data.id,
-          'flutterwave',
-          'failed',
+          "flutterwave",
+          "failed",
           data.amount || 0,
-          `Payment status: ${data.status}`
+          `Payment status: ${data.status}`,
         );
       }
 
-      return { success: false, message: 'Payment not successful' };
+      return { success: false, message: "Payment not successful" };
     }
 
     if (!emailMatch || !email) {
-      console.error('[Payment] Could not extract email from tx_ref:', data.tx_ref);
-      return { success: false, message: 'Invalid transaction reference' };
+      console.error(
+        "[Payment] Could not extract email from tx_ref:",
+        data.tx_ref,
+      );
+      return { success: false, message: "Invalid transaction reference" };
     }
 
-    console.log('[Payment] Processing Flutterwave payment for:', email);
+    console.log("[Payment] Processing Flutterwave payment for:", email);
 
     // Log the transaction
     await logPaymentTransaction(
       email,
       data.id,
-      'flutterwave',
-      'pending',
-      data.amount || 0
+      "flutterwave",
+      "pending",
+      data.amount || 0,
     );
 
     // Update trader payment status
     const success = await updateTraderPaymentStatus(
       email,
-      'completed',
+      "completed",
       data.id,
-      'flutterwave'
+      "flutterwave",
     );
 
     if (!success) {
@@ -191,21 +204,21 @@ export async function handleFlutterwaveWebhook(
       await logPaymentTransaction(
         email,
         data.id,
-        'flutterwave',
-        'failed',
+        "flutterwave",
+        "failed",
         data.amount || 0,
-        'Failed to update trader status'
+        "Failed to update trader status",
       );
-      return { success: false, message: 'Failed to update trader' };
+      return { success: false, message: "Failed to update trader" };
     }
 
     // Update transaction to completed
     await logPaymentTransaction(
       email,
       data.id,
-      'flutterwave',
-      'completed',
-      data.amount || 0
+      "flutterwave",
+      "completed",
+      data.amount || 0,
     );
 
     // NOTE: Email sending disabled - credentials are shown on dashboard instead
@@ -213,11 +226,11 @@ export async function handleFlutterwaveWebhook(
 
     return {
       success: true,
-      message: 'Payment processed successfully',
+      message: "Payment processed successfully",
     };
   } catch (error) {
-    console.error('[Payment] Error processing Flutterwave webhook:', error);
-    return { success: false, message: 'Internal server error' };
+    console.error("[Payment] Error processing Flutterwave webhook:", error);
+    return { success: false, message: "Internal server error" };
   }
 }
 
@@ -225,53 +238,53 @@ export async function handleFlutterwaveWebhook(
  * Handle Binance webhook
  */
 export async function handleBinanceWebhook(
-  payload: BinanceWebhookPayload
+  payload: BinanceWebhookPayload,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    console.log('[Payment] Binance webhook received:', payload.status);
+    console.log("[Payment] Binance webhook received:", payload.status);
 
     const email = payload.customer?.email;
 
-    if (payload.status !== 'COMPLETED') {
-      console.warn('[Payment] Binance payment not completed:', payload.status);
+    if (payload.status !== "COMPLETED") {
+      console.warn("[Payment] Binance payment not completed:", payload.status);
 
       // Log failed payment
       if (email) {
         await logPaymentTransaction(
           email,
           payload.order_id,
-          'binance',
-          'failed',
+          "binance",
+          "failed",
           payload.totalFee || 0,
-          `Payment status: ${payload.status}`
+          `Payment status: ${payload.status}`,
         );
       }
 
-      return { success: false, message: 'Payment not completed' };
+      return { success: false, message: "Payment not completed" };
     }
 
     if (!email) {
-      console.error('[Payment] No email in Binance payload');
-      return { success: false, message: 'No customer email' };
+      console.error("[Payment] No email in Binance payload");
+      return { success: false, message: "No customer email" };
     }
 
-    console.log('[Payment] Processing Binance payment for:', email);
+    console.log("[Payment] Processing Binance payment for:", email);
 
     // Log the transaction
     await logPaymentTransaction(
       email,
       payload.order_id,
-      'binance',
-      'pending',
-      payload.totalFee || 0
+      "binance",
+      "pending",
+      payload.totalFee || 0,
     );
 
     // Update trader payment status
     const success = await updateTraderPaymentStatus(
       email,
-      'completed',
+      "completed",
       payload.order_id,
-      'binance'
+      "binance",
     );
 
     if (!success) {
@@ -279,21 +292,21 @@ export async function handleBinanceWebhook(
       await logPaymentTransaction(
         email,
         payload.order_id,
-        'binance',
-        'failed',
+        "binance",
+        "failed",
         payload.totalFee || 0,
-        'Failed to update trader status'
+        "Failed to update trader status",
       );
-      return { success: false, message: 'Failed to update trader' };
+      return { success: false, message: "Failed to update trader" };
     }
 
     // Update transaction to completed
     await logPaymentTransaction(
       email,
       payload.order_id,
-      'binance',
-      'completed',
-      payload.totalFee || 0
+      "binance",
+      "completed",
+      payload.totalFee || 0,
     );
 
     // Send confirmation email
@@ -301,11 +314,11 @@ export async function handleBinanceWebhook(
 
     return {
       success: true,
-      message: 'Payment processed successfully',
+      message: "Payment processed successfully",
     };
   } catch (error) {
-    console.error('[Payment] Error processing Binance webhook:', error);
-    return { success: false, message: 'Internal server error' };
+    console.error("[Payment] Error processing Binance webhook:", error);
+    return { success: false, message: "Internal server error" };
   }
 }
 
@@ -313,53 +326,53 @@ export async function handleBinanceWebhook(
  * Handle Bybit webhook
  */
 export async function handleBybitWebhook(
-  payload: BybitWebhookPayload
+  payload: BybitWebhookPayload,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    console.log('[Payment] Bybit webhook received:', payload.status);
+    console.log("[Payment] Bybit webhook received:", payload.status);
 
     const email = payload.customer?.email;
 
-    if (payload.status !== 'SUCCESS') {
-      console.warn('[Payment] Bybit payment not successful:', payload.status);
+    if (payload.status !== "SUCCESS") {
+      console.warn("[Payment] Bybit payment not successful:", payload.status);
 
       // Log failed payment
       if (email) {
         await logPaymentTransaction(
           email,
           payload.order_id,
-          'bybit',
-          'failed',
+          "bybit",
+          "failed",
           payload.amount || 0,
-          `Payment status: ${payload.status}`
+          `Payment status: ${payload.status}`,
         );
       }
 
-      return { success: false, message: 'Payment not successful' };
+      return { success: false, message: "Payment not successful" };
     }
 
     if (!email) {
-      console.error('[Payment] No email in Bybit payload');
-      return { success: false, message: 'No customer email' };
+      console.error("[Payment] No email in Bybit payload");
+      return { success: false, message: "No customer email" };
     }
 
-    console.log('[Payment] Processing Bybit payment for:', email);
+    console.log("[Payment] Processing Bybit payment for:", email);
 
     // Log the transaction
     await logPaymentTransaction(
       email,
       payload.order_id,
-      'bybit',
-      'pending',
-      payload.amount || 0
+      "bybit",
+      "pending",
+      payload.amount || 0,
     );
 
     // Update trader payment status
     const success = await updateTraderPaymentStatus(
       email,
-      'completed',
+      "completed",
       payload.order_id,
-      'bybit'
+      "bybit",
     );
 
     if (!success) {
@@ -367,21 +380,21 @@ export async function handleBybitWebhook(
       await logPaymentTransaction(
         email,
         payload.order_id,
-        'bybit',
-        'failed',
+        "bybit",
+        "failed",
         payload.amount || 0,
-        'Failed to update trader status'
+        "Failed to update trader status",
       );
-      return { success: false, message: 'Failed to update trader' };
+      return { success: false, message: "Failed to update trader" };
     }
 
     // Update transaction to completed
     await logPaymentTransaction(
       email,
       payload.order_id,
-      'bybit',
-      'completed',
-      payload.amount || 0
+      "bybit",
+      "completed",
+      payload.amount || 0,
     );
 
     // Send confirmation email
@@ -389,10 +402,10 @@ export async function handleBybitWebhook(
 
     return {
       success: true,
-      message: 'Payment processed successfully',
+      message: "Payment processed successfully",
     };
   } catch (error) {
-    console.error('[Payment] Error processing Bybit webhook:', error);
-    return { success: false, message: 'Internal server error' };
+    console.error("[Payment] Error processing Bybit webhook:", error);
+    return { success: false, message: "Internal server error" };
   }
 }
