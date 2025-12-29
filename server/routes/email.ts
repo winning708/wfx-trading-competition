@@ -8,8 +8,8 @@ import {
   sendConfirmationEmailToUser,
   sendPaymentReceiptEmail,
   sendTradingCredentialsEmail,
-} from "../lib/email-service.js";
-import { sendCredentialsEmailToTrader } from "../lib/supabase-client.js";
+} from "../lib/email-service.ts";
+import { sendCredentialsEmailToTrader } from "../lib/supabase-client.ts";
 
 /**
  * Send Confirmation Email
