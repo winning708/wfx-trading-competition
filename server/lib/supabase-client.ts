@@ -8,11 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 // Lazy initialization - client is created on first use
 let supabaseClient: any = null;
 
-function initializeSupabase() {
-  if (supabaseClient) {
-    return supabaseClient;
-  }
-
+function createSupabaseClient() {
   const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -48,26 +44,26 @@ function initializeSupabase() {
   }
 
   console.log("[Supabase] Creating client with URL:", SUPABASE_URL);
-  supabaseClient = createClient(
+  return createClient(
     SUPABASE_URL,
     SUPABASE_SERVICE_ROLE_KEY || "sk_placeholder_key",
   );
+}
 
-  console.log("[Supabase] Client initialized successfully");
+// Lazy getter for supabase client
+export const getSupabase = () => {
+  if (!supabaseClient) {
+    supabaseClient = createSupabaseClient();
+  }
   return supabaseClient;
-}
+};
 
-// Export getter function that initializes on first access
-export function getSupabase() {
-  return initializeSupabase();
-}
-
-// Also export as property for backward compatibility
+// Export supabase for backward compatibility
 export const supabase = new Proxy(
   {},
   {
     get(_target, prop) {
-      return initializeSupabase()[prop];
+      return getSupabase()[prop];
     },
   },
 ) as any;
