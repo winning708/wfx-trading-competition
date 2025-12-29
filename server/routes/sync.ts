@@ -14,12 +14,12 @@
  */
 
 import { RequestHandler } from "express";
-import { syncMyFXBookAccount } from "../lib/myfxbook-client.js";
-import { syncMT5Account } from "../lib/mt5-client.js";
+import { syncMyFXBookAccount } from "../lib/myfxbook-client.ts";
+import { syncMT5Account } from "../lib/mt5-client.ts";
 import {
   syncForexFactoryAccount,
   testForexFactoryConnection,
-} from "../lib/forex-factory-client.js";
+} from "../lib/forex-factory-client.ts";
 import {
   getActiveIntegrations,
   getActiveMT5Integrations,
@@ -31,7 +31,7 @@ import {
   updateMT5IntegrationSyncStatus,
   updateForexFactoryIntegrationSyncStatus,
   getTraderStartingBalance,
-} from "../lib/supabase-client.js";
+} from "../lib/supabase-client.ts";
 
 interface SyncResponse {
   success: boolean;
