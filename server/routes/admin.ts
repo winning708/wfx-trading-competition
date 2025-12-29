@@ -4,16 +4,11 @@
  */
 
 import { RequestHandler } from "express";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase-client.ts";
 import {
   sendAdminNotification,
   sendApprovalEmail,
 } from "../lib/email-service.ts";
-
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || "",
-);
 
 /**
  * Verify Admin Password
