@@ -1,16 +1,6 @@
 // Ensure we can debug startup issues
 process.stdout.write("[Server] Initializing...\n");
 
-// Only load dotenv in development
-if (process.env.NODE_ENV !== "production") {
-  try {
-    await import("dotenv/config");
-    console.log("[Server] Loaded dotenv for development");
-  } catch (err) {
-    console.log("[Server] dotenv not available, skipping");
-  }
-}
-
 import express from "express";
 import path from "path";
 import fs from "fs";
@@ -21,9 +11,34 @@ const port = process.env.PORT || 3000;
 
 async function startServer() {
   try {
+    // Load dotenv only in development
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        await import("dotenv/config");
+        console.log("[Server] Loaded dotenv for development");
+      } catch (err) {
+        console.log("[Server] dotenv not available, skipping");
+      }
+    }
+
     console.log("[Server] Starting production server...");
     console.log("[Server] Node version:", process.version);
+    console.log("[Server] NODE_ENV:", process.env.NODE_ENV);
     console.log("[Server] PORT:", port);
+
+    // Log critical env vars (without values for security)
+    const criticalEnvVars = [
+      "VITE_SUPABASE_URL",
+      "SUPABASE_SERVICE_ROLE_KEY",
+      "ADMIN_PASSWORD",
+      "RESEND_API_KEY",
+    ];
+    console.log("[Server] Environment variables check:");
+    for (const envVar of criticalEnvVars) {
+      const exists = !!process.env[envVar];
+      const length = process.env[envVar]?.length || 0;
+      console.log(`[Server]   - ${envVar}: ${exists ? `✓ (${length} chars)` : "✗ MISSING"}`);
+    }
 
     console.log("[Server] Importing createServer...");
     const { createServer } = await import("./server/index.ts");
