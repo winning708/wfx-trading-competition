@@ -108,9 +108,9 @@ export default function LandingPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
-                <p className="text-2xl md:text-3xl font-bold text-primary">$15</p>
-                <p className="text-xs text-muted-foreground">Entry Fee</p>
-              </div>
+              <p className="text-2xl md:text-3xl font-bold text-primary">$10</p>
+              <p className="text-xs text-muted-foreground">Entry Fee</p>
+            </div>
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
                 <p className="text-2xl md:text-3xl font-bold text-success">$1,000</p>
                 <p className="text-xs text-muted-foreground">Starting Capital</p>
@@ -186,7 +186,7 @@ export default function LandingPage() {
                 <DollarSign className="h-6 w-6 text-primary" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-foreground">
-                $15 Entry
+                $10 Entry
               </h3>
               <p className="text-sm text-muted-foreground">
                 Secure registration with instant access to your demo account
@@ -459,7 +459,7 @@ export default function LandingPage() {
                 to="/register"
                 className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-base font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                Register Now - $15
+                Register Now - $10
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </>
