@@ -7,7 +7,6 @@ app = 'wfx-trading-competition-iqk2zw'
 primary_region = 'jnb'
 
 [build]
-  builder = "docker"
   dockerfile = "Dockerfile"
 
 [env]
