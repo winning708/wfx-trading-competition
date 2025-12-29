@@ -47,5 +47,5 @@ COPY tsconfig.server.json .
 # Expose port 3000
 EXPOSE 3000
 
-# Start server with tsx via pnpm
-CMD [ "pnpm", "exec", "tsx", "server-prod.ts" ]
+# Start server with tsx
+CMD [ "node_modules/.bin/tsx", "server-prod.ts" ]
