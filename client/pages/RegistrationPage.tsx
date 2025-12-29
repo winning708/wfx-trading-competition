@@ -773,7 +773,7 @@ export default function RegistrationPage() {
                         {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
                       </p>
                       <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $15 USD)
+                        (Equivalent to $10 USD)
                       </p>
                     </div>
                   )}
@@ -807,7 +807,7 @@ export default function RegistrationPage() {
                         {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
                       </p>
                       <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $15 USD)
+                        (Equivalent to $10 USD)
                       </p>
                     </div>
                   )}
@@ -846,7 +846,7 @@ export default function RegistrationPage() {
                         {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
                       </p>
                       <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $15 USD)
+                        (Equivalent to $10 USD)
                       </p>
                     </div>
                   )}
@@ -1009,7 +1009,7 @@ export default function RegistrationPage() {
                 {formData.country ?
                   selectedPayment === 'bank-transfer'
                     ? `Pay ${getCurrencyInfoForCountry(formData.country).display} entry fee`
-                    : `Pay $15 USD entry fee`
+                    : `Pay $10 USD entry fee`
                   : 'Select your payment method to see the entry fee'}
               </p>
               <p className="text-sm text-amber-600 dark:text-amber-400 mt-4">
@@ -1056,7 +1056,7 @@ export default function RegistrationPage() {
                     <p className="text-sm font-semibold text-primary mt-2">
                       {method.id === 'bank-transfer' && formData.country
                         ? currencyInfo.display
-                        : '$15 USD'}
+                        : '$10 USD'}
                     </p>
                   </div>
                 </button>
@@ -1096,7 +1096,7 @@ export default function RegistrationPage() {
                             <span className="text-muted-foreground">
                               Competition Entry Fee
                             </span>
-                            <span className="font-medium text-foreground">$15.00</span>
+                            <span className="font-medium text-foreground">$10.00</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Tax (0%)</span>
@@ -1109,7 +1109,7 @@ export default function RegistrationPage() {
                             <span className="text-muted-foreground">
                               Competition Entry Fee (USD)
                             </span>
-                            <span className="font-medium text-foreground">$15.00</span>
+                            <span className="font-medium text-foreground">$10.00</span>
                           </div>
                           {isNairaMethod && (
                             <div className="flex justify-between bg-primary/5 -mx-3 px-3 py-2 rounded">
@@ -1132,7 +1132,7 @@ export default function RegistrationPage() {
                         Total {isUSDMethod ? '(USD)' : isNairaMethod ? `(${currencyInfo.code})` : '(USD)'}
                       </span>
                       <span className="text-2xl font-bold text-primary">
-                        {isNairaMethod ? currencyInfo.display : '$15.00'}
+                        {isNairaMethod ? currencyInfo.display : '$10.00'}
                       </span>
                     </div>
                   </>
@@ -1380,7 +1380,7 @@ export default function RegistrationPage() {
                   </div>
                   <div className="text-center sm:text-right flex-shrink-0">
                     <div className="text-xs text-muted-foreground mb-1">USD</div>
-                    <p className="text-2xl sm:text-3xl font-bold text-primary">$15</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">$10</p>
                     {formData.country && formData.country !== 'United States' && (
                       <p className="text-xs sm:text-sm font-semibold text-primary mt-1 sm:mt-2">
                         {getCurrencyInfoForCountry(formData.country).display}
