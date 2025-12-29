@@ -11,7 +11,6 @@ import RegistrationPage from "./pages/RegistrationPage";
 import LoginPage from "./pages/LoginPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
-import LeaderboardPage from "./pages/LeaderboardPage";
 import DashboardPage from "./pages/DashboardPage";
 import PendingApprovalPage from "./pages/PendingApprovalPage";
 import RulesPage from "./pages/RulesPage";
@@ -19,6 +18,7 @@ import MonitoringPage from "./pages/MonitoringPage";
 import WinnersPage from "./pages/WinnersPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedAdminRoute } from "./components/ProtectedAdminRoute";
+import { ProtectedUserRoute } from "./components/ProtectedUserRoute";
 
 const queryClient = new QueryClient();
 
