@@ -17,9 +17,6 @@ RUN pnpm install
 # Build frontend
 RUN pnpm run build
 
-# Compile TypeScript server files
-RUN pnpm run build:server || true
-
 
 # Final production image
 FROM node:${NODE_VERSION}-slim
@@ -37,9 +34,8 @@ COPY package.json pnpm-lock.yaml ./
 # Install ONLY production dependencies
 RUN pnpm install --prod
 
-# Copy built frontend and server files from builder
+# Copy built frontend and server files
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/dist-server ./dist-server 2>/dev/null || true
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/shared ./shared
 
@@ -51,5 +47,5 @@ COPY tsconfig.server.json .
 # Expose port 3000
 EXPOSE 3000
 
-# Start server - use Node directly with tsx for runtime compilation
-CMD [ "node", "--loader", "tsx/esm", "server-prod.ts" ]
+# Start server with tsx loader
+CMD [ "node", "--no-warnings=ExperimentalWarning", "--loader=tsx", "server-prod.ts" ]
