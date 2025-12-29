@@ -1,7 +1,16 @@
 // Ensure we can debug startup issues
 process.stdout.write("[Server] Initializing...\n");
 
-import "dotenv/config";
+// Only load dotenv in development
+if (process.env.NODE_ENV !== "production") {
+  try {
+    await import("dotenv/config");
+    console.log("[Server] Loaded dotenv for development");
+  } catch (err) {
+    console.log("[Server] dotenv not available, skipping");
+  }
+}
+
 import express from "express";
 import path from "path";
 import fs from "fs";
