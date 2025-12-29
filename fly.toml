@@ -13,6 +13,19 @@ primary_region = 'jnb'
 [env]
   PORT = "3000"
   NODE_ENV = "production"
+  VITE_SUPABASE_URL = "https://cujdemfiikeoamryjwza.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1amRlbWZpaWtlb2Ftcnlqd3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0OTE1OTEsImV4cCI6MjA4MjA2NzU5MX0.yfO_neHiPBBWx7AzYuk5sd4sIocv2BSvtkdzgmpDjC4"
+  RESEND_API_KEY = "re_5uzTUbXE_9DAFScadBWszUXrED2mnDE7v"
+  FLUTTERWAVE_PUBLIC_KEY = "FLWPUBK_84a33abb9577491b5bc7e1ce856de21a"
+  FLUTTERWAVE_SECRET_HASH = "wfx-contest-showdown-competition"
+  BINANCE_MERCHANT_ID = "48947748"
+  BYBIT_USDT_WALLET_ADDRESS = "TH9F2BfgD6C7gM5Jxo8gM3EpxU42kRUJm5"
+  EMAIL_FROM = "onboarding@resend.dev"
+  ADMIN_PASSWORD = "Winning@708"
+
+[secrets]
+  SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN1amRlbWZpaWtlb2Ftcnlqd3phIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjQ5MTU5MSwiZXhwIjoyMDgyMDY3NTkxfQ.OhYhBnz05h-LmUf2-RvyjJuggSdp_HmD0siIDuoVCBk"
+  FLUTTERWAVE_SECRET_KEY = "FLWSECK_1036173a3165024b79ebf88a283d8fa7"
 
 [http_service]
   internal_port = 3000
