@@ -50,7 +50,7 @@ export default function RulesPage() {
                 <div>
                   <h3 className="font-semibold text-foreground mb-2">Entry</h3>
                   <p className="text-sm text-muted-foreground">
-                    $15 USD entry fee
+                    $10 USD entry fee
                   </p>
                 </div>
               </div>
