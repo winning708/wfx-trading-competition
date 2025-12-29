@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: pnpm install && pnpm run build
-    startCommand: node dist/server/node-build.mjs
+    startCommand: chmod +x ./start-server.sh && ./start-server.sh
     envVars:
       - key: NODE_ENV
         value: production
