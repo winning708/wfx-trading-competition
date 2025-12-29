@@ -34,14 +34,18 @@ COPY package.json pnpm-lock.yaml ./
 # Install ONLY production dependencies
 RUN pnpm install --prod
 
-# Copy built frontend and server
+# Copy built frontend and server files
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server ./server
+COPY --from=builder /app/shared ./shared
 
-# Copy production server entry point
-COPY server-prod.js .
+# Copy production server entry point and config files
+COPY server-prod.ts .
+COPY tsconfig.json .
+COPY tsconfig.server.json .
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start server
-CMD [ "node", "server-prod.js" ]
+# Start server with tsx
+CMD [ "npx", "tsx", "server-prod.ts" ]
