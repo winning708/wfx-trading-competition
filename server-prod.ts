@@ -37,7 +37,9 @@ async function startServer() {
     for (const envVar of criticalEnvVars) {
       const exists = !!process.env[envVar];
       const length = process.env[envVar]?.length || 0;
-      console.log(`[Server]   - ${envVar}: ${exists ? `✓ (${length} chars)` : "✗ MISSING"}`);
+      console.log(
+        `[Server]   - ${envVar}: ${exists ? `✓ (${length} chars)` : "✗ MISSING"}`,
+      );
     }
 
     console.log("[Server] Importing createServer...");
