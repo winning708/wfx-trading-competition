@@ -11,7 +11,7 @@ import {
   verifyFlutterwaveSignature,
   verifyBinanceSignature,
   verifyBybitSignature,
-} from "../lib/payment-webhooks.js";
+} from "../lib/payment-webhooks.ts";
 
 /**
  * Flutterwave Webhook Handler
