@@ -1,3 +1,6 @@
+// Ensure we can debug startup issues
+process.stdout.write("[Server] Initializing...\n");
+
 import "dotenv/config";
 import express from "express";
 import path from "path";
