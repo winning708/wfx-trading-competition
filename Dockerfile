@@ -47,5 +47,5 @@ COPY tsconfig.server.json .
 # Expose port 3000
 EXPOSE 3000
 
-# Start server using npx which should find tsx in node_modules
-CMD [ "bash", "-c", "exec npx tsx server-prod.ts" ]
+# Start server - npx will find tsx in node_modules
+CMD [ "sh", "-c", "exec npx tsx server-prod.ts" ]
