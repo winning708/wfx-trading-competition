@@ -3,22 +3,26 @@
 ## Issues Fixed
 
 ### 1. ✅ Missing `.ts` Extensions in ESM Imports
+
 - **Files Fixed:**
   - `server/lib/payment-webhooks.ts`: Added `.ts` to supabase-client import
   - `server-prod.ts`: Added `.ts` to server/index import
 - **Why:** In ESM mode for Node.js, file extensions are required for relative imports
 
 ### 2. ✅ `cors` Package in Wrong Dependency Section
+
 - **File Fixed:** `package.json`
 - **Change:** Moved `cors: ^2.8.5` from `devDependencies` to `dependencies`
 - **Why:** Production environments only install dependencies, not devDependencies. cors is needed at runtime.
 
 ### 3. ✅ Lock File Synchronized
+
 - **File:** `pnpm-lock.yaml`
 - **Status:** Verified cors is in dependencies section
 - **Action:** Ran `pnpm install` to ensure lock file is up-to-date
 
 ### 4. ✅ Enhanced Production Server Error Handling
+
 - **File Fixed:** `server-prod.ts`
 - **Changes:**
   - Added comprehensive startup logging
@@ -29,6 +33,7 @@
 - **Why:** Better error visibility to diagnose startup issues
 
 ### 5. ✅ Fixed Docker Execution
+
 - **File Fixed:** `Dockerfile`
 - **Change:** Changed `npx tsx server-prod.ts` to `pnpm exec tsx server-prod.ts`
 - **Why:** `pnpm exec` is more reliable in Docker environments for executing local packages
@@ -45,6 +50,7 @@
 ## What Was Wrong
 
 The server was not starting because:
+
 1. Missing ESM import extensions caused module resolution errors
 2. `cors` wasn't available in production because it was in devDependencies
 3. When the server tried to initialize, it couldn't import required modules
@@ -69,6 +75,7 @@ The server was not starting because:
 ## Expected Output
 
 When the app starts, you should see:
+
 ```
 [Server] Starting production server...
 [Server] Node version: v22.21.1
