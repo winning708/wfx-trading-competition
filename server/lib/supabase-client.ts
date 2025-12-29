@@ -9,18 +9,23 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// Log configuration status
+console.log('[Supabase] Configuration check:');
+console.log('[Supabase]   - VITE_SUPABASE_URL:', SUPABASE_URL ? `✓ set (${SUPABASE_URL.substring(0, 30)}...)` : '✗ NOT SET');
+console.log('[Supabase]   - SUPABASE_SERVICE_ROLE_KEY:', SUPABASE_SERVICE_ROLE_KEY ? `✓ set (${SUPABASE_SERVICE_ROLE_KEY.substring(0, 20)}...)` : '✗ NOT SET');
+
 // Validate required configuration
 if (!SUPABASE_URL) {
-  throw new Error('[Supabase] FATAL: VITE_SUPABASE_URL environment variable is not set. Cannot initialize Supabase client.');
+  const errorMsg = '[Supabase] FATAL: VITE_SUPABASE_URL environment variable is required but not set. Available env keys: ' + Object.keys(process.env).filter(k => k.includes('SUPABASE') || k.includes('VITE')).join(', ');
+  throw new Error(errorMsg);
 }
 
 if (!SUPABASE_SERVICE_ROLE_KEY) {
   console.warn('[Supabase] ⚠️  WARNING: SUPABASE_SERVICE_ROLE_KEY not set.');
   console.warn('[Supabase] ⚠️  Backend MyFXBook sync will not work without this key.');
-  console.warn('[Supabase] ⚠️  Set SUPABASE_SERVICE_ROLE_KEY in your environment variables.');
 }
 
-console.log('[Supabase] Initializing with URL:', SUPABASE_URL);
+console.log('[Supabase] Creating client with URL:', SUPABASE_URL);
 export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY || 'sk_placeholder_key');
 
 export interface MyFXBookIntegrationData {
