@@ -3,7 +3,7 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import { createServer } from "./server/index.js";
+import { createServer } from "./server/index.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
