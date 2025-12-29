@@ -17,9 +17,6 @@ RUN pnpm install
 # Build frontend
 RUN pnpm run build
 
-# Compile TypeScript server to JavaScript
-RUN npx tsc --project tsconfig.server.json --outDir dist/server
-
 
 # Final production image
 FROM node:${NODE_VERSION}-slim
