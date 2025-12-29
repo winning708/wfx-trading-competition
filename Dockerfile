@@ -47,5 +47,5 @@ COPY tsconfig.server.json .
 # Expose port 3000
 EXPOSE 3000
 
-# Start server with tsx loader
-CMD [ "node", "--no-warnings=ExperimentalWarning", "--loader=tsx", "server-prod.ts" ]
+# Start server with tsx from node_modules
+CMD [ "./node_modules/.bin/tsx", "server-prod.ts" ]
