@@ -17,9 +17,6 @@ RUN pnpm install
 # Build frontend
 RUN pnpm run build
 
-# Compile server TypeScript to JavaScript
-RUN npx tsc server-prod.ts --outDir . --module esnext --target esnext --moduleResolution node --esModuleInterop
-
 
 # Final production image
 FROM node:${NODE_VERSION}-slim
@@ -34,21 +31,21 @@ RUN npm install -g pnpm@10.14.0
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install ONLY production dependencies (this will now include tsx and typescript as deps, or remove them)
+# Install ONLY production dependencies (includes tsx)
 RUN pnpm install --prod
 
 # Copy built frontend and server files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
 COPY --from=builder /app/shared ./shared
-COPY --from=builder /app/server-prod.js .
 
-# Copy config files
+# Copy production server entry point and config files
+COPY server-prod.ts .
 COPY tsconfig.json .
 COPY tsconfig.server.json .
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start with Node.js directly
-CMD [ "node", "server-prod.js" ]
+# Start server using npx which should find tsx in node_modules
+CMD [ "bash", "-c", "exec npx tsx server-prod.ts" ]
