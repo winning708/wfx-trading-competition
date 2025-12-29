@@ -109,10 +109,7 @@ app.post(
 app.post("/api/sync/forex-factory/test", handleForexFactoryTestConnection);
 
 // Payment routes
-app.post(
-  "/api/payment/webhooks/flutterwave",
-  handleFlutterwaveWebhookRequest,
-);
+app.post("/api/payment/webhooks/flutterwave", handleFlutterwaveWebhookRequest);
 app.post("/api/payment/webhooks/binance", handleBinanceWebhookRequest);
 app.post("/api/payment/webhooks/bybit", handleBybitWebhookRequest);
 app.get("/api/payment/success", handlePaymentSuccess);
