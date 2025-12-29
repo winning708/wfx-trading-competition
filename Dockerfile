@@ -43,9 +43,13 @@ COPY --from=builder /app/shared ./shared
 COPY server-prod.ts .
 COPY tsconfig.json .
 COPY tsconfig.server.json .
+COPY start-server.sh .
+
+# Make the startup script executable
+RUN chmod +x start-server.sh
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start server - npx will find tsx in node_modules
-CMD [ "sh", "-c", "exec npx tsx server-prod.ts" ]
+# Start server using the startup script
+CMD [ "./start-server.sh" ]
