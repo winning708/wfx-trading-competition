@@ -8,7 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   sendAdminNotification,
   sendApprovalEmail,
-} from "../lib/email-service.js";
+} from "../lib/email-service.ts";
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || "",
