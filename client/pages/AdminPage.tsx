@@ -178,7 +178,7 @@ export default function AdminPage() {
       try {
         setIsLoadingTraders(true);
         console.log("[AdminPage] Loading all traders...");
-        const allTradersData = await fetchAllTraders();
+        const allTradersData = await getAllTraders();
         console.log("[AdminPage] Loaded", allTradersData.length, "traders");
 
         // Convert to Trader format for display
