@@ -308,9 +308,11 @@ export default function AdminPage() {
     traderId: string,
     currentApprovalStatus: boolean,
   ) => {
-    if (!confirm(
-      `Are you sure you want to ${currentApprovalStatus ? "disapprove" : "approve"} this trader from the leaderboard?`,
-    )) {
+    if (
+      !confirm(
+        `Are you sure you want to ${currentApprovalStatus ? "disapprove" : "approve"} this trader from the leaderboard?`,
+      )
+    ) {
       return;
     }
 
@@ -323,13 +325,16 @@ export default function AdminPage() {
 
       if (result.success) {
         await loadAllTraders();
-        alert(`✅ Trader ${!currentApprovalStatus ? "approved" : "disapproved"} successfully!`);
+        alert(
+          `✅ Trader ${!currentApprovalStatus ? "approved" : "disapproved"} successfully!`,
+        );
       } else {
-        alert(`❌ Error: ${result.message || "Failed to update trader approval"}`);
+        alert(
+          `❌ Error: ${result.message || "Failed to update trader approval"}`,
+        );
       }
     } catch (error) {
-      const errorMsg =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMsg = error instanceof Error ? error.message : "Unknown error";
       alert(`❌ Error updating trader approval: ${errorMsg}`);
     } finally {
       setApprovingTrader(null);
@@ -1016,7 +1021,10 @@ export default function AdminPage() {
               }`}
               title="Leaderboard Approvals"
             >
-              ✓<span className="hidden sm:inline ml-1">Leaderboard Approvals</span>
+              ✓
+              <span className="hidden sm:inline ml-1">
+                Leaderboard Approvals
+              </span>
             </button>
           </div>
 
@@ -2894,8 +2902,8 @@ export default function AdminPage() {
                                   Amount
                                 </p>
                                 <p className="font-medium text-foreground text-sm">
-                                $10 USD
-                              </p>
+                                  $10 USD
+                                </p>
                               </div>
                               <div>
                                 <p className="text-xs text-muted-foreground">
@@ -3341,7 +3349,9 @@ export default function AdminPage() {
                   ✓ Leaderboard Approvals
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mb-4">
-                  Approve or disapprove traders to control leaderboard visibility. Only approved traders appear in the top 10 leaderboard.
+                  Approve or disapprove traders to control leaderboard
+                  visibility. Only approved traders appear in the top 10
+                  leaderboard.
                 </p>
 
                 {/* Search Bar */}
@@ -3357,9 +3367,7 @@ export default function AdminPage() {
               {/* Loading State */}
               {isLoadingAllTraders ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground">
-                    Loading traders...
-                  </p>
+                  <p className="text-muted-foreground">Loading traders...</p>
                 </div>
               ) : filteredAllTraders.length === 0 ? (
                 <div className="text-center py-8">
@@ -3424,7 +3432,9 @@ export default function AdminPage() {
                                 : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
                             }`}
                           >
-                            {trader.is_approved ? "✓ Approved" : "⏳ Not Approved"}
+                            {trader.is_approved
+                              ? "✓ Approved"
+                              : "⏳ Not Approved"}
                           </span>
                         </div>
                         <button
@@ -3471,19 +3481,23 @@ export default function AdminPage() {
                 </p>
                 <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
                   <li>
-                    Only approved traders appear in the public leaderboard (top 10)
+                    Only approved traders appear in the public leaderboard (top
+                    10)
                   </li>
                   <li>
-                    New traders are NOT approved by default - you must approve them manually
+                    New traders are NOT approved by default - you must approve
+                    them manually
                   </li>
                   <li>
                     Use the "Approve" button to add a trader to the leaderboard
                   </li>
                   <li>
-                    Use the "Disapprove" button to remove a trader from the leaderboard
+                    Use the "Disapprove" button to remove a trader from the
+                    leaderboard
                   </li>
                   <li>
-                    Approval status does not affect trader accounts or their trading
+                    Approval status does not affect trader accounts or their
+                    trading
                   </li>
                 </ul>
               </div>
