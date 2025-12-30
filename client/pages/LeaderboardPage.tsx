@@ -131,7 +131,7 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          <div className={`grid gap-3 md:gap-4 ${isAdmin ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}>
             <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1">
@@ -145,7 +145,7 @@ export default function LeaderboardPage() {
                 <Clock className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
-            {isAdmin ? (
+            {isAdmin && (
               <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex-1">
@@ -159,22 +159,8 @@ export default function LeaderboardPage() {
                   <TrendingUp className="h-5 w-5 text-success flex-shrink-0" />
                 </div>
               </div>
-            ) : (
-              <div className="rounded-lg border border-border bg-card p-3 sm:p-4 opacity-60">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex-1">
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                      Registered Traders
-                    </p>
-                    <p className="text-sm sm:text-lg font-semibold text-muted-foreground">
-                      Admin Only
-                    </p>
-                  </div>
-                  <Lock className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                </div>
-              </div>
             )}
-            <div className="rounded-lg border border-border bg-card p-3 sm:p-4 sm:col-span-2 md:col-span-1">
+            <div className={`rounded-lg border border-border bg-card p-3 sm:p-4 ${!isAdmin ? "" : "sm:col-span-2 md:col-span-1"}`}>
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1">
                   <p className="text-xs sm:text-sm text-muted-foreground mb-1">
