@@ -141,6 +141,8 @@ export function createServer() {
   app.post("/api/admin/payments/:traderId/reject", rejectPayment);
   app.post("/api/admin/notify-payment", notifyAdminPayment);
   app.delete("/api/admin/traders/:traderId", deleteTrader);
+  app.get("/api/admin/traders", getAllTraders);
+  app.post("/api/admin/traders/:traderId/approve", toggleTraderApproval);
   app.get("/api/admin/payment-settings", getPaymentSettings);
   app.post("/api/admin/payment-settings", updatePaymentSettings);
   app.get("/api/admin/traders-with-passwords", getTradersWithPasswords);
