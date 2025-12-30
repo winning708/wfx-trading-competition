@@ -340,6 +340,15 @@ export default function AdminPage() {
     },
   );
 
+  const filteredAllTraders = allTraders.filter((trader) => {
+    const searchLower = traderApprovalSearch.toLowerCase();
+    return (
+      trader.username?.toLowerCase().includes(searchLower) ||
+      trader.email?.toLowerCase().includes(searchLower) ||
+      trader.full_name?.toLowerCase().includes(searchLower)
+    );
+  });
+
   const loadPendingPayments = async () => {
     setIsLoadingPendingPayments(true);
     try {
