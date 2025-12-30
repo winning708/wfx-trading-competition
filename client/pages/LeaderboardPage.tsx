@@ -130,10 +130,8 @@ export default function LeaderboardPage() {
             </div>
           </div>
 
-          {/* Stats */}
-          <div
-            className={`grid gap-3 md:gap-4 ${isAdmin ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : "grid-cols-1 sm:grid-cols-2"}`}
-          >
+          {/* Stats - Only show Competition Status and Top Profit to regular users */}
+          <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2">
             <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1">
@@ -145,6 +143,19 @@ export default function LeaderboardPage() {
                   </p>
                 </div>
                 <Clock className="h-5 w-5 text-primary flex-shrink-0" />
+              </div>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                    Top Profit
+                  </p>
+                  <p className="text-sm sm:text-lg font-semibold text-foreground">
+                    {leaderboard[0]?.profitPercentage.toFixed(1)}%
+                  </p>
+                </div>
+                <Trophy className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
             {isAdmin && (
@@ -162,21 +173,6 @@ export default function LeaderboardPage() {
                 </div>
               </div>
             )}
-            <div
-              className={`rounded-lg border border-border bg-card p-3 sm:p-4 ${!isAdmin ? "" : "sm:col-span-2 md:col-span-1"}`}
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex-1">
-                  <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                    Top Profit
-                  </p>
-                  <p className="text-sm sm:text-lg font-semibold text-foreground">
-                    {leaderboard[0]?.profitPercentage.toFixed(1)}%
-                  </p>
-                </div>
-                <Trophy className="h-5 w-5 text-primary flex-shrink-0" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
