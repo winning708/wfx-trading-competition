@@ -87,20 +87,24 @@ export PORT="${PORT:-3000}"
 echo "[STARTUP]   - NODE_ENV: $NODE_ENV"
 echo "[STARTUP]   - PORT: $PORT"
 
-# Check critical environment variables
+# Check critical environment variables (non-blocking warnings)
 echo ""
 echo "[STARTUP] Checking critical environment variables..."
 CRITICAL_VARS="VITE_SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ADMIN_PASSWORD"
+MISSING_VARS=""
 for var in $CRITICAL_VARS; do
   if [ -z "$(eval echo \$$var)" ]; then
-    echo "[STARTUP]   ✗ MISSING: $var"
+    echo "[STARTUP]   ⚠️  WARNING: $var not set"
+    MISSING_VARS="$MISSING_VARS $var"
   else
-    # Print masked version (first 10 chars + ...)
-    value=$(eval echo \$$var)
-    masked="${value:0:10}..."
     echo "[STARTUP]   ✓ $var (set)"
   fi
 done
+
+if [ -n "$MISSING_VARS" ]; then
+  echo "[STARTUP] ⚠️  Some variables are missing:$MISSING_VARS"
+  echo "[STARTUP] ℹ️  Server will still attempt to start"
+fi
 
 # Final checks
 echo ""
