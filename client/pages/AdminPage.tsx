@@ -20,7 +20,7 @@ import {
 import { PaymentMonitoring } from "@/components/admin/PaymentMonitoring";
 import { PaymentAlerts } from "@/components/admin/PaymentAlerts";
 import { PaymentConfirmation } from "@/components/admin/PaymentConfirmation";
-import { getLeaderboard, getTraderCount } from "@/lib/api";
+import { getLeaderboard, getTraderCount, getAllTraders, toggleTraderApproval } from "@/lib/api";
 import {
   uploadCredential,
   getAllCredentials,
