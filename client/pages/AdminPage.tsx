@@ -276,6 +276,51 @@ export default function AdminPage() {
     }
   };
 
+  const loadAllTraders = async () => {
+    setIsLoadingAllTraders(true);
+    try {
+      const traders = await getAllTraders();
+      setAllTraders(traders);
+    } catch (error) {
+      console.error("Error loading all traders:", error);
+      setAllTraders([]);
+    } finally {
+      setIsLoadingAllTraders(false);
+    }
+  };
+
+  const handleToggleTraderApproval = async (
+    traderId: string,
+    currentApprovalStatus: boolean,
+  ) => {
+    if (!confirm(
+      `Are you sure you want to ${currentApprovalStatus ? "disapprove" : "approve"} this trader from the leaderboard?`,
+    )) {
+      return;
+    }
+
+    setApprovingTrader(traderId);
+    try {
+      const result = await toggleTraderApproval(
+        traderId,
+        !currentApprovalStatus,
+      );
+
+      if (result.success) {
+        await loadAllTraders();
+        alert(`✅ Trader ${!currentApprovalStatus ? "approved" : "disapproved"} successfully!`);
+      } else {
+        alert(`❌ Error: ${result.message || "Failed to update trader approval"}`);
+      }
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Unknown error";
+      alert(`❌ Error updating trader approval: ${errorMsg}`);
+    } finally {
+      setApprovingTrader(null);
+    }
+  };
+
   const filteredTradersWithPasswords = tradersWithPasswords.filter((trader) => {
     const searchLower = passwordSearch.toLowerCase();
     return (
