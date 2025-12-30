@@ -41,6 +41,8 @@ import {
   handlePasswordResetRequest,
   getPasswordResetRequests,
   updatePasswordResetRequestStatus,
+  getAllTraders,
+  toggleTraderApproval,
 } from "./routes/admin.ts";
 
 export function createServer() {
