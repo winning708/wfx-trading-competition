@@ -3316,6 +3316,164 @@ export default function AdminPage() {
               </div>
             </div>
           )}
+
+          {/* Leaderboard Approvals Tab */}
+          {activeTab === "approvals" && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="rounded-lg border border-border bg-card/50 p-4 md:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
+                  ✓ Leaderboard Approvals
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4">
+                  Approve or disapprove traders to control leaderboard visibility. Only approved traders appear in the top 10 leaderboard.
+                </p>
+
+                {/* Search Bar */}
+                <Input
+                  type="text"
+                  value={traderApprovalSearch}
+                  onChange={(e) => setTraderApprovalSearch(e.target.value)}
+                  placeholder="Search by username, email, or name..."
+                  className="max-w-md"
+                />
+              </div>
+
+              {/* Loading State */}
+              {isLoadingAllTraders ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    Loading traders...
+                  </p>
+                </div>
+              ) : filteredAllTraders.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    {traderApprovalSearch
+                      ? "No traders found"
+                      : "No traders registered yet"}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredAllTraders.map((trader) => (
+                    <div
+                      key={trader.id}
+                      className="rounded-lg border border-border bg-card p-4 sm:p-6 hover:border-primary/50 transition-colors"
+                    >
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Username
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {trader.username}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Full Name
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {trader.full_name || "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Email
+                          </p>
+                          <p className="text-sm text-foreground break-all">
+                            {trader.email}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                            Registered
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {trader.registered_at
+                              ? new Date(
+                                  trader.registered_at,
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2 justify-between items-start sm:items-center">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              trader.is_approved
+                                ? "bg-success/10 text-success"
+                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                            }`}
+                          >
+                            {trader.is_approved ? "✓ Approved" : "⏳ Not Approved"}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() =>
+                            handleToggleTraderApproval(
+                              trader.id,
+                              trader.is_approved,
+                            )
+                          }
+                          disabled={approvingTrader === trader.id}
+                          className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                            trader.is_approved
+                              ? "bg-destructive/10 text-destructive hover:bg-destructive/20"
+                              : "bg-success/10 text-success hover:bg-success/20"
+                          }`}
+                        >
+                          {approvingTrader === trader.id ? (
+                            <>
+                              <RefreshCw size={16} className="animate-spin" />
+                              <span>Processing...</span>
+                            </>
+                          ) : trader.is_approved ? (
+                            <>
+                              <AlertCircle size={16} />
+                              <span>Disapprove</span>
+                            </>
+                          ) : (
+                            <>
+                              <Check size={16} />
+                              <span>Approve</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Info Box */}
+              <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4 md:p-6">
+                <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                  <strong>ℹ️ Leaderboard Approval System</strong>
+                </p>
+                <ul className="text-xs md:text-sm text-blue-600/90 dark:text-blue-400/90 space-y-1 list-disc list-inside">
+                  <li>
+                    Only approved traders appear in the public leaderboard (top 10)
+                  </li>
+                  <li>
+                    New traders are NOT approved by default - you must approve them manually
+                  </li>
+                  <li>
+                    Use the "Approve" button to add a trader to the leaderboard
+                  </li>
+                  <li>
+                    Use the "Disapprove" button to remove a trader from the leaderboard
+                  </li>
+                  <li>
+                    Approval status does not affect trader accounts or their trading
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
