@@ -130,7 +130,7 @@ export default function LeaderboardPage() {
             </div>
           </div>
 
-          {/* Stats - Only show Competition Status and Top Profit to regular users */}
+          {/* Stats */}
           <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2">
             <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
@@ -158,21 +158,6 @@ export default function LeaderboardPage() {
                 <Trophy className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
-            {isAdmin && (
-              <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex-1">
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-1">
-                      Registered Traders
-                    </p>
-                    <p className="text-sm sm:text-lg font-semibold text-foreground">
-                      {traderCount > 0 ? traderCount : "0"}
-                    </p>
-                  </div>
-                  <TrendingUp className="h-5 w-5 text-success flex-shrink-0" />
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
