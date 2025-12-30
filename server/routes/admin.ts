@@ -780,3 +780,84 @@ export const updatePaymentSettings: RequestHandler = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+/**
+ * Get All Traders (for approval management)
+ * GET /api/admin/traders
+ */
+export const getAllTraders: RequestHandler = async (req, res) => {
+  try {
+    const { data: traders, error } = await supabase
+      .from("traders")
+      .select("id, username, full_name, email, is_approved, registered_at")
+      .order("registered_at", { ascending: false });
+
+    if (error) {
+      console.error("[Admin] Error fetching traders:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to fetch traders" });
+    }
+
+    res.json({ success: true, traders: traders || [] });
+  } catch (error) {
+    console.error("[Admin] Error in getAllTraders:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+/**
+ * Toggle Trader Approval Status
+ * POST /api/admin/traders/:traderId/approve
+ */
+export const toggleTraderApproval: RequestHandler = async (req, res) => {
+  try {
+    const { traderId } = req.params;
+    const { is_approved } = req.body;
+
+    if (!traderId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Trader ID is required" });
+    }
+
+    if (typeof is_approved !== "boolean") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Approval status is required" });
+    }
+
+    // Update trader approval status
+    const { data: updatedTrader, error } = await supabase
+      .from("traders")
+      .update({
+        is_approved,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", traderId)
+      .select("id, username, full_name, email, is_approved")
+      .single();
+
+    if (error) {
+      console.error("[Admin] Error updating trader approval:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to update trader approval" });
+    }
+
+    console.log("[Admin] ✅ Trader approval toggled:", {
+      id: traderId,
+      is_approved,
+      trader: updatedTrader?.full_name,
+    });
+
+    res.json({
+      success: true,
+      message: `Trader ${is_approved ? "approved" : "disapproved"} successfully`,
+      trader: updatedTrader,
+    });
+  } catch (error) {
+    console.error("[Admin] Error in toggleTraderApproval:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
