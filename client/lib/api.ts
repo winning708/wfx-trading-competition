@@ -33,10 +33,11 @@ export async function getLeaderboard(): Promise<Trader[]> {
       if (error) {
         console.warn('RPC not available, falling back to table query:', error.message);
 
-        // Fallback: fetch from tables directly
+        // Fallback: fetch from tables directly - only approved traders
         const { data: perfData, error: perfError } = await supabase
           .from('performance_data')
-          .select('*')
+          .select('*, traders!inner(id, full_name, is_approved)')
+          .eq('traders.is_approved', true)
           .order('profit_percentage', { ascending: false })
           .limit(10);
 
@@ -45,17 +46,18 @@ export async function getLeaderboard(): Promise<Trader[]> {
           throw new Error(`Query failed: ${perfError.message}`);
         }
 
-        // Now fetch trader names
+        // Now fetch trader names if join didn't work
         if (!perfData || perfData.length === 0) {
-          console.warn('No performance data found');
+          console.warn('No approved traders found in performance data');
           return [];
         }
 
         const traderIds = perfData.map((p: any) => p.trader_id);
         const { data: traders, error: tradersError } = await supabase
           .from('traders')
-          .select('id, full_name')
-          .in('id', traderIds);
+          .select('id, full_name, is_approved')
+          .in('id', traderIds)
+          .eq('is_approved', true);
 
         if (tradersError) {
           console.error('Traders query error:', tradersError.message);
