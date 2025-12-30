@@ -148,6 +148,12 @@ export default function AdminPage() {
     null,
   );
 
+  // Trader approval state
+  const [allTraders, setAllTraders] = useState<any[]>([]);
+  const [isLoadingAllTraders, setIsLoadingAllTraders] = useState(false);
+  const [approvingTrader, setApprovingTrader] = useState<string | null>(null);
+  const [traderApprovalSearch, setTraderApprovalSearch] = useState("");
+
   // Payment settings state
   const [paymentSettings, setPaymentSettings] =
     useState<AdminPaymentSettings | null>(null);
