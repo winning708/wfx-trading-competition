@@ -168,6 +168,7 @@ export async function registerTrader(data: TraderRegistration): Promise<boolean>
             payment_method: data.paymentMethod,
             entry_fee_paid: true,
             payment_status: 'pending',
+            is_approved: false,
           },
         ])
         .select();
