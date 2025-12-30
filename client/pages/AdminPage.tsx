@@ -291,7 +291,7 @@ export default function AdminPage() {
   const loadAllTraders = async () => {
     setIsLoadingAllTraders(true);
     try {
-      const traders = await getAllTraders();
+      const traders = await fetchAllTraders();
       setAllTraders(traders);
     } catch (error) {
       console.error("Error loading all traders:", error);
