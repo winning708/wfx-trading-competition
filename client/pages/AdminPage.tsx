@@ -172,15 +172,27 @@ export default function AdminPage() {
   });
   const [isSavingPaymentSettings, setIsSavingPaymentSettings] = useState(false);
 
-  // Load traders on mount
+  // Load traders on mount - admin needs to see ALL traders (including unapproved)
   useEffect(() => {
     const loadTraders = async () => {
       try {
         setIsLoadingTraders(true);
-        console.log("[AdminPage] Loading traders...");
-        const data = await getLeaderboard();
-        console.log("[AdminPage] Loaded", data.length, "traders");
-        setTraders(data);
+        console.log("[AdminPage] Loading all traders...");
+        const allTradersData = await fetchAllTraders();
+        console.log("[AdminPage] Loaded", allTradersData.length, "traders");
+
+        // Convert to Trader format for display
+        const formattedTraders = allTradersData.map((trader, index) => ({
+          rank: index + 1,
+          username: trader.username,
+          email: trader.email,
+          id: trader.id,
+          startingBalance: 1000,
+          currentBalance: 1000,
+          profitPercentage: 0,
+        }));
+
+        setTraders(formattedTraders);
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : String(error);
         console.error("Error loading traders:", errorMsg);
