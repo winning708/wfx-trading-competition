@@ -237,6 +237,13 @@ export default function AdminPage() {
     }
   }, [activeTab]);
 
+  // Load traders for approval when tab changes
+  useEffect(() => {
+    if (activeTab === "approvals") {
+      loadAllTraders();
+    }
+  }, [activeTab]);
+
   const loadTradersWithPasswords = async () => {
     setIsLoadingPasswords(true);
     try {
