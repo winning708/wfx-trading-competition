@@ -20,7 +20,16 @@ import {
 import { PaymentMonitoring } from "@/components/admin/PaymentMonitoring";
 import { PaymentAlerts } from "@/components/admin/PaymentAlerts";
 import { PaymentConfirmation } from "@/components/admin/PaymentConfirmation";
-import { getLeaderboard, getTraderCount, getAllTraders, toggleTraderApproval } from "@/lib/api";
+import {
+  getLeaderboard,
+  getTraderCount,
+  getAllTraders,
+  toggleTraderApproval,
+  getPaymentSettings,
+  updatePaymentSettings,
+  deleteTrader,
+  AdminPaymentSettings,
+} from "@/lib/api";
 import {
   uploadCredential,
   getAllCredentials,
@@ -31,12 +40,6 @@ import {
   TradingCredential,
   CredentialAssignment,
 } from "@/lib/credentials";
-import {
-  getPaymentSettings,
-  updatePaymentSettings,
-  deleteTrader,
-  AdminPaymentSettings,
-} from "@/lib/api";
 import {
   linkForexFactoryAccount,
   getForexFactoryIntegrationsWithDetails,
