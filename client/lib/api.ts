@@ -381,3 +381,56 @@ export async function deleteTrader(traderId: string): Promise<{ success: boolean
     };
   }
 }
+
+/**
+ * Get all traders (for admin approval management)
+ */
+export async function getAllTraders(): Promise<Array<{
+  id: string;
+  username: string;
+  full_name: string;
+  email: string;
+  is_approved: boolean;
+  registered_at?: string;
+}>> {
+  try {
+    const response = await fetch('/api/admin/traders');
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    const data = await response.json();
+    return data.traders || [];
+  } catch (error) {
+    console.error('Error fetching all traders:', error);
+    return [];
+  }
+}
+
+/**
+ * Approve or disapprove a trader for the leaderboard
+ */
+export async function toggleTraderApproval(
+  traderId: string,
+  isApproved: boolean
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    const response = await fetch(`/api/admin/traders/${traderId}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_approved: isApproved }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error toggling trader approval:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to update trader approval',
+    };
+  }
+}
