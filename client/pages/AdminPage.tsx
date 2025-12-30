@@ -75,6 +75,7 @@ export default function AdminPage() {
     | "payments"
     | "passwords"
     | "password-requests"
+    | "approvals"
   >("traders");
 
   // Password management state
