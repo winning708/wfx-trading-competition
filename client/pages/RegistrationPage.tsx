@@ -1160,7 +1160,7 @@ export default function RegistrationPage() {
                   ) : selectedPayment === 'bank-transfer' && formData.country && formData.country !== 'United States' ? (
                     `Pay ${getCurrencyInfoForCountry(formData.country).display} with ${PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name}`
                   ) : (
-                    `Pay $15 USD with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
+                    `Pay $10 USD with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
                   )}
                 </button>
               </form>
