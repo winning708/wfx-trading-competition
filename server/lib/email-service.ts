@@ -15,24 +15,33 @@ interface EmailOptions {
  * Resend works in Nigeria and has a free tier!
  * Sign up at: https://resend.com
  */
-export async function sendEmailViaResend(options: EmailOptions): Promise<boolean> {
+export async function sendEmailViaResend(
+  options: EmailOptions,
+): Promise<boolean> {
   try {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
-      console.error('[Email] Resend API key not configured in environment variables');
-      console.error('[Email] Please set RESEND_API_KEY environment variable');
+      console.error(
+        "[Email] Resend API key not configured in environment variables",
+      );
+      console.error("[Email] Please set RESEND_API_KEY environment variable");
       return false;
     }
 
-    const fromEmail = options.from || process.env.EMAIL_FROM || 'noreply@wfxtrading.com';
+    const fromEmail =
+      options.from || process.env.EMAIL_FROM || "noreply@wfxtrading.com";
 
-    console.log('[Email] Sending email via Resend:', { to: options.to, from: fromEmail, subject: options.subject });
+    console.log("[Email] Sending email via Resend:", {
+      to: options.to,
+      from: fromEmail,
+      subject: options.subject,
+    });
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         from: fromEmail,
@@ -44,13 +53,16 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[Email] Resend API error - Status:', response.status);
-      console.error('[Email] Resend API response:', errorText);
+      console.error("[Email] Resend API error - Status:", response.status);
+      console.error("[Email] Resend API response:", errorText);
 
       // Try to parse as JSON for better error details
       try {
         const errorJson = JSON.parse(errorText);
-        console.error('[Email] Resend error details:', JSON.stringify(errorJson, null, 2));
+        console.error(
+          "[Email] Resend error details:",
+          JSON.stringify(errorJson, null, 2),
+        );
       } catch (e) {
         // Response is not JSON, log as-is
       }
@@ -58,13 +70,18 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
     }
 
     const data = await response.json();
-    console.log('[Email] Email sent successfully via Resend to:', options.to, 'ID:', data.id);
+    console.log(
+      "[Email] Email sent successfully via Resend to:",
+      options.to,
+      "ID:",
+      data.id,
+    );
     return true;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Email] Error sending email via Resend:', errorMessage);
+    console.error("[Email] Error sending email via Resend:", errorMessage);
     if (error instanceof Error && error.stack) {
-      console.error('[Email] Stack trace:', error.stack);
+      console.error("[Email] Stack trace:", error.stack);
     }
     return false;
   }
@@ -74,7 +91,9 @@ export async function sendEmailViaResend(options: EmailOptions): Promise<boolean
  * Legacy SendGrid function - redirects to Resend
  * Kept for backwards compatibility
  */
-export async function sendEmailViaSendGrid(options: EmailOptions): Promise<boolean> {
+export async function sendEmailViaSendGrid(
+  options: EmailOptions,
+): Promise<boolean> {
   return sendEmailViaResend(options);
 }
 
@@ -83,7 +102,7 @@ export async function sendEmailViaSendGrid(options: EmailOptions): Promise<boole
  */
 export async function sendConfirmationEmailToUser(
   email: string,
-  fullName: string
+  fullName: string,
 ): Promise<boolean> {
   const html = `
     <!DOCTYPE html>
@@ -146,7 +165,7 @@ export async function sendConfirmationEmailToUser(
 
   return sendEmailViaSendGrid({
     to: email,
-    subject: '🎉 Your Registration is Confirmed - WFX Trading Competition',
+    subject: "🎉 Your Registration is Confirmed - WFX Trading Competition",
     html,
   });
 }
@@ -160,7 +179,7 @@ export async function sendTradingCredentialsEmail(
   accountUsername: string,
   accountPassword: string,
   accountNumber: string,
-  broker: string = 'JustMarkets'
+  broker: string = "JustMarkets",
 ): Promise<boolean> {
   const html = `
     <!DOCTYPE html>
@@ -243,7 +262,7 @@ export async function sendTradingCredentialsEmail(
 
   return sendEmailViaSendGrid({
     to: email,
-    subject: '🎯 Your Trading Credentials - WFX Trading Competition',
+    subject: "🎯 Your Trading Credentials - WFX Trading Competition",
     html,
   });
 }
@@ -256,7 +275,7 @@ export async function sendPaymentReceiptEmail(
   fullName: string,
   amount: number,
   paymentMethod: string,
-  transactionId: string
+  transactionId: string,
 ): Promise<boolean> {
   const html = `
     <!DOCTYPE html>
@@ -315,7 +334,7 @@ export async function sendPaymentReceiptEmail(
 
   return sendEmailViaSendGrid({
     to: email,
-    subject: '💳 Your Payment Receipt - WFX Trading Competition',
+    subject: "💳 Your Payment Receipt - WFX Trading Competition",
     html,
   });
 }
@@ -334,10 +353,12 @@ interface AdminNotificationPayload {
   dashboardUrl: string;
 }
 
-export async function sendAdminNotification(payload: AdminNotificationPayload): Promise<boolean> {
+export async function sendAdminNotification(
+  payload: AdminNotificationPayload,
+): Promise<boolean> {
   const adminEmail = process.env.ADMIN_EMAIL;
   if (!adminEmail) {
-    console.warn('[Email] Admin email not configured');
+    console.warn("[Email] Admin email not configured");
     return false;
   }
 
@@ -400,7 +421,7 @@ export async function sendAdminNotification(payload: AdminNotificationPayload): 
  */
 export async function sendApprovalEmail(
   email: string,
-  fullName: string
+  fullName: string,
 ): Promise<boolean> {
   const html = `
     <!DOCTYPE html>
@@ -459,7 +480,7 @@ export async function sendApprovalEmail(
 
   return sendEmailViaResend({
     to: email,
-    subject: '✅ Your Payment is Approved - Ready to Trade!',
+    subject: "✅ Your Payment is Approved - Ready to Trade!",
     html,
   });
 }

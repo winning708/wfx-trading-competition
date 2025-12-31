@@ -267,7 +267,9 @@ const PAYMENT_METHODS: PaymentMethod[] = [
 
 export default function RegistrationPage() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<"form" | "payment" | "manual-payment" | "success">("form");
+  const [step, setStep] = useState<
+    "form" | "payment" | "manual-payment" | "success"
+  >("form");
   const [formData, setFormData] = useState<FormData>({
     username: "",
     fullName: "",
@@ -280,9 +282,11 @@ export default function RegistrationPage() {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
-  const [manualPaymentData, setManualPaymentData] = useState<ManualPaymentData | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [adminPaymentSettings, setAdminPaymentSettings] = useState<AdminPaymentSettings | null>(null);
+  const [manualPaymentData, setManualPaymentData] =
+    useState<ManualPaymentData | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [adminPaymentSettings, setAdminPaymentSettings] =
+    useState<AdminPaymentSettings | null>(null);
 
   // Redirect to pending approval page after 2 seconds when registration is complete
   useEffect(() => {
@@ -302,7 +306,8 @@ export default function RegistrationPage() {
     } else if (formData.username.length < 3) {
       newErrors.username = "Username must be at least 3 characters";
     } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.username)) {
-      newErrors.username = "Username can only contain letters, numbers, underscores, and hyphens";
+      newErrors.username =
+        "Username can only contain letters, numbers, underscores, and hyphens";
     }
 
     if (!formData.fullName.trim()) {
@@ -374,24 +379,24 @@ export default function RegistrationPage() {
     }
 
     setIsLoading(true);
-    setLoadingMessage('');
+    setLoadingMessage("");
 
     try {
       // Simulate form validation delay
       await new Promise((resolve) => setTimeout(resolve, 500));
-      setLoadingMessage('');
+      setLoadingMessage("");
       setStep("payment");
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
-      setLoadingMessage('');
+      setLoadingMessage("");
     }
   };
 
   const handlePaymentSelect = (paymentId: string) => {
     setSelectedPayment(paymentId);
-    setLoadingMessage('');
+    setLoadingMessage("");
   };
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
@@ -401,12 +406,15 @@ export default function RegistrationPage() {
       return;
     }
 
-    console.log('[Registration] 🎬 Payment submission started for:', selectedPayment);
+    console.log(
+      "[Registration] 🎬 Payment submission started for:",
+      selectedPayment,
+    );
     setIsLoading(true);
-    setLoadingMessage('Preparing payment...');
+    setLoadingMessage("Preparing payment...");
 
     try {
-      setLoadingMessage('Registering trader account...');
+      setLoadingMessage("Registering trader account...");
 
       // Register trader in Supabase BEFORE payment processing
       const registerSuccess = await registerTrader({
@@ -422,184 +430,210 @@ export default function RegistrationPage() {
       if (!registerSuccess) {
         console.error("[Registration] ❌ Failed to register trader");
         setIsLoading(false);
-        setLoadingMessage('');
+        setLoadingMessage("");
         alert("Registration failed. Please try again.");
         return;
       }
 
-      console.log('[Registration] ✅ Trader registered successfully');
+      console.log("[Registration] ✅ Trader registered successfully");
 
       // Save email to localStorage for dashboard access
       localStorage.setItem("trader_email", formData.email);
-      setLoadingMessage('');
+      setLoadingMessage("");
 
       // Notify admin about new payment
-      console.log('[Registration] Notifying admin about new payment...');
+      console.log("[Registration] Notifying admin about new payment...");
       try {
         const currencyInfo = getCurrencyInfoForCountry(formData.country);
-        await fetch('/api/admin/notify-payment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/admin/notify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            traderId: registerSuccess ? 'pending' : 'unknown',
+            traderId: registerSuccess ? "pending" : "unknown",
             email: formData.email,
             fullName: formData.fullName,
             amount: 15,
-            currency: 'USD',
+            currency: "USD",
             country: formData.country,
             paymentMethod: selectedPayment,
           }),
         });
       } catch (notifyError) {
-        console.warn('[Registration] Warning: Could not notify admin:', notifyError);
+        console.warn(
+          "[Registration] Warning: Could not notify admin:",
+          notifyError,
+        );
         // Don't fail the registration if notification fails
       }
 
       // Handle different payment methods
-      if (selectedPayment === 'bank-transfer') {
+      if (selectedPayment === "bank-transfer") {
         // For Bank Transfer, show bank details
-        console.log('[Registration] Processing bank transfer payment');
+        console.log("[Registration] Processing bank transfer payment");
         const currencyInfo = getCurrencyInfoForCountry(formData.country);
 
         // Fetch payment settings from admin
         let settings = adminPaymentSettings;
         if (!settings) {
-          console.log('[Registration] Fetching payment settings from admin...');
+          console.log("[Registration] Fetching payment settings from admin...");
           settings = await getPaymentSettings();
           setAdminPaymentSettings(settings);
         }
 
         // Determine which payment details to show based on country
-        const isNigerian = formData.country === 'Nigeria';
+        const isNigerian = formData.country === "Nigeria";
 
         if (isNigerian && settings?.nigerian_account_number) {
           // Show Nigerian bank account
-          console.log('[Registration] Showing Nigerian bank account details');
+          console.log("[Registration] Showing Nigerian bank account details");
           setManualPaymentData({
-            method: 'bank-transfer',
+            method: "bank-transfer",
             email: formData.email,
             amount: 10,
             fullName: formData.fullName,
-            instructions: 'Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.',
+            instructions:
+              "Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.",
             orderRef: `WFX-${Date.now()}`,
-            currency: 'USD',
-            bankName: settings.nigerian_bank_name || 'Bank Account',
-            accountName: settings.nigerian_account_name || 'WFX Trading',
-            accountNumber: settings.nigerian_account_number || '',
-            swiftCode: settings.nigerian_swift_code || '',
+            currency: "USD",
+            bankName: settings.nigerian_bank_name || "Bank Account",
+            accountName: settings.nigerian_account_name || "WFX Trading",
+            accountNumber: settings.nigerian_account_number || "",
+            swiftCode: settings.nigerian_swift_code || "",
             country: formData.country,
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
-        } else if (!isNigerian && (settings?.binance_pay_id || settings?.bybit_wallet_address)) {
+        } else if (
+          !isNigerian &&
+          (settings?.binance_pay_id || settings?.bybit_wallet_address)
+        ) {
           // Show Binance/Bybit crypto details for international users
-          console.log('[Registration] Showing international payment details');
+          console.log("[Registration] Showing international payment details");
           setManualPaymentData({
-            method: 'bank-transfer',
+            method: "bank-transfer",
             email: formData.email,
             amount: 10,
             fullName: formData.fullName,
-            instructions: 'Please send payment to one of the options below. Your payment will be verified within 5-30 minutes.',
+            instructions:
+              "Please send payment to one of the options below. Your payment will be verified within 5-30 minutes.",
             orderRef: `WFX-${Date.now()}`,
-            currency: 'USD',
-            bankName: 'Crypto Payment',
-            accountName: 'International Payment',
-            accountNumber: settings.binance_pay_id || settings.bybit_wallet_address || '',
-            walletAddress: settings.binance_pay_id || '',
-            swiftCode: settings.bybit_wallet_address || '',
+            currency: "USD",
+            bankName: "Crypto Payment",
+            accountName: "International Payment",
+            accountNumber:
+              settings.binance_pay_id || settings.bybit_wallet_address || "",
+            walletAddress: settings.binance_pay_id || "",
+            swiftCode: settings.bybit_wallet_address || "",
             country: formData.country,
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
         } else {
           // Fallback if no settings configured
-          console.warn('[Registration] Payment settings not configured, showing fallback');
+          console.warn(
+            "[Registration] Payment settings not configured, showing fallback",
+          );
           setManualPaymentData({
-            method: 'bank-transfer',
+            method: "bank-transfer",
             email: formData.email,
             amount: 10,
             fullName: formData.fullName,
-            instructions: 'Please transfer funds to the account details below. Your payment will be verified within 1-2 business days.',
+            instructions:
+              "Please transfer funds to the account details below. Your payment will be verified within 1-2 business days.",
             orderRef: `WFX-${Date.now()}`,
-            currency: 'USD',
-            bankName: isNigerian ? 'Bank Account' : 'Crypto Wallet',
-            accountName: 'WFX Trading',
-            accountNumber: 'Pending admin configuration',
-            swiftCode: '',
+            currency: "USD",
+            bankName: isNigerian ? "Bank Account" : "Crypto Wallet",
+            accountName: "WFX Trading",
+            accountNumber: "Pending admin configuration",
+            swiftCode: "",
             country: formData.country,
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
         }
 
-        console.log('[Registration] ✅ Bank transfer data set, switching to manual-payment step');
+        console.log(
+          "[Registration] ✅ Bank transfer data set, switching to manual-payment step",
+        );
         setIsLoading(false);
         setStep("manual-payment");
-      } else if (selectedPayment === 'binance' || selectedPayment === 'bybit') {
+      } else if (selectedPayment === "binance" || selectedPayment === "bybit") {
         // For Crypto payments (Binance or Bybit)
-        console.log('[Registration] Processing crypto payment:', selectedPayment);
+        console.log(
+          "[Registration] Processing crypto payment:",
+          selectedPayment,
+        );
         const currencyInfo = getCurrencyInfoForCountry(formData.country);
 
         // Fetch payment settings from admin
         let settings = adminPaymentSettings;
         if (!settings) {
-          console.log('[Registration] Fetching payment settings from admin...');
+          console.log("[Registration] Fetching payment settings from admin...");
           settings = await getPaymentSettings();
           setAdminPaymentSettings(settings);
         }
 
-        if (selectedPayment === 'binance') {
+        if (selectedPayment === "binance") {
           // Show Binance Pay details
-          console.log('[Registration] Showing Binance Pay details');
+          console.log("[Registration] Showing Binance Pay details");
           setManualPaymentData({
-            method: 'binance',
+            method: "binance",
             email: formData.email,
             amount: 10,
             fullName: formData.fullName,
-            instructions: 'Send exactly $10 USD to the Binance Pay ID below. Your payment will be verified within 5-30 minutes.',
+            instructions:
+              "Send exactly $10 USD to the Binance Pay ID below. Your payment will be verified within 5-30 minutes.",
             orderRef: `WFX-${Date.now()}`,
-            currency: 'USD',
-            bankName: 'Binance Pay',
-            accountName: 'WFX Trading Showdown',
-            accountNumber: settings?.binance_pay_id || 'Pending admin configuration',
+            currency: "USD",
+            bankName: "Binance Pay",
+            accountName: "WFX Trading Showdown",
+            accountNumber:
+              settings?.binance_pay_id || "Pending admin configuration",
             country: formData.country,
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
         } else {
           // Show Bybit wallet details
-          console.log('[Registration] Showing Bybit wallet details');
+          console.log("[Registration] Showing Bybit wallet details");
           setManualPaymentData({
-            method: 'bybit',
+            method: "bybit",
             email: formData.email,
             amount: 10,
             fullName: formData.fullName,
-            instructions: 'Send exactly $10 USD to the Bybit wallet address below. Your payment will be verified within 5-30 minutes.',
+            instructions:
+              "Send exactly $10 USD to the Bybit wallet address below. Your payment will be verified within 5-30 minutes.",
             orderRef: `WFX-${Date.now()}`,
-            currency: 'USD',
-            bankName: 'Bybit Wallet',
-            accountName: 'WFX Trading Showdown',
-            accountNumber: settings?.bybit_wallet_address || 'Pending admin configuration',
-            swiftCode: settings?.bybit_network || 'USDT',
+            currency: "USD",
+            bankName: "Bybit Wallet",
+            accountName: "WFX Trading Showdown",
+            accountNumber:
+              settings?.bybit_wallet_address || "Pending admin configuration",
+            swiftCode: settings?.bybit_network || "USDT",
             country: formData.country,
             convertedAmount: currencyInfo.amount,
             currencyCode: currencyInfo.code,
           });
         }
 
-        console.log('[Registration] ✅ Crypto payment data set, switching to manual-payment step');
+        console.log(
+          "[Registration] ✅ Crypto payment data set, switching to manual-payment step",
+        );
         setIsLoading(false);
         setStep("manual-payment");
       } else {
-        console.error('[Registration] ❌ Unknown payment method:', selectedPayment);
+        console.error(
+          "[Registration] ❌ Unknown payment method:",
+          selectedPayment,
+        );
         setIsLoading(false);
-        alert('Unknown payment method. Please try again.');
+        alert("Unknown payment method. Please try again.");
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
       console.error("[Registration] ❌ Payment error:", errorMsg);
       setIsLoading(false);
-      setLoadingMessage('');
+      setLoadingMessage("");
       setStep("payment");
       alert("An error occurred during payment. Please try again.");
     }
@@ -607,11 +641,17 @@ export default function RegistrationPage() {
 
   // Manual Payment Instructions Step
   if (step === "manual-payment" && manualPaymentData) {
-    console.log('[Registration] 🎯 Rendering manual-payment step for method:', manualPaymentData.method);
-    const selectedPaymentMethod = PAYMENT_METHODS.find(
-      (m) => m.id === manualPaymentData.method
+    console.log(
+      "[Registration] 🎯 Rendering manual-payment step for method:",
+      manualPaymentData.method,
     );
-    console.log('[Registration] Selected payment method:', selectedPaymentMethod?.name);
+    const selectedPaymentMethod = PAYMENT_METHODS.find(
+      (m) => m.id === manualPaymentData.method,
+    );
+    console.log(
+      "[Registration] Selected payment method:",
+      selectedPaymentMethod?.name,
+    );
 
     return (
       <div className="min-h-screen bg-background">
@@ -625,9 +665,9 @@ export default function RegistrationPage() {
                 Complete Your Payment
               </h1>
               <p className="text-lg text-muted-foreground">
-                {manualPaymentData.method === 'flutterwave'
-                  ? 'Click the button below to complete your payment securely'
-                  : 'Follow the instructions below to send your payment'}
+                {manualPaymentData.method === "flutterwave"
+                  ? "Click the button below to complete your payment securely"
+                  : "Follow the instructions below to send your payment"}
               </p>
             </div>
 
@@ -648,46 +688,62 @@ export default function RegistrationPage() {
               <div className="space-y-4 pt-6 border-t border-border">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Amount</span>
-                  <span className="font-bold text-foreground">${manualPaymentData.amount} {manualPaymentData.currency}</span>
+                  <span className="font-bold text-foreground">
+                    ${manualPaymentData.amount} {manualPaymentData.currency}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Reference</span>
-                  <span className="font-mono text-sm text-foreground break-all">{manualPaymentData.orderRef}</span>
+                  <span className="font-mono text-sm text-foreground break-all">
+                    {manualPaymentData.orderRef}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Payment Instructions */}
             <div className="mb-8 rounded-lg border-2 border-amber-500/30 bg-amber-500/5 p-6">
-              <h3 className="font-bold text-foreground mb-4 text-lg">📋 Payment Instructions</h3>
+              <h3 className="font-bold text-foreground mb-4 text-lg">
+                📋 Payment Instructions
+              </h3>
               <p className="text-base text-muted-foreground mb-6 leading-relaxed">
                 {manualPaymentData.instructions}
               </p>
 
-              {manualPaymentData.method === 'bank-transfer' && (
+              {manualPaymentData.method === "bank-transfer" && (
                 <div className="space-y-4">
                   <div className="bg-card rounded-lg p-4 border border-border">
-                    <p className="text-sm text-muted-foreground mb-2">Payment Type:</p>
-                    <p className="text-base font-semibold text-foreground">{manualPaymentData.bankName}</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Payment Type:
+                    </p>
+                    <p className="text-base font-semibold text-foreground">
+                      {manualPaymentData.bankName}
+                    </p>
                   </div>
 
-                  {manualPaymentData.bankName === 'Crypto Payment' ? (
+                  {manualPaymentData.bankName === "Crypto Payment" ? (
                     <>
                       {/* Crypto Wallets Display */}
                       <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
-                        <p className="text-sm text-muted-foreground mb-3">Send payment to one of the options below:</p>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Send payment to one of the options below:
+                        </p>
 
                         {manualPaymentData.accountNumber && (
                           <div className="mb-3">
-                            <p className="text-sm font-semibold text-foreground mb-2">🟡 Binance Pay ID:</p>
+                            <p className="text-sm font-semibold text-foreground mb-2">
+                              🟡 Binance Pay ID:
+                            </p>
                             <div className="flex items-center gap-2">
                               <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-xs text-foreground break-all">
                                 {manualPaymentData.accountNumber}
                               </code>
                               <button
                                 onClick={() => {
-                                  navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                                  alert('Binance Pay ID copied!');
+                                  navigator.clipboard.writeText(
+                                    manualPaymentData.accountNumber || "",
+                                  );
+                                  alert("Binance Pay ID copied!");
                                 }}
                                 className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
                               >
@@ -699,15 +755,19 @@ export default function RegistrationPage() {
 
                         {manualPaymentData.swiftCode && (
                           <div>
-                            <p className="text-sm font-semibold text-foreground mb-2">💜 Bybit Wallet Address:</p>
+                            <p className="text-sm font-semibold text-foreground mb-2">
+                              💜 Bybit Wallet Address:
+                            </p>
                             <div className="flex items-center gap-2">
                               <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-xs text-foreground break-all">
                                 {manualPaymentData.swiftCode}
                               </code>
                               <button
                                 onClick={() => {
-                                  navigator.clipboard.writeText(manualPaymentData.swiftCode || '');
-                                  alert('Bybit wallet address copied!');
+                                  navigator.clipboard.writeText(
+                                    manualPaymentData.swiftCode || "",
+                                  );
+                                  alert("Bybit wallet address copied!");
                                 }}
                                 className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
                               >
@@ -722,20 +782,28 @@ export default function RegistrationPage() {
                     <>
                       {/* Bank Account Display */}
                       <div className="bg-card rounded-lg p-4 border border-border">
-                        <p className="text-sm text-muted-foreground mb-2">Account Name:</p>
-                        <p className="text-base font-semibold text-foreground">{manualPaymentData.accountName}</p>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Account Name:
+                        </p>
+                        <p className="text-base font-semibold text-foreground">
+                          {manualPaymentData.accountName}
+                        </p>
                       </div>
 
                       <div className="bg-card rounded-lg p-4 border border-border">
-                        <p className="text-sm text-muted-foreground mb-2">Account Number:</p>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Account Number:
+                        </p>
                         <div className="flex items-center gap-2">
                           <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
                             {manualPaymentData.accountNumber}
                           </code>
                           <button
                             onClick={() => {
-                              navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                              alert('Account number copied!');
+                              navigator.clipboard.writeText(
+                                manualPaymentData.accountNumber || "",
+                              );
+                              alert("Account number copied!");
                             }}
                             className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
                           >
@@ -746,15 +814,19 @@ export default function RegistrationPage() {
 
                       {manualPaymentData.swiftCode && (
                         <div className="bg-card rounded-lg p-4 border border-border">
-                          <p className="text-sm text-muted-foreground mb-2">SWIFT Code:</p>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            SWIFT Code:
+                          </p>
                           <div className="flex items-center gap-2">
                             <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
                               {manualPaymentData.swiftCode}
                             </code>
                             <button
                               onClick={() => {
-                                navigator.clipboard.writeText(manualPaymentData.swiftCode || '');
-                                alert('SWIFT code copied!');
+                                navigator.clipboard.writeText(
+                                  manualPaymentData.swiftCode || "",
+                                );
+                                alert("SWIFT code copied!");
                               }}
                               className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1"
                             >
@@ -766,32 +838,40 @@ export default function RegistrationPage() {
                     </>
                   )}
 
-                  {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
-                    <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
-                      <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">Amount in your local currency:</p>
-                      <p className="text-xl font-bold text-foreground">
-                        {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
-                      </p>
-                      <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $10 USD)
-                      </p>
-                    </div>
-                  )}
+                  {manualPaymentData.convertedAmount &&
+                    manualPaymentData.currencyCode && (
+                      <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                        <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                          Amount in your local currency:
+                        </p>
+                        <p className="text-xl font-bold text-foreground">
+                          {manualPaymentData.convertedAmount.toFixed(2)}{" "}
+                          {manualPaymentData.currencyCode}
+                        </p>
+                        <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
+                          (Equivalent to $10 USD)
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
 
-              {manualPaymentData.method === 'binance' && (
+              {manualPaymentData.method === "binance" && (
                 <div className="space-y-4">
                   <div className="bg-yellow-500/5 rounded-lg p-4 border border-yellow-500/30">
-                    <p className="text-sm text-muted-foreground mb-2">Binance Pay ID:</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Binance Pay ID:
+                    </p>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
                         {manualPaymentData.accountNumber}
                       </code>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                          alert('Binance Pay ID copied!');
+                          navigator.clipboard.writeText(
+                            manualPaymentData.accountNumber || "",
+                          );
+                          alert("Binance Pay ID copied!");
                         }}
                         className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
                       >
@@ -800,32 +880,40 @@ export default function RegistrationPage() {
                     </div>
                   </div>
 
-                  {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
-                    <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
-                      <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">Amount in your local currency:</p>
-                      <p className="text-xl font-bold text-foreground">
-                        {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
-                      </p>
-                      <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $10 USD)
-                      </p>
-                    </div>
-                  )}
+                  {manualPaymentData.convertedAmount &&
+                    manualPaymentData.currencyCode && (
+                      <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                        <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                          Amount in your local currency:
+                        </p>
+                        <p className="text-xl font-bold text-foreground">
+                          {manualPaymentData.convertedAmount.toFixed(2)}{" "}
+                          {manualPaymentData.currencyCode}
+                        </p>
+                        <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
+                          (Equivalent to $10 USD)
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
 
-              {manualPaymentData.method === 'bybit' && (
+              {manualPaymentData.method === "bybit" && (
                 <div className="space-y-4">
                   <div className="bg-purple-500/5 rounded-lg p-4 border border-purple-500/30">
-                    <p className="text-sm text-muted-foreground mb-2">Bybit Wallet Address:</p>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Bybit Wallet Address:
+                    </p>
                     <div className="flex items-center gap-2">
                       <code className="flex-1 bg-background rounded px-3 py-2 font-mono text-sm text-foreground break-all">
                         {manualPaymentData.accountNumber}
                       </code>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(manualPaymentData.accountNumber || '');
-                          alert('Bybit wallet address copied!');
+                          navigator.clipboard.writeText(
+                            manualPaymentData.accountNumber || "",
+                          );
+                          alert("Bybit wallet address copied!");
                         }}
                         className="px-3 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium flex items-center gap-1 whitespace-nowrap"
                       >
@@ -834,45 +922,59 @@ export default function RegistrationPage() {
                     </div>
                     {manualPaymentData.swiftCode && (
                       <p className="text-sm text-muted-foreground mt-3">
-                        Network: <span className="font-mono text-foreground">{manualPaymentData.swiftCode}</span>
+                        Network:{" "}
+                        <span className="font-mono text-foreground">
+                          {manualPaymentData.swiftCode}
+                        </span>
                       </p>
                     )}
                   </div>
 
-                  {manualPaymentData.convertedAmount && manualPaymentData.currencyCode && (
-                    <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
-                      <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">Amount in your local currency:</p>
-                      <p className="text-xl font-bold text-foreground">
-                        {manualPaymentData.convertedAmount.toFixed(2)} {manualPaymentData.currencyCode}
-                      </p>
-                      <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
-                        (Equivalent to $10 USD)
-                      </p>
-                    </div>
-                  )}
+                  {manualPaymentData.convertedAmount &&
+                    manualPaymentData.currencyCode && (
+                      <div className="bg-blue-500/5 rounded-lg p-4 border border-blue-500/30">
+                        <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
+                          Amount in your local currency:
+                        </p>
+                        <p className="text-xl font-bold text-foreground">
+                          {manualPaymentData.convertedAmount.toFixed(2)}{" "}
+                          {manualPaymentData.currencyCode}
+                        </p>
+                        <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mt-1">
+                          (Equivalent to $10 USD)
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
 
               <div className="mt-6 p-4 bg-background rounded-lg border border-border">
-                <p className="text-sm text-muted-foreground mb-2">⏱️ How long does it take?</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  ⏱️ How long does it take?
+                </p>
                 <p className="text-muted-foreground">
-                  {manualPaymentData.method === 'flutterwave'
-                    ? 'Your payment is processed instantly'
-                    : 'Payment confirmation typically takes 5-30 minutes'}
+                  {manualPaymentData.method === "flutterwave"
+                    ? "Your payment is processed instantly"
+                    : "Payment confirmation typically takes 5-30 minutes"}
                 </p>
               </div>
             </div>
 
             {/* Action Buttons */}
             <div className="space-y-4 mt-8">
-              {console.log('[Manual Payment] Method:', manualPaymentData.method)}
+              {console.log(
+                "[Manual Payment] Method:",
+                manualPaymentData.method,
+              )}
 
-              {manualPaymentData.method === 'bank-transfer' && (
+              {manualPaymentData.method === "bank-transfer" && (
                 <button
                   onClick={() => {
-                    console.log('[Manual Payment] Clicked: I\'ve Sent the Bank Transfer');
+                    console.log(
+                      "[Manual Payment] Clicked: I've Sent the Bank Transfer",
+                    );
                     setStep("success");
-                    setLoadingMessage('');
+                    setLoadingMessage("");
                   }}
                   className="w-full h-12 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
@@ -880,12 +982,14 @@ export default function RegistrationPage() {
                 </button>
               )}
 
-              {manualPaymentData.method === 'binance' && (
+              {manualPaymentData.method === "binance" && (
                 <button
                   onClick={() => {
-                    console.log('[Manual Payment] Clicked: I\'ve Sent the Binance Payment');
+                    console.log(
+                      "[Manual Payment] Clicked: I've Sent the Binance Payment",
+                    );
                     setStep("success");
-                    setLoadingMessage('');
+                    setLoadingMessage("");
                   }}
                   className="w-full h-12 rounded-lg bg-yellow-600 text-white font-bold hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
@@ -893,12 +997,14 @@ export default function RegistrationPage() {
                 </button>
               )}
 
-              {manualPaymentData.method === 'bybit' && (
+              {manualPaymentData.method === "bybit" && (
                 <button
                   onClick={() => {
-                    console.log('[Manual Payment] Clicked: I\'ve Sent the Bybit Payment');
+                    console.log(
+                      "[Manual Payment] Clicked: I've Sent the Bybit Payment",
+                    );
                     setStep("success");
-                    setLoadingMessage('');
+                    setLoadingMessage("");
                   }}
                   className="w-full h-12 rounded-lg bg-purple-600 text-white font-bold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg"
                 >
@@ -908,7 +1014,9 @@ export default function RegistrationPage() {
 
               <button
                 onClick={() => {
-                  console.log('[Manual Payment] Clicked: Back to Payment Methods');
+                  console.log(
+                    "[Manual Payment] Clicked: Back to Payment Methods",
+                  );
                   setStep("payment");
                   setSelectedPayment(null);
                   setManualPaymentData(null);
@@ -921,10 +1029,12 @@ export default function RegistrationPage() {
 
             <div className="mt-8 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20">
               <p className="text-sm text-blue-600 dark:text-blue-400 mb-2">
-                ℹ️ After payment is confirmed, your trading credentials will be available on your dashboard.
+                ℹ️ After payment is confirmed, your trading credentials will be
+                available on your dashboard.
               </p>
               <p className="text-xs text-blue-600/80 dark:text-blue-400/80">
-                If you don't see the green "I've Paid" button above, please scroll down on this page.
+                If you don't see the green "I've Paid" button above, please
+                scroll down on this page.
               </p>
             </div>
           </div>
@@ -935,7 +1045,7 @@ export default function RegistrationPage() {
 
   if (step === "success") {
     const selectedPaymentMethod = PAYMENT_METHODS.find(
-      (m) => m.id === selectedPayment
+      (m) => m.id === selectedPayment,
     );
 
     return (
@@ -963,7 +1073,9 @@ export default function RegistrationPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Country</p>
-                <p className="font-medium text-foreground">{formData.country}</p>
+                <p className="font-medium text-foreground">
+                  {formData.country}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Payment Method</p>
@@ -975,12 +1087,16 @@ export default function RegistrationPage() {
 
             <div className="mb-8 rounded-lg border-2 border-success/30 bg-success/5 p-4">
               <p className="text-sm text-success mb-2">✓ Status</p>
-              <p className="text-2xl font-bold text-success">Waiting for Approval</p>
+              <p className="text-2xl font-bold text-success">
+                Waiting for Approval
+              </p>
             </div>
 
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              Your registration is complete! We're now redirecting you to the approval page where you can track the status of your payment verification.
-              Once approved by our admin team, you'll gain access to your trading credentials.
+              Your registration is complete! We're now redirecting you to the
+              approval page where you can track the status of your payment
+              verification. Once approved by our admin team, you'll gain access
+              to your trading credentials.
             </p>
 
             <p className="text-center text-xs text-muted-foreground mb-4">
@@ -1006,11 +1122,11 @@ export default function RegistrationPage() {
                 Choose Payment Method
               </h1>
               <p className="text-lg text-muted-foreground">
-                {formData.country ?
-                  selectedPayment === 'bank-transfer'
+                {formData.country
+                  ? selectedPayment === "bank-transfer"
                     ? `Pay ${getCurrencyInfoForCountry(formData.country).display} entry fee`
                     : `Pay $10 USD entry fee`
-                  : 'Select your payment method to see the entry fee'}
+                  : "Select your payment method to see the entry fee"}
               </p>
               <p className="text-sm text-amber-600 dark:text-amber-400 mt-4">
                 ℹ️ Choose your preferred payment method
@@ -1020,46 +1136,48 @@ export default function RegistrationPage() {
             {/* Payment Methods */}
             <div className="grid md:grid-cols-3 gap-4 mb-8">
               {PAYMENT_METHODS.map((method) => {
-                const currencyInfo = getCurrencyInfoForCountry(formData.country);
+                const currencyInfo = getCurrencyInfoForCountry(
+                  formData.country,
+                );
                 return (
-                <button
-                  key={method.id}
-                  onClick={() => handlePaymentSelect(method.id)}
-                  className={`relative rounded-lg border-2 p-6 transition-all ${
-                    selectedPayment === method.id
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  <div className="absolute top-3 right-3">
-                    <div
-                      className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
-                        selectedPayment === method.id
-                          ? "border-primary bg-primary"
-                          : "border-border"
-                      }`}
-                    >
-                      {selectedPayment === method.id && (
-                        <div className="h-3 w-3 bg-primary-foreground rounded-full" />
-                      )}
+                  <button
+                    key={method.id}
+                    onClick={() => handlePaymentSelect(method.id)}
+                    className={`relative rounded-lg border-2 p-6 transition-all ${
+                      selectedPayment === method.id
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <div className="absolute top-3 right-3">
+                      <div
+                        className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
+                          selectedPayment === method.id
+                            ? "border-primary bg-primary"
+                            : "border-border"
+                        }`}
+                      >
+                        {selectedPayment === method.id && (
+                          <div className="h-3 w-3 bg-primary-foreground rounded-full" />
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="text-left">
-                    <div className="text-4xl mb-3">{method.icon}</div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">
-                      {method.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {method.description}
-                    </p>
-                    <p className="text-sm font-semibold text-primary mt-2">
-                      {method.id === 'bank-transfer' && formData.country
-                        ? currencyInfo.display
-                        : '$10 USD'}
-                    </p>
-                  </div>
-                </button>
+                    <div className="text-left">
+                      <div className="text-4xl mb-3">{method.icon}</div>
+                      <h3 className="text-lg font-semibold text-foreground mb-1">
+                        {method.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {method.description}
+                      </p>
+                      <p className="text-sm font-semibold text-primary mt-2">
+                        {method.id === "bank-transfer" && formData.country
+                          ? currencyInfo.display
+                          : "$10 USD"}
+                      </p>
+                    </div>
+                  </button>
                 );
               })}
             </div>
@@ -1067,7 +1185,9 @@ export default function RegistrationPage() {
             {/* Selected Method Info */}
             {selectedPayment && (
               <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 mb-8">
-                <p className="text-sm text-muted-foreground mb-2">Selected Payment Method</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Selected Payment Method
+                </p>
                 <p className="text-lg font-semibold text-foreground">
                   {PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name}
                 </p>
@@ -1083,9 +1203,15 @@ export default function RegistrationPage() {
               </div>
 
               {(() => {
-                const currencyInfo = getCurrencyInfoForCountry(formData.country);
-                const isUSDMethod = selectedPayment === 'binance' || selectedPayment === 'bybit';
-                const isNairaMethod = selectedPayment === 'bank-transfer' && formData.country && formData.country !== 'United States';
+                const currencyInfo = getCurrencyInfoForCountry(
+                  formData.country,
+                );
+                const isUSDMethod =
+                  selectedPayment === "binance" || selectedPayment === "bybit";
+                const isNairaMethod =
+                  selectedPayment === "bank-transfer" &&
+                  formData.country &&
+                  formData.country !== "United States";
 
                 return (
                   <>
@@ -1096,11 +1222,17 @@ export default function RegistrationPage() {
                             <span className="text-muted-foreground">
                               Competition Entry Fee
                             </span>
-                            <span className="font-medium text-foreground">$10.00</span>
+                            <span className="font-medium text-foreground">
+                              $10.00
+                            </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Tax (0%)</span>
-                            <span className="font-medium text-foreground">$0.00</span>
+                            <span className="text-muted-foreground">
+                              Tax (0%)
+                            </span>
+                            <span className="font-medium text-foreground">
+                              $0.00
+                            </span>
                           </div>
                         </>
                       ) : (
@@ -1109,19 +1241,27 @@ export default function RegistrationPage() {
                             <span className="text-muted-foreground">
                               Competition Entry Fee (USD)
                             </span>
-                            <span className="font-medium text-foreground">$10.00</span>
+                            <span className="font-medium text-foreground">
+                              $10.00
+                            </span>
                           </div>
                           {isNairaMethod && (
                             <div className="flex justify-between bg-primary/5 -mx-3 px-3 py-2 rounded">
                               <span className="text-muted-foreground">
                                 Equivalent in {currencyInfo.code}
                               </span>
-                              <span className="font-bold text-foreground">{currencyInfo.display}</span>
+                              <span className="font-bold text-foreground">
+                                {currencyInfo.display}
+                              </span>
                             </div>
                           )}
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Tax (0%)</span>
-                            <span className="font-medium text-foreground">$0.00</span>
+                            <span className="text-muted-foreground">
+                              Tax (0%)
+                            </span>
+                            <span className="font-medium text-foreground">
+                              $0.00
+                            </span>
                           </div>
                         </>
                       )}
@@ -1129,10 +1269,15 @@ export default function RegistrationPage() {
 
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-foreground">
-                        Total {isUSDMethod ? '(USD)' : isNairaMethod ? `(${currencyInfo.code})` : '(USD)'}
+                        Total{" "}
+                        {isUSDMethod
+                          ? "(USD)"
+                          : isNairaMethod
+                            ? `(${currencyInfo.code})`
+                            : "(USD)"}
                       </span>
                       <span className="text-2xl font-bold text-primary">
-                        {isNairaMethod ? currencyInfo.display : '$10.00'}
+                        {isNairaMethod ? currencyInfo.display : "$10.00"}
                       </span>
                     </div>
                   </>
@@ -1155,9 +1300,11 @@ export default function RegistrationPage() {
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                      {loadingMessage || 'Processing payment...'}
+                      {loadingMessage || "Processing payment..."}
                     </span>
-                  ) : selectedPayment === 'bank-transfer' && formData.country && formData.country !== 'United States' ? (
+                  ) : selectedPayment === "bank-transfer" &&
+                    formData.country &&
+                    formData.country !== "United States" ? (
                     `Pay ${getCurrencyInfoForCountry(formData.country).display} with ${PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name}`
                   ) : (
                     `Pay $10 USD with ${selectedPayment ? PAYMENT_METHODS.find((m) => m.id === selectedPayment)?.name : "Selected Method"}`
@@ -1185,7 +1332,11 @@ export default function RegistrationPage() {
     );
   }
 
-  console.log('[Registration] 📝 Rendering form step. Current state:', { step, hasManualPaymentData: !!manualPaymentData, isLoading });
+  console.log("[Registration] 📝 Rendering form step. Current state:", {
+    step,
+    hasManualPaymentData: !!manualPaymentData,
+    isLoading,
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -1221,7 +1372,8 @@ export default function RegistrationPage() {
                   className={errors.username ? "border-destructive" : ""}
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Must be 3+ characters. Letters, numbers, underscores, and hyphens only.
+                  Must be 3+ characters. Letters, numbers, underscores, and
+                  hyphens only.
                 </p>
                 {errors.username && (
                   <p className="mt-1 text-sm text-destructive">
@@ -1318,7 +1470,9 @@ export default function RegistrationPage() {
 
               {/* Password Section Header */}
               <div className="pt-4 border-t border-border">
-                <h3 className="text-base font-semibold text-foreground mb-4">Create Account Password</h3>
+                <h3 className="text-base font-semibold text-foreground mb-4">
+                  Create Account Password
+                </h3>
               </div>
 
               {/* Password */}
@@ -1335,7 +1489,8 @@ export default function RegistrationPage() {
                   className={errors.password ? "border-destructive" : ""}
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Must be at least 8 characters long. Use uppercase, lowercase, and numbers for better security.
+                  Must be at least 8 characters long. Use uppercase, lowercase,
+                  and numbers for better security.
                 </p>
                 {errors.password && (
                   <p className="mt-1 text-sm text-destructive">
@@ -1372,21 +1527,34 @@ export default function RegistrationPage() {
                       WFX TRADING SHOWDOWN Entry Fee
                     </p>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      Entry fee: {(() => {
-                        const currencyInfo = getCurrencyInfoForCountry(formData.country);
-                        return formData.country ? `${currencyInfo.display} ($15 USD)` : '$15 USD'
-                      })()} - Includes $1,000 demo trading capital
+                      Entry fee:{" "}
+                      {(() => {
+                        const currencyInfo = getCurrencyInfoForCountry(
+                          formData.country,
+                        );
+                        return formData.country
+                          ? `${currencyInfo.display} ($15 USD)`
+                          : "$15 USD";
+                      })()}{" "}
+                      - Includes $1,000 demo trading capital
                     </p>
                   </div>
                   <div className="text-center sm:text-right flex-shrink-0">
-                    <div className="text-xs text-muted-foreground mb-1">USD</div>
-                    <p className="text-2xl sm:text-3xl font-bold text-primary">$10</p>
-                    {formData.country && formData.country !== 'United States' && (
-                      <p className="text-xs sm:text-sm font-semibold text-primary mt-1 sm:mt-2">
-                        {getCurrencyInfoForCountry(formData.country).display}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted-foreground mt-1">One-time</p>
+                    <div className="text-xs text-muted-foreground mb-1">
+                      USD
+                    </div>
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">
+                      $10
+                    </p>
+                    {formData.country &&
+                      formData.country !== "United States" && (
+                        <p className="text-xs sm:text-sm font-semibold text-primary mt-1 sm:mt-2">
+                          {getCurrencyInfoForCountry(formData.country).display}
+                        </p>
+                      )}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      One-time
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1398,8 +1566,8 @@ export default function RegistrationPage() {
                   <a href="/rules" className="text-primary hover:underline">
                     Rules & Terms
                   </a>
-                  . You confirm that you are 18+ years old and will comply with all
-                  competition regulations.
+                  . You confirm that you are 18+ years old and will comply with
+                  all competition regulations.
                 </p>
               </div>
 
@@ -1428,7 +1596,9 @@ export default function RegistrationPage() {
           {/* Additional Info */}
           <div className="mt-8 grid md:grid-cols-2 gap-4">
             <div className="rounded-lg border border-border bg-card/30 p-4">
-              <p className="font-semibold text-foreground mb-2">What You Get:</p>
+              <p className="font-semibold text-foreground mb-2">
+                What You Get:
+              </p>
               <ul className="space-y-1 text-sm text-muted-foreground">
                 <li>✓ Pre-assigned JustMarkets demo account</li>
                 <li>✓ $1,000 trading capital</li>

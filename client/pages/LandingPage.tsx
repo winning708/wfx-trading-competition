@@ -1,12 +1,21 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, TrendingUp, Award, DollarSign, Zap, Trophy } from "lucide-react";
+import {
+  ArrowRight,
+  TrendingUp,
+  Award,
+  DollarSign,
+  Zap,
+  Trophy,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import CountdownTimer from "@/components/CountdownTimer";
 import Header from "@/components/layout/Header";
 
 export default function LandingPage() {
-  const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(null);
+  const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(
+    null,
+  );
 
   useEffect(() => {
     const checkPaymentStatus = async () => {
@@ -24,7 +33,10 @@ export default function LandingPage() {
           .maybeSingle();
 
         if (error) {
-          console.error("Error fetching trader status:", error.message || error);
+          console.error(
+            "Error fetching trader status:",
+            error.message || error,
+          );
           setIsPaymentApproved(false);
           return;
         }
@@ -65,17 +77,24 @@ export default function LandingPage() {
             </div>
 
             <h1 className="mb-6 text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-tight">
-              WFX Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">Competition 2026</span>
+              WFX Trading{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">
+                Competition 2026
+              </span>
             </h1>
             <p className="mb-8 text-xl md:text-2xl font-semibold text-primary">
               Trade Smart. Trade to Win.
             </p>
             <p className="mb-12 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of traders competing for glory and prizes. With $1,000 demo capital, prove your trading skills against competitors worldwide in our 5-day trading showdown.
+              Join thousands of traders competing for glory and prizes. With
+              $1,000 demo capital, prove your trading skills against competitors
+              worldwide in our 5-day trading showdown.
             </p>
 
             <div className="mb-12 p-8 rounded-2xl border-2 border-primary/30 bg-primary/5 backdrop-blur">
-              <p className="text-sm text-muted-foreground mb-4 font-semibold">Competition Starts In:</p>
+              <p className="text-sm text-muted-foreground mb-4 font-semibold">
+                Competition Starts In:
+              </p>
               <CountdownTimer />
             </div>
 
@@ -108,19 +127,27 @@ export default function LandingPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
-              <p className="text-2xl md:text-3xl font-bold text-primary">$10</p>
-              <p className="text-xs text-muted-foreground">Entry Fee</p>
-            </div>
+                <p className="text-2xl md:text-3xl font-bold text-primary">
+                  $10
+                </p>
+                <p className="text-xs text-muted-foreground">Entry Fee</p>
+              </div>
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
-                <p className="text-2xl md:text-3xl font-bold text-success">$1,000</p>
-                <p className="text-xs text-muted-foreground">Starting Capital</p>
+                <p className="text-2xl md:text-3xl font-bold text-success">
+                  $1,000
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Starting Capital
+                </p>
               </div>
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
                 <p className="text-2xl md:text-3xl font-bold text-primary">5</p>
                 <p className="text-xs text-muted-foreground">Trading Days</p>
               </div>
               <div className="p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur">
-                <p className="text-2xl md:text-3xl font-bold text-warning">$515K+</p>
+                <p className="text-2xl md:text-3xl font-bold text-warning">
+                  $515K+
+                </p>
                 <p className="text-xs text-muted-foreground">Prize Pool</p>
               </div>
             </div>
@@ -143,7 +170,8 @@ export default function LandingPage() {
                 Real Competition
               </h3>
               <p className="text-sm text-muted-foreground">
-                Compete against real traders from around the world. Rankings update in real-time based on actual trading performance.
+                Compete against real traders from around the world. Rankings
+                update in real-time based on actual trading performance.
               </p>
             </div>
 
@@ -155,7 +183,8 @@ export default function LandingPage() {
                 Risk-Free Trading
               </h3>
               <p className="text-sm text-muted-foreground">
-                Trade with demo capital only. Perfect for testing strategies and building skills without risking real money.
+                Trade with demo capital only. Perfect for testing strategies and
+                building skills without risking real money.
               </p>
             </div>
 
@@ -167,7 +196,8 @@ export default function LandingPage() {
                 Valuable Prizes
               </h3>
               <p className="text-sm text-muted-foreground">
-                Win cash and prop firm account credits. Top 3 traders receive significant rewards for their performance.
+                Win cash and prop firm account credits. Top 3 traders receive
+                significant rewards for their performance.
               </p>
             </div>
           </div>
@@ -250,9 +280,7 @@ export default function LandingPage() {
               <h3 className="mb-2 text-2xl font-bold text-foreground">
                 $10,000
               </h3>
-              <p className="text-muted-foreground">
-                Prop Firm Account Credit
-              </p>
+              <p className="text-muted-foreground">Prop Firm Account Credit</p>
             </div>
 
             {/* 1st Place - Featured */}
@@ -282,9 +310,7 @@ export default function LandingPage() {
               <h3 className="mb-2 text-2xl font-bold text-foreground">
                 $5,000
               </h3>
-              <p className="text-muted-foreground">
-                Prop Firm Account Credit
-              </p>
+              <p className="text-muted-foreground">Prop Firm Account Credit</p>
             </div>
           </div>
         </div>
@@ -436,7 +462,8 @@ export default function LandingPage() {
                 Welcome Back!
               </h2>
               <p className="mb-8 text-lg text-muted-foreground">
-                Access your dashboard to view credentials and track your trading performance.
+                Access your dashboard to view credentials and track your trading
+                performance.
               </p>
               <Link
                 to="/dashboard"
@@ -452,8 +479,8 @@ export default function LandingPage() {
                 Ready to Compete?
               </h2>
               <p className="mb-8 text-lg text-muted-foreground">
-                Join hundreds of traders competing for amazing prizes. Limited spots
-                available.
+                Join hundreds of traders competing for amazing prizes. Limited
+                spots available.
               </p>
               <Link
                 to="/register"
@@ -472,13 +499,17 @@ export default function LandingPage() {
         <div className="container mx-auto">
           <div className="mb-8 grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="mb-4 font-semibold text-foreground">WFX Trading</h3>
+              <h3 className="mb-4 font-semibold text-foreground">
+                WFX Trading
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Fair, transparent, and automated trading competition.
               </p>
             </div>
             <div>
-              <h4 className="mb-4 font-semibold text-foreground">Quick Links</h4>
+              <h4 className="mb-4 font-semibold text-foreground">
+                Quick Links
+              </h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
@@ -507,7 +538,9 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h4 className="mb-4 font-semibold text-foreground">Competition</h4>
+              <h4 className="mb-4 font-semibold text-foreground">
+                Competition
+              </h4>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
