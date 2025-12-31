@@ -478,7 +478,7 @@ export default function RegistrationPage() {
           setManualPaymentData({
             method: 'bank-transfer',
             email: formData.email,
-            amount: 15,
+            amount: 10,
             fullName: formData.fullName,
             instructions: 'Please transfer funds to the bank account details below. Your payment will be verified within 1-2 business days.',
             orderRef: `WFX-${Date.now()}`,
@@ -497,7 +497,7 @@ export default function RegistrationPage() {
           setManualPaymentData({
             method: 'bank-transfer',
             email: formData.email,
-            amount: 15,
+            amount: 10,
             fullName: formData.fullName,
             instructions: 'Please send payment to one of the options below. Your payment will be verified within 5-30 minutes.',
             orderRef: `WFX-${Date.now()}`,
@@ -517,7 +517,7 @@ export default function RegistrationPage() {
           setManualPaymentData({
             method: 'bank-transfer',
             email: formData.email,
-            amount: 15,
+            amount: 10,
             fullName: formData.fullName,
             instructions: 'Please transfer funds to the account details below. Your payment will be verified within 1-2 business days.',
             orderRef: `WFX-${Date.now()}`,
@@ -554,9 +554,9 @@ export default function RegistrationPage() {
           setManualPaymentData({
             method: 'binance',
             email: formData.email,
-            amount: 15,
+            amount: 10,
             fullName: formData.fullName,
-            instructions: 'Send exactly $15 USD to the Binance Pay ID below. Your payment will be verified within 5-30 minutes.',
+            instructions: 'Send exactly $10 USD to the Binance Pay ID below. Your payment will be verified within 5-30 minutes.',
             orderRef: `WFX-${Date.now()}`,
             currency: 'USD',
             bankName: 'Binance Pay',
@@ -572,9 +572,9 @@ export default function RegistrationPage() {
           setManualPaymentData({
             method: 'bybit',
             email: formData.email,
-            amount: 15,
+            amount: 10,
             fullName: formData.fullName,
-            instructions: 'Send exactly $15 USD to the Bybit wallet address below. Your payment will be verified within 5-30 minutes.',
+            instructions: 'Send exactly $10 USD to the Bybit wallet address below. Your payment will be verified within 5-30 minutes.',
             orderRef: `WFX-${Date.now()}`,
             currency: 'USD',
             bankName: 'Bybit Wallet',
