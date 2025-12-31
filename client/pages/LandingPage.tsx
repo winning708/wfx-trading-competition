@@ -302,7 +302,7 @@ export default function LandingPage() {
               {
                 step: "01",
                 title: "Register",
-                description: "Sign up and pay the $15 entry fee securely",
+                description: "Sign up and pay the $10 entry fee securely",
               },
               {
                 step: "02",
