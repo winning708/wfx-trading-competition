@@ -115,7 +115,7 @@ export async function sendConfirmationEmailToUser(
               <li><strong>Email:</strong> ${email}</li>
               <li><strong>Demo Capital:</strong> $1,000.00 USD</li>
               <li><strong>Competition Status:</strong> Active</li>
-              <li><strong>Entry Fee:</strong> $15.00 USD (Paid)</li>
+              <li><strong>Entry Fee:</strong> $10.00 USD (Paid)</li>
             </ul>
             
             <h2>Next Steps:</h2>
