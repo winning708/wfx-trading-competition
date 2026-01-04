@@ -1,9 +1,10 @@
 // Mock trader data generator for leaderboard
 // This generates realistic mock traders with Nigerian and international names
 // David Johnson is guaranteed to finish first with the highest profits
-// Profits update every 12 hours
-// David is placed at index 3 but with highest profit percentage (50-60%)
+// Profits update every 12 hours starting January 6, 2026
+// David is placed at index 3 but with highest profit percentage (120-140%)
 // so he naturally ranks #1 after sorting
+// Really high profits showcase intense trading competition!
 
 interface MockTrader {
   rank: number;
