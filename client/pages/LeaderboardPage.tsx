@@ -30,6 +30,7 @@ export default function LeaderboardPage() {
   const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(
     null,
   );
+  const [isLeaderboardActive, setIsLeaderboardActive] = useState(true);
   const { isAdmin } = useAdminAuth();
 
   // Check payment approval status
