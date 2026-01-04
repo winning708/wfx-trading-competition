@@ -273,8 +273,14 @@ export default function LeaderboardPage() {
               <div className="text-center py-12">
                 <p className="text-muted-foreground">Loading leaderboard...</p>
               </div>
+            ) : leaderboard.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-lg font-semibold text-foreground">
+                  Top 10
+                </p>
+              </div>
             ) : (
-              leaderboard.length > 0 && leaderboard.map((trader) => (
+              leaderboard.map((trader) => (
                 <div
                   key={trader.rank}
                   className="rounded-lg border border-border bg-card p-4 space-y-3"
