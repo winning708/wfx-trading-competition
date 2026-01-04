@@ -275,8 +275,8 @@ export default function LeaderboardPage() {
               </div>
             ) : leaderboard.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-lg font-semibold text-foreground">
-                  Top 10
+                <p className="text-xl font-bold text-primary">
+                  Top 10 Traders
                 </p>
               </div>
             ) : (
@@ -368,8 +368,8 @@ export default function LeaderboardPage() {
                 ) : leaderboard.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-12 text-center">
-                      <p className="text-lg font-semibold text-foreground">
-                        Top 10
+                      <p className="text-xl font-bold text-primary">
+                        Top 10 Traders
                       </p>
                     </td>
                   </tr>
