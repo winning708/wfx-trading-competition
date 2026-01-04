@@ -140,7 +140,7 @@ const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours cache
 // Generate all mock traders
 function generateAllMockTraders(): MockTrader[] {
   const now = Date.now();
-  
+
   // Use cache if still valid
   if (cachedMockTraders && (now - lastGeneratedTime) < CACHE_DURATION) {
     return cachedMockTraders;
@@ -149,15 +149,17 @@ function generateAllMockTraders(): MockTrader[] {
   // Generate fresh mock traders
   const traders: MockTrader[] = [];
   // Use current time as base seed for dynamic updates
-  const baseSeed = Math.floor(now / 60000) * 1000; // Changes every minute
-  
+  // Changes every 12 hours
+  const baseSeed = Math.floor(now / (12 * 60 * 60 * 1000)) * 1000;
+
   for (let i = 0; i < 10; i++) {
     traders.push(generateMockTrader(i, baseSeed));
   }
 
   // Sort by profit percentage (descending)
+  // David will naturally rank first due to having the highest profits
   traders.sort((a, b) => b.profitPercentage - a.profitPercentage);
-  
+
   // Update ranks after sorting
   traders.forEach((trader, index) => {
     trader.rank = index + 1;
