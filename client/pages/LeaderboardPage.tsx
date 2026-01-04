@@ -359,16 +359,8 @@ export default function LeaderboardPage() {
                       </p>
                     </td>
                   </tr>
-                ) : leaderboard.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-12 text-center">
-                      <p className="text-muted-foreground text-sm">
-                        No traders registered yet
-                      </p>
-                    </td>
-                  </tr>
                 ) : (
-                  leaderboard.map((trader) => (
+                  leaderboard.length > 0 && leaderboard.map((trader) => (
                     <tr
                       key={trader.rank}
                       className="border-b border-border hover:bg-card/50 transition-colors"
