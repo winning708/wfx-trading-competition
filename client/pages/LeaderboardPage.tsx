@@ -32,6 +32,43 @@ export default function LeaderboardPage() {
   );
   const { isAdmin } = useAdminAuth();
 
+  // Check payment approval status
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      try {
+        const email = localStorage.getItem("trader_email");
+        if (!email) {
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("traders")
+          .select("payment_status")
+          .eq("email", email)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error fetching trader payment status:", error);
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        if (!data) {
+          setIsPaymentApproved(false);
+          return;
+        }
+
+        setIsPaymentApproved(data.payment_status === "approved");
+      } catch (err) {
+        console.error("Error checking payment status:", err);
+        setIsPaymentApproved(false);
+      }
+    };
+
+    checkPaymentStatus();
+  }, []);
+
   useEffect(() => {
     // Fetch leaderboard data on component mount
     const fetchLeaderboard = async () => {
