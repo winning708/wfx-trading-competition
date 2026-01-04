@@ -33,6 +33,19 @@ export default function LeaderboardPage() {
   const [isLeaderboardActive, setIsLeaderboardActive] = useState(true);
   const { isAdmin } = useAdminAuth();
 
+  // Check if competition has started (Tuesday, January 6, 2026)
+  useEffect(() => {
+    const competitionStartDate = new Date(2026, 0, 6); // January 6, 2026
+    const now = new Date();
+
+    if (now < competitionStartDate) {
+      setIsLeaderboardActive(false);
+      console.log('[Leaderboard] Competition not yet started. Available from:', competitionStartDate.toLocaleDateString());
+    } else {
+      setIsLeaderboardActive(true);
+    }
+  }, []);
+
   // Check payment approval status
   useEffect(() => {
     const checkPaymentStatus = async () => {
