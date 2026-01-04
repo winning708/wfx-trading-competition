@@ -25,6 +25,24 @@ async function withRetry<T>(
 
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
+    // Use mock data mode with realistic traders
+    if (isMockDataMode()) {
+      const mockTraders = getMockLeaderboard();
+      const traders: Trader[] = mockTraders.map((item: any) => ({
+        rank: item.rank,
+        id: item.id,
+        username: item.username,
+        email: item.email,
+        startingBalance: item.startingBalance,
+        currentBalance: item.currentBalance,
+        profitPercentage: item.profitPercentage,
+      }));
+
+      console.log('[Leaderboard] Using mock data - Top 10 traders:', traders);
+      return traders;
+    }
+
+    // Fallback to real data from Supabase (if mock mode is disabled)
     const data = await withRetry(async () => {
       // Use raw SQL query to get leaderboard data
       const { data: result, error } = await supabase.rpc('get_leaderboard', {
@@ -104,7 +122,17 @@ export async function getLeaderboard(): Promise<Trader[]> {
     return traders;
   } catch (error) {
     console.error('Fatal error in getLeaderboard:', error);
-    return [];
+    // Fallback to mock data on any error
+    const mockTraders = getMockLeaderboard();
+    return mockTraders.map((item: any) => ({
+      rank: item.rank,
+      id: item.id,
+      username: item.username,
+      email: item.email,
+      startingBalance: item.startingBalance,
+      currentBalance: item.currentBalance,
+      profitPercentage: item.profitPercentage,
+    }));
   }
 }
 
