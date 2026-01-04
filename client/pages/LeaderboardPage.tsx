@@ -5,6 +5,7 @@ import CountdownTimer from "@/components/CountdownTimer";
 import { getLeaderboard, getTraderCount } from "@/lib/api";
 import { testSupabaseConnection } from "@/lib/test";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { supabase } from "@/lib/supabase";
 
 interface Trader {
   rank: number;
