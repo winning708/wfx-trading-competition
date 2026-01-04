@@ -27,8 +27,52 @@ export async function getLeaderboard(): Promise<Trader[]> {
   try {
     // Use mock data mode with realistic traders
     if (isMockDataMode()) {
+      // Get mock traders (top 3)
       const mockTraders = getMockLeaderboard();
-      const traders: Trader[] = mockTraders.map((item: any) => ({
+
+      // Check if competition has started
+      const competitionStartDate = new Date(2026, 0, 6); // January 6, 2026
+      const now = new Date();
+
+      if (now < competitionStartDate) {
+        // Before competition, return empty
+        return [];
+      }
+
+      // Get real traders to blend with mock data
+      let realTraders: Trader[] = [];
+      try {
+        // Fetch approved real traders registered in the last 24 hours
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+        const { data: recentTraders, error: queryError } = await supabase
+          .from('traders')
+          .select('id, full_name, email, payment_status')
+          .eq('is_approved', true)
+          .gte('created_at', oneDayAgo.toISOString())
+          .order('created_at', { ascending: false })
+          .limit(7); // Max 7 real traders to fill positions 4-10
+
+        if (!queryError && recentTraders && recentTraders.length > 0) {
+          console.log('[Leaderboard] Found real traders registered in last 24 hours:', recentTraders.length);
+
+          // Convert real traders to leaderboard format with realistic profits
+          realTraders = recentTraders.map((trader: any, index: number) => ({
+            rank: 4 + index, // Positions 4-10 only
+            id: trader.id,
+            username: trader.full_name,
+            email: trader.email,
+            startingBalance: 1000,
+            currentBalance: 1000 + (Math.random() * 300), // Small profits for new traders
+            profitPercentage: Math.random() * 30, // 0-30% profits for new traders
+          }));
+        }
+      } catch (error) {
+        console.warn('[Leaderboard] Could not fetch real traders, using mock only:', error);
+      }
+
+      // Blend mock traders (top 3) with real traders (positions 4-10)
+      const mockTop3 = mockTraders.slice(0, 3).map((item: any) => ({
         rank: item.rank,
         id: item.id,
         username: item.username,
@@ -38,8 +82,17 @@ export async function getLeaderboard(): Promise<Trader[]> {
         profitPercentage: item.profitPercentage,
       }));
 
-      console.log('[Leaderboard] Using mock data - Top 10 traders:', traders);
-      return traders;
+      // Combine: top 3 mock + real traders (up to 7) = top 10
+      const blendedTraders = [...mockTop3, ...realTraders.slice(0, 7)];
+
+      // Update ranks
+      const finalTraders = blendedTraders.map((trader, index) => ({
+        ...trader,
+        rank: index + 1,
+      }));
+
+      console.log('[Leaderboard] Blended leaderboard - Mock (3) + Real (', realTraders.length, ') = ', finalTraders.length);
+      return finalTraders;
     }
 
     // Fallback to real data from Supabase (if mock mode is disabled)
