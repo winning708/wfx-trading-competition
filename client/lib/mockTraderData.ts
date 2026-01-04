@@ -135,7 +135,7 @@ function generateMockTrader(index: number, seed: number): MockTrader {
 // Cache for current mock traders to maintain consistency
 let cachedMockTraders: MockTrader[] | null = null;
 let lastGeneratedTime = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours cache
 
 // Generate all mock traders
 function generateAllMockTraders(): MockTrader[] {
