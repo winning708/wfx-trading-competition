@@ -50,21 +50,25 @@ function seededRandom(seed: number): () => number {
 }
 
 // Generate a mock trader with realistic data
+// David is included in the traders but not always first - he finishes with highest profits
 function generateMockTrader(index: number, seed: number): MockTrader {
   const random = seededRandom(seed + index);
-  
-  // David is always rank 1 with best profits
+
   let firstName: string;
   let lastName: string;
   let country: string;
-  
-  if (index === 0) {
-    // Rank 1 is always David
+  let isDavid = false;
+
+  // David is one of the 10 traders but not necessarily first
+  // We'll give him the best profits so he naturally ranks first by profits
+  if (index === 3) {
+    // David will be at index 3, giving him a better profit than those before
     firstName = 'David';
     lastName = 'Johnson';
     country = 'United States';
-  } else if (index < 6) {
-    // Positions 2-6: Mostly Nigerian
+    isDavid = true;
+  } else if (index < 6 || (index === 3)) {
+    // Positions with good mix, mostly Nigerian
     if (random() > 0.3) {
       firstName = NIGERIAN_FIRST_NAMES[Math.floor(random() * NIGERIAN_FIRST_NAMES.length)];
       lastName = NIGERIAN_LAST_NAMES[Math.floor(random() * NIGERIAN_LAST_NAMES.length)];
@@ -92,23 +96,25 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
   const email = `${username}@example.com`;
 
-  // Realistic profit percentages - David (rank 1) has highest
+  // Realistic profit percentages
+  // David has the BEST profits (50-60%) so he finishes first
+  // Others have varying profits
   let profitPercentage: number;
-  if (index === 0) {
-    // David: 45-55% profit
-    profitPercentage = 45 + random() * 10;
-  } else if (index < 3) {
-    // Top 3: 35-45% profit
-    profitPercentage = 35 + random() * 10;
-  } else if (index < 5) {
-    // Top 5: 25-35% profit
-    profitPercentage = 25 + random() * 10;
+  if (isDavid) {
+    // David: 50-60% profit (highest - will finish first)
+    profitPercentage = 50 + random() * 10;
+  } else if (index === 0 || index === 1) {
+    // First two: 35-42% profit
+    profitPercentage = 35 + random() * 7;
+  } else if (index === 2 || index === 4) {
+    // Mid-high: 28-38% profit
+    profitPercentage = 28 + random() * 10;
   } else if (index < 7) {
-    // Top 7: 15-25% profit
-    profitPercentage = 15 + random() * 10;
+    // Mid: 18-28% profit
+    profitPercentage = 18 + random() * 10;
   } else {
-    // Top 10: 5-15% profit
-    profitPercentage = 5 + random() * 10;
+    // Lower: 8-18% profit
+    profitPercentage = 8 + random() * 10;
   }
 
   const startingBalance = 1000;
