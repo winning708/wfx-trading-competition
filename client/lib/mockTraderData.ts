@@ -187,11 +187,10 @@ function updateProfileWithMarketMovement(trader: MockTrader, volatility: number 
 
 export function getMockLeaderboard(): MockTrader[] {
   const traders = generateAllMockTraders();
-  
-  // Apply small market movements for realistic feel
-  return traders.map(trader => 
-    updateProfileWithMarketMovement(trader, 0.2)
-  );
+
+  // Return traders as-is with no additional volatility
+  // Profits are stable for 12-hour periods
+  return traders;
 }
 
 export function getMockTraderCount(): number {
