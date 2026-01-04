@@ -1,4 +1,5 @@
 import { supabase, Trader, TraderRegistration } from './supabase';
+import { getMockLeaderboard, getMockTraderCount, isMockDataMode } from './mockTraderData';
 
 // Retry logic for failed requests
 async function withRetry<T>(
