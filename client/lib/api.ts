@@ -25,8 +25,60 @@ async function withRetry<T>(
 
 export async function getLeaderboard(): Promise<Trader[]> {
   try {
-    // Use mock data mode with realistic traders
-    if (isMockDataMode()) {
+    // Check if competition has started
+    const competitionStartDate = new Date(2026, 0, 6); // January 6, 2026
+    const now = new Date();
+
+    if (now < competitionStartDate) {
+      return [];
+    }
+
+    // Try to fetch real trader data (manually uploaded by admin)
+    let realTraders: Trader[] = [];
+    try {
+      const { data: perfData, error: perfError } = await supabase
+        .from('performance_data')
+        .select('*, traders!inner(id, full_name, is_approved)')
+        .eq('traders.is_approved', true)
+        .order('profit_percentage', { ascending: false });
+
+      if (!perfError && perfData && perfData.length > 0) {
+        // Check if data was uploaded within the last 12 hours
+        const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+
+        // Filter traders whose performance data was updated within last 12 hours
+        const recentPerfData = perfData.filter((item: any) => {
+          if (!item.updated_at) return false;
+          const updatedAt = new Date(item.updated_at);
+          return updatedAt >= twelveHoursAgo;
+        });
+
+        if (recentPerfData.length > 0) {
+          console.log('[Leaderboard] Found', recentPerfData.length, 'real traders with data updated in last 12 hours');
+
+          // Convert to trader format
+          realTraders = recentPerfData.slice(0, 10).map((item: any, index: number) => ({
+            rank: index + 1,
+            id: item.trader_id,
+            username: item.traders?.full_name || 'Anonymous',
+            email: item.traders?.email,
+            startingBalance: parseFloat(String(item.starting_balance)) || 1000,
+            currentBalance: parseFloat(String(item.current_balance)) || 1000,
+            profitPercentage: parseFloat(String(item.profit_percentage)) || 0,
+          }));
+
+          console.log('[Leaderboard] Using real trader data - Top 10 traders');
+          return realTraders;
+        } else {
+          console.log('[Leaderboard] No real trader data updated in last 12 hours, falling back to mock');
+        }
+      }
+    } catch (error) {
+      console.warn('[Leaderboard] Error fetching real traders:', error);
+    }
+
+    // Fallback to mock data
+    if (isMockDataMode() && realTraders.length === 0) {
       const mockTraders = getMockLeaderboard();
       const traders: Trader[] = mockTraders.map((item: any) => ({
         rank: item.rank,
