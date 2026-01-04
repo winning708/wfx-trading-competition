@@ -267,21 +267,6 @@ export default function LeaderboardPage() {
             </div>
           )}
 
-          {!isLeaderboardActive && (
-            <div className="mb-8 rounded-lg border border-primary/30 bg-primary/5 p-8 text-center">
-              <Trophy className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-foreground mb-3">
-                Leaderboard Coming Soon
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                The live leaderboard will be available starting Tuesday, January 6th, 2026
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Once the competition begins, you'll see real-time rankings of the top 10 traders.
-              </p>
-            </div>
-          )}
-
           {/* Mobile Card View */}
           <div className="md:hidden space-y-3">
             {isLoading ? (
