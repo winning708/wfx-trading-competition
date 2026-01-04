@@ -172,7 +172,13 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Stats */}
-          <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2">
+          <div
+            className={`grid gap-3 md:gap-4 ${
+              isPaymentApproved || isAdmin
+                ? "grid-cols-1 sm:grid-cols-3"
+                : "grid-cols-1 sm:grid-cols-2"
+            }`}
+          >
             <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex-1">
@@ -199,6 +205,21 @@ export default function LeaderboardPage() {
                 <Trophy className="h-5 w-5 text-primary flex-shrink-0" />
               </div>
             </div>
+            {(isPaymentApproved || isAdmin) && (
+              <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-1">
+                      Registered Members
+                    </p>
+                    <p className="text-sm sm:text-lg font-semibold text-foreground">
+                      {traderCount}
+                    </p>
+                  </div>
+                  <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
