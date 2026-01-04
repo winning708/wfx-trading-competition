@@ -40,7 +40,10 @@ export default function LeaderboardPage() {
 
     if (now < competitionStartDate) {
       setIsLeaderboardActive(false);
-      console.log('[Leaderboard] Competition not yet started. Available from:', competitionStartDate.toLocaleDateString());
+      console.log(
+        "[Leaderboard] Competition not yet started. Available from:",
+        competitionStartDate.toLocaleDateString(),
+      );
     } else {
       setIsLeaderboardActive(true);
     }
@@ -275,9 +278,7 @@ export default function LeaderboardPage() {
               </div>
             ) : leaderboard.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-xl font-bold text-primary">
-                  Top 10 Traders
-                </p>
+                <p className="text-xl font-bold text-primary">Top 10 Traders</p>
               </div>
             ) : (
               leaderboard.map((trader) => (

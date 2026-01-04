@@ -19,36 +19,86 @@ interface MockTrader {
 
 // Mostly Nigerian names with some international mix
 const NIGERIAN_FIRST_NAMES = [
-  'Chukwu', 'Zainab', 'Okafor', 'Amara', 'Segun', 'Chioma', 'Ibrahim', 'Tunde',
-  'Ngozi', 'Adeyemi', 'Blessing', 'Emeka', 'Funke', 'Kelvin', 'Aisha', 'Oluwatoyin',
-  'Nnamdi', 'Folake', 'Kamil', 'Fatima', 'Adekunle', 'Ifeoma', 'Tobi', 'Yusuf'
+  "Chukwu",
+  "Zainab",
+  "Okafor",
+  "Amara",
+  "Segun",
+  "Chioma",
+  "Ibrahim",
+  "Tunde",
+  "Ngozi",
+  "Adeyemi",
+  "Blessing",
+  "Emeka",
+  "Funke",
+  "Kelvin",
+  "Aisha",
+  "Oluwatoyin",
+  "Nnamdi",
+  "Folake",
+  "Kamil",
+  "Fatima",
+  "Adekunle",
+  "Ifeoma",
+  "Tobi",
+  "Yusuf",
 ];
 
 const NIGERIAN_LAST_NAMES = [
-  'Okonkwo', 'Adebayo', 'Hassan', 'Ekwueme', 'Adeola', 'Okafor', 'Eze', 'Oluwaseun',
-  'Ibrahim', 'Afolabi', 'Chimdi', 'Oyedepo', 'Akinsanya', 'Uzomah', 'Mensah', 'Okoro',
-  'Adeleke', 'Oparaugo', 'Talabi', 'Agbaje', 'Ogundimu', 'Ikechukwu', 'Omotayo', 'Abubakar'
+  "Okonkwo",
+  "Adebayo",
+  "Hassan",
+  "Ekwueme",
+  "Adeola",
+  "Okafor",
+  "Eze",
+  "Oluwaseun",
+  "Ibrahim",
+  "Afolabi",
+  "Chimdi",
+  "Oyedepo",
+  "Akinsanya",
+  "Uzomah",
+  "Mensah",
+  "Okoro",
+  "Adeleke",
+  "Oparaugo",
+  "Talabi",
+  "Agbaje",
+  "Ogundimu",
+  "Ikechukwu",
+  "Omotayo",
+  "Abubakar",
 ];
 
 const INTERNATIONAL_NAMES = [
-  { first: 'David', last: 'Johnson' },
-  { first: 'Maria', last: 'Santos' },
-  { first: 'Ahmed', last: 'Khan' },
-  { first: 'Sophie', last: 'Dubois' },
-  { first: 'Juan', last: 'Martinez' },
-  { first: 'Lisa', last: 'Mueller' },
-  { first: 'Raj', last: 'Patel' },
-  { first: 'Anna', last: 'Rossi' },
+  { first: "David", last: "Johnson" },
+  { first: "Maria", last: "Santos" },
+  { first: "Ahmed", last: "Khan" },
+  { first: "Sophie", last: "Dubois" },
+  { first: "Juan", last: "Martinez" },
+  { first: "Lisa", last: "Mueller" },
+  { first: "Raj", last: "Patel" },
+  { first: "Anna", last: "Rossi" },
 ];
 
 const COUNTRIES = [
-  'Nigeria', 'Nigeria', 'Nigeria', 'Nigeria', 'Nigeria', 'Nigeria', // Mostly Nigerian
-  'United States', 'Kenya', 'Ghana', 'South Africa'
+  "Nigeria",
+  "Nigeria",
+  "Nigeria",
+  "Nigeria",
+  "Nigeria",
+  "Nigeria", // Mostly Nigerian
+  "United States",
+  "Kenya",
+  "Ghana",
+  "South Africa",
 ];
 
 // Seeded random number generator for consistency
 function seededRandom(seed: number): () => number {
-  return function() {
+  return function () {
     seed = (seed * 9301 + 49297) % 233280;
     return seed / 233280;
   };
@@ -68,18 +118,23 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   // We'll give him the best profits so he naturally ranks first by profits
   if (index === 3) {
     // David will be at index 3, giving him a better profit than those before
-    firstName = 'David';
-    lastName = 'Johnson';
-    country = 'United States';
+    firstName = "David";
+    lastName = "Johnson";
+    country = "United States";
     isDavid = true;
-  } else if (index < 6 || (index === 3)) {
+  } else if (index < 6 || index === 3) {
     // Positions with good mix, mostly Nigerian
     if (random() > 0.3) {
-      firstName = NIGERIAN_FIRST_NAMES[Math.floor(random() * NIGERIAN_FIRST_NAMES.length)];
-      lastName = NIGERIAN_LAST_NAMES[Math.floor(random() * NIGERIAN_LAST_NAMES.length)];
-      country = 'Nigeria';
+      firstName =
+        NIGERIAN_FIRST_NAMES[
+          Math.floor(random() * NIGERIAN_FIRST_NAMES.length)
+        ];
+      lastName =
+        NIGERIAN_LAST_NAMES[Math.floor(random() * NIGERIAN_LAST_NAMES.length)];
+      country = "Nigeria";
     } else {
-      const intName = INTERNATIONAL_NAMES[Math.floor(random() * INTERNATIONAL_NAMES.length)];
+      const intName =
+        INTERNATIONAL_NAMES[Math.floor(random() * INTERNATIONAL_NAMES.length)];
       firstName = intName.first;
       lastName = intName.last;
       country = COUNTRIES[Math.floor(random() * COUNTRIES.length)];
@@ -87,11 +142,16 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   } else {
     // Positions 7-10: Mix of countries
     if (random() > 0.5) {
-      firstName = NIGERIAN_FIRST_NAMES[Math.floor(random() * NIGERIAN_FIRST_NAMES.length)];
-      lastName = NIGERIAN_LAST_NAMES[Math.floor(random() * NIGERIAN_LAST_NAMES.length)];
-      country = 'Nigeria';
+      firstName =
+        NIGERIAN_FIRST_NAMES[
+          Math.floor(random() * NIGERIAN_FIRST_NAMES.length)
+        ];
+      lastName =
+        NIGERIAN_LAST_NAMES[Math.floor(random() * NIGERIAN_LAST_NAMES.length)];
+      country = "Nigeria";
     } else {
-      const intName = INTERNATIONAL_NAMES[Math.floor(random() * INTERNATIONAL_NAMES.length)];
+      const intName =
+        INTERNATIONAL_NAMES[Math.floor(random() * INTERNATIONAL_NAMES.length)];
       firstName = intName.first;
       lastName = intName.last;
       country = COUNTRIES[Math.floor(random() * COUNTRIES.length)];
@@ -147,7 +207,7 @@ function generateAllMockTraders(): MockTrader[] {
   const now = Date.now();
 
   // Use cache if still valid
-  if (cachedMockTraders && (now - lastGeneratedTime) < CACHE_DURATION) {
+  if (cachedMockTraders && now - lastGeneratedTime < CACHE_DURATION) {
     return cachedMockTraders;
   }
 
@@ -177,12 +237,18 @@ function generateAllMockTraders(): MockTrader[] {
 }
 
 // Dynamically update profits slightly for realistic market movement
-function updateProfileWithMarketMovement(trader: MockTrader, volatility: number = 0.5): MockTrader {
+function updateProfileWithMarketMovement(
+  trader: MockTrader,
+  volatility: number = 0.5,
+): MockTrader {
   const random = Math.random();
   // Small random changes to profit (-volatility to +volatility)
   const change = (random - 0.5) * volatility;
-  const updatedProfit = Math.max(-90, Math.min(100, trader.profitPercentage + change));
-  
+  const updatedProfit = Math.max(
+    -90,
+    Math.min(100, trader.profitPercentage + change),
+  );
+
   return {
     ...trader,
     profitPercentage: updatedProfit,
@@ -197,7 +263,10 @@ export function getMockLeaderboard(): MockTrader[] {
 
   if (now < competitionStartDate) {
     // Leaderboard is not yet active
-    console.log('[Leaderboard] Competition has not started yet. Available from:', competitionStartDate.toLocaleDateString());
+    console.log(
+      "[Leaderboard] Competition has not started yet. Available from:",
+      competitionStartDate.toLocaleDateString(),
+    );
     return [];
   }
 
@@ -217,7 +286,10 @@ export function isMockDataMode(): boolean {
   return true;
 }
 
-export function getMockLeaderboardWithCacheTime(): { traders: MockTrader[]; cacheTime: Date } {
+export function getMockLeaderboardWithCacheTime(): {
+  traders: MockTrader[];
+  cacheTime: Date;
+} {
   return {
     traders: getMockLeaderboard(),
     cacheTime: new Date(),
