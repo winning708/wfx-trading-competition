@@ -190,6 +190,16 @@ function updateProfileWithMarketMovement(trader: MockTrader, volatility: number 
 }
 
 export function getMockLeaderboard(): MockTrader[] {
+  // Check if current date is before Tuesday, January 6th, 2026
+  const competitionStartDate = new Date(2026, 0, 6); // January 6, 2026
+  const now = new Date();
+
+  if (now < competitionStartDate) {
+    // Leaderboard is not yet active
+    console.log('[Leaderboard] Competition has not started yet. Available from:', competitionStartDate.toLocaleDateString());
+    return [];
+  }
+
   const traders = generateAllMockTraders();
 
   // Return traders as-is with no additional volatility
