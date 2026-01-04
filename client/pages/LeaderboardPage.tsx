@@ -27,6 +27,9 @@ export default function LeaderboardPage() {
     performanceDataCount: number;
     error?: string;
   } | null>(null);
+  const [isPaymentApproved, setIsPaymentApproved] = useState<boolean | null>(
+    null,
+  );
   const { isAdmin } = useAdminAuth();
 
   useEffect(() => {
