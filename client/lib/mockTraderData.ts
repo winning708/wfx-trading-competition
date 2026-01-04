@@ -100,25 +100,25 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
   const email = `${username}@example.com`;
 
-  // Realistic profit percentages
-  // David has the BEST profits (50-60%) so he finishes first
-  // Others have varying profits
+  // Really high profit percentages starting Jan 6, 2026
+  // David has the BEST profits so he finishes first
+  // Others have varying high profits
   let profitPercentage: number;
   if (isDavid) {
-    // David: 50-60% profit (highest - will finish first)
-    profitPercentage = 50 + random() * 10;
+    // David: 120-140% profit (highest - will finish first)
+    profitPercentage = 120 + random() * 20;
   } else if (index === 0 || index === 1) {
-    // First two: 35-42% profit
-    profitPercentage = 35 + random() * 7;
+    // First two: 95-115% profit
+    profitPercentage = 95 + random() * 20;
   } else if (index === 2 || index === 4) {
-    // Mid-high: 28-38% profit
-    profitPercentage = 28 + random() * 10;
+    // Mid-high: 80-110% profit
+    profitPercentage = 80 + random() * 30;
   } else if (index < 7) {
-    // Mid: 18-28% profit
-    profitPercentage = 18 + random() * 10;
+    // Mid: 65-95% profit
+    profitPercentage = 65 + random() * 30;
   } else {
-    // Lower: 8-18% profit
-    profitPercentage = 8 + random() * 10;
+    // Lower: 50-80% profit
+    profitPercentage = 50 + random() * 30;
   }
 
   const startingBalance = 1000;
