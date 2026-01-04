@@ -84,6 +84,12 @@ export default function LeaderboardPage() {
   }, []);
 
   useEffect(() => {
+    // Only fetch leaderboard data if competition has started
+    if (!isLeaderboardActive) {
+      setIsLoading(false);
+      return;
+    }
+
     // Fetch leaderboard data on component mount
     const fetchLeaderboard = async () => {
       try {
@@ -126,7 +132,7 @@ export default function LeaderboardPage() {
     const interval = setInterval(fetchLeaderboard, 15 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isLeaderboardActive]);
 
   const handleRefresh = async () => {
     setIsLoading(true);
