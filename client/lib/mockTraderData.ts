@@ -181,32 +181,38 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   // Extraordinary profits - massive market winning performances
   // David has the BEST profits so he finishes first
   // All traders show exceptional gains with realistic variation
-  // Profits increase 300% daily (3x multiplier per day) with good margin variation
+  // Profits increase 300% daily (3x multiplier per day) with realistic spacing between traders
   let profitPercentage: number;
   if (isAllison) {
     // ALLISON ORUFA: exact 797.9% profit, grows 300% daily
     const baseProfit = 797.9;
     profitPercentage = baseProfit * dailyMultiplier;
   } else if (isDavid) {
-    // David: 1200-1500% base, grows 300% daily with ±300 margin
-    const baseProfit = 1200 + random() * 300;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 600;
+    // David: 1320-1380% base (top tier), grows 300% daily
+    // Wider gap from others (400-500 point difference)
+    const baseProfit = 1320 + random() * 60;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 200;
   } else if (index === 0 || index === 1) {
-    // Top traders: 1000-1250% base, grows 300% daily with ±250 margin
-    const baseProfit = 1000 + random() * 250;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
+    // Top traders: 950-1050% base (clear gap from David)
+    // ~250-350 point gap
+    const baseProfit = 950 + random() * 100;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 250;
   } else if (index === 2 || index === 4) {
-    // High performers: 850-1100% base, grows 300% daily with ±250 margin
-    const baseProfit = 850 + random() * 250;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
-  } else if (index < 7) {
-    // Solid performers: 750-980% base, grows 300% daily with ±230 margin
-    const baseProfit = 750 + random() * 230;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 460;
+    // High performers: 800-880% base (150-200 point gap)
+    const baseProfit = 800 + random() * 80;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 200;
+  } else if (index === 5 || index === 6) {
+    // Solid performers: 700-750% base (100-150 point gap)
+    const baseProfit = 700 + random() * 50;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
+  } else if (index === 7 || index === 8) {
+    // Consistent gainers: 600-650% base (80-120 point gap)
+    const baseProfit = 600 + random() * 50;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
   } else {
-    // Consistent gainers: 650-900% base, grows 300% daily with ±250 margin
-    const baseProfit = 650 + random() * 250;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
+    // Position 9 (will be replaced with ALLISON at pos 10): 550-600% base
+    const baseProfit = 550 + random() * 50;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
   }
 
   const startingBalance = 1000;
