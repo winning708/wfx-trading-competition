@@ -166,11 +166,7 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   // All traders show exceptional gains with realistic variation
   // Profits increase 300% daily (3x multiplier per day) with realistic spacing between traders
   let profitPercentage: number;
-  if (isAllison) {
-    // ALLISON ORUFA: exact 797.9% profit, grows 300% daily
-    const baseProfit = 797.9;
-    profitPercentage = baseProfit * dailyMultiplier;
-  } else if (isDavid) {
+  if (isDavid) {
     // David: 1320-1380% base (top tier), grows 300% daily
     // Wider gap from others (400-500 point difference)
     const baseProfit = 1320 + random() * 60;
