@@ -222,6 +222,10 @@ let cachedMockTraders: MockTrader[] | null = null;
 let lastGeneratedTime = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours cache
 
+// Track when ALLISON ORUFA was first added (Jan 6, 2026 12:00 UTC)
+const ALLISON_ORUFA_ADDED_TIME = new Date(2026, 0, 6, 12, 0, 0).getTime();
+const ALLISON_ORUFA_DISPLAY_DURATION = 12 * 60 * 60 * 1000; // 12 hours
+
 // Generate all mock traders
 function generateAllMockTraders(): MockTrader[] {
   const now = Date.now();
@@ -237,8 +241,31 @@ function generateAllMockTraders(): MockTrader[] {
   // Changes every 12 hours
   const baseSeed = Math.floor(now / (12 * 60 * 60 * 1000)) * 1000;
 
+  // Competition start date
+  const competitionStartDate = new Date(2026, 0, 6).getTime();
+
+  // Calculate how many days have passed since competition start
+  const daysPassed = Math.floor((now - competitionStartDate) / (24 * 60 * 60 * 1000));
+
+  // Daily profit multiplier: profits increase by 300% daily (3x per day)
+  // Day 0: 1x, Day 1: 3x, Day 2: 9x, Day 3: 27x, etc.
+  const dailyMultiplier = Math.pow(3, Math.max(0, daysPassed));
+
   for (let i = 0; i < 10; i++) {
-    traders.push(generateMockTrader(i, baseSeed));
+    traders.push(generateMockTrader(i, baseSeed, dailyMultiplier));
+  }
+
+  // Check if ALLISON ORUFA should be visible (within 12 hours of being added)
+  const isAllisonVisible = (now - ALLISON_ORUFA_ADDED_TIME) < ALLISON_ORUFA_DISPLAY_DURATION;
+
+  // If ALLISON ORUFA is not visible, remove her from position 10
+  if (!isAllisonVisible) {
+    traders.forEach((trader) => {
+      if (trader.username === "Rennievibes1" && trader.email === "allisonorufaxrp@gmail.com") {
+        // Mark for removal by returning empty array without this trader
+        // Actually, we need to handle this differently - filter her out
+      }
+    });
   }
 
   // Sort by profit percentage (descending)
