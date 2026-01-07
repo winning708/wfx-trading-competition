@@ -106,7 +106,6 @@ function seededRandom(seed: number): () => number {
 
 // Generate a mock trader with realistic data
 // David is included in the traders but not always first - he finishes with highest profits
-// ALLISON ORUFA is at position 10 with uploaded data
 function generateMockTrader(index: number, seed: number, dailyMultiplier: number = 1): MockTrader {
   const random = seededRandom(seed + index);
 
@@ -114,18 +113,10 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   let lastName: string;
   let country: string;
   let isDavid = false;
-  let isAllison = false;
 
-  // ALLISON ORUFA is at position 10 (index 9)
-  if (index === 9) {
-    firstName = "ALLISON";
-    lastName = "ORUFA";
-    country = "Nigeria";
-    isAllison = true;
-  }
   // David is one of the 10 traders but not necessarily first
   // We'll give him the best profits so he naturally ranks first by profits
-  else if (index === 3) {
+  if (index === 3) {
     // David will be at index 3, giving him a better profit than those before
     firstName = "David";
     lastName = "Johnson";
