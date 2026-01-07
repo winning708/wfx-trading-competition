@@ -156,8 +156,6 @@ export async function uploadForexFactoryTraderData(
             starting_balance: 1000,
             current_balance: trader.balance,
             profit_percentage: trader.profit_percent,
-            last_updated: new Date().toISOString(),
-            updated_at: new Date().toISOString(), // Force update of Supabase auto-timestamp
           },
         ], { onConflict: 'trader_id' });
 
