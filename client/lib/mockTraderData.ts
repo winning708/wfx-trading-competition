@@ -284,10 +284,10 @@ function generateAllMockTraders(): MockTrader[] {
     trader.rank = index + 1;
   });
 
-  cachedMockTraders = traders;
+  cachedMockTraders = finalTraders;
   lastGeneratedTime = now;
 
-  return traders;
+  return finalTraders;
 }
 
 // Dynamically update profits slightly for realistic market movement
