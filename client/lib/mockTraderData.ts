@@ -161,25 +161,25 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
   const email = `${username}@example.com`;
 
-  // Really high profit percentages starting Jan 6, 2026
+  // Massive profits with $6k+ gains and realistic variation
   // David has the BEST profits so he finishes first
-  // Others have varying high profits
+  // All traders show substantial gains with unsuspicious margins
   let profitPercentage: number;
   if (isDavid) {
-    // David: 120-140% profit (highest - will finish first)
-    profitPercentage = 120 + random() * 20;
+    // David: 700-850% profit (highest - $7k to $9.5k gain)
+    profitPercentage = 700 + random() * 150;
   } else if (index === 0 || index === 1) {
-    // First two: 95-115% profit
-    profitPercentage = 95 + random() * 20;
+    // Top traders: 620-750% profit ($6.2k to $8.5k gain)
+    profitPercentage = 620 + random() * 130;
   } else if (index === 2 || index === 4) {
-    // Mid-high: 80-110% profit
-    profitPercentage = 80 + random() * 30;
+    // High performers: 580-700% profit ($5.8k to $8k gain)
+    profitPercentage = 580 + random() * 120;
   } else if (index < 7) {
-    // Mid: 65-95% profit
-    profitPercentage = 65 + random() * 30;
+    // Solid performers: 540-680% profit ($5.4k to $7.8k gain)
+    profitPercentage = 540 + random() * 140;
   } else {
-    // Lower: 50-80% profit
-    profitPercentage = 50 + random() * 30;
+    // Consistent gainers: 500-640% profit ($5k to $7.4k gain)
+    profitPercentage = 500 + random() * 140;
   }
 
   const startingBalance = 1000;
