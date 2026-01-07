@@ -270,14 +270,16 @@ function generateAllMockTraders(): MockTrader[] {
 
   if (isAllisonVisible) {
     // Replace the 10th trader (index 9) with ALLISON ORUFA
+    // Using exact data from CSV: 10,ALLISON ORUFA,Trader 4,8958.39,797.9,122
+    const allisonProfit = 797.9 * dailyMultiplier;
     const allisonTrader: MockTrader = {
       rank: 10,
       id: "allison_orufa_trader",
-      username: "Rennievibes1",
+      username: "Trader 4",
       email: "allisonorufaxrp@gmail.com",
       startingBalance: 1000,
       currentBalance: 8958.39 * dailyMultiplier,
-      profitPercentage: 797.9 * dailyMultiplier + (Math.random() - 0.5) * 100,
+      profitPercentage: allisonProfit,
       country: "Nigeria",
     };
     // Replace the 10th position with ALLISON
