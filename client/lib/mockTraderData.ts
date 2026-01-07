@@ -106,7 +106,9 @@ function seededRandom(seed: number): () => number {
 
 // Generate a mock trader with realistic data
 // David is included in the traders but not always first - he finishes with highest profits
+// Trader names change every 12 hours along with profits
 function generateMockTrader(index: number, seed: number, dailyMultiplier: number = 1): MockTrader {
+  // Use seed for both name and profit generation - this ensures names change every 12 hours
   const random = seededRandom(seed + index);
 
   let firstName: string;
