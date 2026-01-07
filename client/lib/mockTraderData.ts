@@ -184,10 +184,9 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   // Profits increase 300% daily (3x multiplier per day) with good margin variation
   let profitPercentage: number;
   if (isAllison) {
-    // ALLISON ORUFA: varies every 12 hours around 797.9% with ±50 margin
-    // Also grows daily with the multiplier
+    // ALLISON ORUFA: exact 797.9% profit, grows 300% daily
     const baseProfit = 797.9;
-    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 100;
+    profitPercentage = baseProfit * dailyMultiplier;
   } else if (isDavid) {
     // David: 1200-1500% base, grows 300% daily with ±300 margin
     const baseProfit = 1200 + random() * 300;
