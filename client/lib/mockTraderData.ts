@@ -107,7 +107,7 @@ function seededRandom(seed: number): () => number {
 // Generate a mock trader with realistic data
 // David is included in the traders but not always first - he finishes with highest profits
 // ALLISON ORUFA is at position 10 with uploaded data
-function generateMockTrader(index: number, seed: number): MockTrader {
+function generateMockTrader(index: number, seed: number, dailyMultiplier: number = 1): MockTrader {
   const random = seededRandom(seed + index);
 
   let firstName: string;
