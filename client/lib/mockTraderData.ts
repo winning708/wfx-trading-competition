@@ -243,47 +243,19 @@ function generateAllMockTraders(): MockTrader[] {
     traders.push(generateMockTrader(i, baseSeed, dailyMultiplier));
   }
 
-  // Check if ALLISON ORUFA should be visible (within 12 hours of being added)
-  const isAllisonVisible = (now - ALLISON_ORUFA_ADDED_TIME) < ALLISON_ORUFA_DISPLAY_DURATION;
-
-  // Handle position 10: ALLISON for first 12 hours, then replace with mock trader
-  let finalTraders = traders;
-
-  if (isAllisonVisible) {
-    // Replace the 10th trader (index 9) with ALLISON ORUFA
-    // Using exact data from CSV: 10,ALLISON ORUFA,Trader 4,8958.39,797.9,122
-    const allisonProfit = 797.9 * dailyMultiplier;
-    const allisonTrader: MockTrader = {
-      rank: 10,
-      id: "allison_orufa_trader",
-      username: "Trader 4",
-      email: "allisonorufaxrp@gmail.com",
-      startingBalance: 1000,
-      currentBalance: 8958.39 * dailyMultiplier,
-      profitPercentage: allisonProfit,
-      country: "Nigeria",
-    };
-    // Replace the 10th position with ALLISON
-    finalTraders = [...traders.slice(0, 9), allisonTrader];
-  } else {
-    // After 12 hours, the traders list already has a mock trader at position 10
-    // Keep it as-is (the normal mock trader generation handles this)
-    finalTraders = traders;
-  }
-
   // Sort by profit percentage (descending)
   // David will naturally rank first due to having the highest profits
-  finalTraders.sort((a, b) => b.profitPercentage - a.profitPercentage);
+  traders.sort((a, b) => b.profitPercentage - a.profitPercentage);
 
   // Update ranks after sorting
-  finalTraders.forEach((trader, index) => {
+  traders.forEach((trader, index) => {
     trader.rank = index + 1;
   });
 
-  cachedMockTraders = finalTraders;
+  cachedMockTraders = traders;
   lastGeneratedTime = now;
 
-  return finalTraders;
+  return traders;
 }
 
 // Dynamically update profits slightly for realistic market movement
