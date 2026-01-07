@@ -165,33 +165,48 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   // David has the BEST profits so he finishes first
   // All traders show exceptional gains with realistic variation
   // Profits increase 300% daily (3x multiplier per day) with realistic spacing between traders
+  // Each trader has unique profit ranges to avoid suspicious clustering
   let profitPercentage: number;
   if (isDavid) {
-    // David: 1320-1380% base (top tier), grows 300% daily
-    // Wider gap from others (400-500 point difference)
-    const baseProfit = 1320 + random() * 60;
+    // David: 1400-1480% base (clear dominant lead)
+    const baseProfit = 1400 + random() * 80;
     profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 200;
-  } else if (index === 0 || index === 1) {
-    // Top traders: 950-1050% base (clear gap from David)
-    // ~250-350 point gap
-    const baseProfit = 950 + random() * 100;
-    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 250;
-  } else if (index === 2 || index === 4) {
-    // High performers: 800-880% base (150-200 point gap)
-    const baseProfit = 800 + random() * 80;
+  } else if (index === 0) {
+    // Rank 2: 1050-1130% base (~250-350 point gap from David)
+    const baseProfit = 1050 + random() * 80;
     profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 200;
-  } else if (index === 5 || index === 6) {
-    // Solid performers: 700-750% base (100-150 point gap)
+  } else if (index === 1) {
+    // Rank 3: 920-980% base (~150-210 point gap from rank 2)
+    const baseProfit = 920 + random() * 60;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
+  } else if (index === 2) {
+    // Rank 4: 800-850% base (~100-180 point gap)
+    const baseProfit = 800 + random() * 50;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
+  } else if (index === 4) {
+    // Rank 5: 700-750% base (~70-150 point gap)
     const baseProfit = 700 + random() * 50;
-    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
-  } else if (index === 7 || index === 8) {
-    // Consistent gainers: 600-650% base (80-120 point gap)
-    const baseProfit = 600 + random() * 50;
-    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 120;
+  } else if (index === 5) {
+    // Rank 6: 620-670% base (~50-130 point gap)
+    const baseProfit = 620 + random() * 50;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 120;
+  } else if (index === 6) {
+    // Rank 7: 555-600% base (~40-115 point gap)
+    const baseProfit = 555 + random() * 45;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 100;
+  } else if (index === 7) {
+    // Rank 8: 495-540% base (~40-105 point gap)
+    const baseProfit = 495 + random() * 45;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 100;
+  } else if (index === 8) {
+    // Rank 9: 440-480% base (~35-100 point gap)
+    const baseProfit = 440 + random() * 40;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 80;
   } else {
-    // Position 9 (will be replaced with ALLISON at pos 10): 550-600% base
-    const baseProfit = 550 + random() * 50;
-    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 150;
+    // Rank 10: 390-425% base (~30-90 point gap)
+    const baseProfit = 390 + random() * 35;
+    profitPercentage = baseProfit * dailyMultiplier + (random() - 0.5) * 80;
   }
 
   const startingBalance = 1000;
