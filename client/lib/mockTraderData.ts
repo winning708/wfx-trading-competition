@@ -181,25 +181,33 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   // Extraordinary profits - massive market winning performances
   // David has the BEST profits so he finishes first
   // All traders show exceptional gains with realistic variation
+  // Profits increase 300% daily (3x multiplier per day) with good margin variation
   let profitPercentage: number;
   if (isAllison) {
-    // ALLISON ORUFA: varies every 12 hours around 797.9% with ±5% margin
-    profitPercentage = 797.9 + (random() - 0.5) * 100;
+    // ALLISON ORUFA: varies every 12 hours around 797.9% with ±50 margin
+    // Also grows daily with the multiplier
+    const baseProfit = 797.9;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 100;
   } else if (isDavid) {
-    // David: 1200-1500% profit (highest - $12k to $15k gain)
-    profitPercentage = 1200 + random() * 300;
+    // David: 1200-1500% base, grows 300% daily with ±300 margin
+    const baseProfit = 1200 + random() * 300;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 600;
   } else if (index === 0 || index === 1) {
-    // Top traders: 1000-1250% profit ($10k to $12.5k gain)
-    profitPercentage = 1000 + random() * 250;
+    // Top traders: 1000-1250% base, grows 300% daily with ±250 margin
+    const baseProfit = 1000 + random() * 250;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
   } else if (index === 2 || index === 4) {
-    // High performers: 850-1100% profit ($8.5k to $11k gain)
-    profitPercentage = 850 + random() * 250;
+    // High performers: 850-1100% base, grows 300% daily with ±250 margin
+    const baseProfit = 850 + random() * 250;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
   } else if (index < 7) {
-    // Solid performers: 750-980% profit ($7.5k to $9.8k gain)
-    profitPercentage = 750 + random() * 230;
+    // Solid performers: 750-980% base, grows 300% daily with ±230 margin
+    const baseProfit = 750 + random() * 230;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 460;
   } else {
-    // Consistent gainers: 650-900% profit ($6.5k to $9k gain)
-    profitPercentage = 650 + random() * 250;
+    // Consistent gainers: 650-900% base, grows 300% daily with ±250 margin
+    const baseProfit = 650 + random() * 250;
+    profitPercentage = (baseProfit * dailyMultiplier) + (random() - 0.5) * 500;
   }
 
   const startingBalance = 1000;
