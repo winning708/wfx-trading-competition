@@ -183,8 +183,8 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   // All traders show exceptional gains with realistic variation
   let profitPercentage: number;
   if (isAllison) {
-    // ALLISON ORUFA: exact 797.9% profit from uploaded data
-    profitPercentage = 797.9;
+    // ALLISON ORUFA: varies every 12 hours around 797.9% with ±5% margin
+    profitPercentage = 797.9 + (random() - 0.5) * 100;
   } else if (isDavid) {
     // David: 1200-1500% profit (highest - $12k to $15k gain)
     profitPercentage = 1200 + random() * 300;
