@@ -171,7 +171,7 @@ function generateMockTrader(index: number, seed: number, dailyMultiplier: number
   let email: string;
 
   if (isAllison) {
-    username = "Rennievibes1";
+    username = "Trader 4";
     email = "allisonorufaxrp@gmail.com";
   } else {
     username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
