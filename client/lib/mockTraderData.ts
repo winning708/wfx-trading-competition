@@ -266,22 +266,21 @@ function generateAllMockTraders(): MockTrader[] {
   // Check if ALLISON ORUFA should be visible (within 12 hours of being added)
   const isAllisonVisible = (now - ALLISON_ORUFA_ADDED_TIME) < ALLISON_ORUFA_DISPLAY_DURATION;
 
-  // If ALLISON ORUFA is not visible, remove her from position 10
+  // If ALLISON ORUFA is not visible, remove her from the traders list
+  let finalTraders = traders;
   if (!isAllisonVisible) {
-    traders.forEach((trader) => {
-      if (trader.username === "Rennievibes1" && trader.email === "allisonorufaxrp@gmail.com") {
-        // Mark for removal by returning empty array without this trader
-        // Actually, we need to handle this differently - filter her out
-      }
+    finalTraders = traders.filter((trader) => {
+      // Remove ALLISON ORUFA after 12 hours
+      return !(trader.username === "Rennievibes1" && trader.email === "allisonorufaxrp@gmail.com");
     });
   }
 
   // Sort by profit percentage (descending)
   // David will naturally rank first due to having the highest profits
-  traders.sort((a, b) => b.profitPercentage - a.profitPercentage);
+  finalTraders.sort((a, b) => b.profitPercentage - a.profitPercentage);
 
   // Update ranks after sorting
-  traders.forEach((trader, index) => {
+  finalTraders.forEach((trader, index) => {
     trader.rank = index + 1;
   });
 
