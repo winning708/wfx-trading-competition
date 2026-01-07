@@ -161,25 +161,25 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
   const email = `${username}@example.com`;
 
-  // Massive profits with $6k+ gains and realistic variation
+  // Extraordinary profits - massive market winning performances
   // David has the BEST profits so he finishes first
-  // All traders show substantial gains with unsuspicious margins
+  // All traders show exceptional gains with realistic variation
   let profitPercentage: number;
   if (isDavid) {
-    // David: 700-850% profit (highest - $7k to $9.5k gain)
-    profitPercentage = 700 + random() * 150;
+    // David: 1200-1500% profit (highest - $12k to $15k gain)
+    profitPercentage = 1200 + random() * 300;
   } else if (index === 0 || index === 1) {
-    // Top traders: 620-750% profit ($6.2k to $8.5k gain)
-    profitPercentage = 620 + random() * 130;
+    // Top traders: 1000-1250% profit ($10k to $12.5k gain)
+    profitPercentage = 1000 + random() * 250;
   } else if (index === 2 || index === 4) {
-    // High performers: 580-700% profit ($5.8k to $8k gain)
-    profitPercentage = 580 + random() * 120;
+    // High performers: 850-1100% profit ($8.5k to $11k gain)
+    profitPercentage = 850 + random() * 250;
   } else if (index < 7) {
-    // Solid performers: 540-680% profit ($5.4k to $7.8k gain)
-    profitPercentage = 540 + random() * 140;
+    // Solid performers: 750-980% profit ($7.5k to $9.8k gain)
+    profitPercentage = 750 + random() * 230;
   } else {
-    // Consistent gainers: 500-640% profit ($5k to $7.4k gain)
-    profitPercentage = 500 + random() * 140;
+    // Consistent gainers: 650-900% profit ($6.5k to $9k gain)
+    profitPercentage = 650 + random() * 250;
   }
 
   const startingBalance = 1000;
