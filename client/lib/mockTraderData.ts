@@ -167,8 +167,16 @@ function generateMockTrader(index: number, seed: number): MockTrader {
     }
   }
 
-  const username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
-  const email = `${username}@example.com`;
+  let username: string;
+  let email: string;
+
+  if (isAllison) {
+    username = "Trader 4";
+    email = "allisonorufaxrp@gmail.com";
+  } else {
+    username = `${firstName.toLowerCase()}_${lastName.toLowerCase()}`;
+    email = `${username}@example.com`;
+  }
 
   // Extraordinary profits - massive market winning performances
   // David has the BEST profits so he finishes first
