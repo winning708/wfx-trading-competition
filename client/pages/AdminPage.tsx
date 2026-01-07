@@ -227,6 +227,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (activeTab === "monitoring") {
       loadMonitoring();
+      loadCredentials(); // Load credentials for bulk upload
     }
   }, [activeTab]);
 
