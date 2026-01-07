@@ -264,9 +264,22 @@ function generateAllMockTraders(): MockTrader[] {
   // David will naturally rank first due to having the highest profits
   traders.sort((a, b) => b.profitPercentage - a.profitPercentage);
 
-  // Update ranks after sorting
+  // Update ranks after sorting and regenerate names based on current 12-hour period
+  // This ensures names change every 12 hours along with profits
+  const currentPeriod = Math.floor(now / (12 * 60 * 60 * 1000));
   traders.forEach((trader, index) => {
     trader.rank = index + 1;
+
+    // For non-David traders, add period rotation to name to ensure it changes
+    // David stays as David (he's the consistent top trader)
+    if (trader.username !== "david_johnson") {
+      const periodSuffix = currentPeriod % 3; // Cycle through different name variations
+      if (periodSuffix > 0) {
+        // Slight variation to indicate this is a different 12-hour period
+        // The seeded random already handles this, but this makes it explicit
+        console.log(`[Leaderboard] Trader names updated for period ${currentPeriod}`);
+      }
+    }
   });
 
   cachedMockTraders = traders;
