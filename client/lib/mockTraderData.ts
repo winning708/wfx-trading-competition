@@ -235,10 +235,6 @@ let cachedMockTraders: MockTrader[] | null = null;
 let lastGeneratedTime = 0;
 const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours cache
 
-// Track when ALLISON ORUFA was first added (Jan 6, 2026 12:00 UTC)
-const ALLISON_ORUFA_ADDED_TIME = new Date(2026, 0, 6, 12, 0, 0).getTime();
-const ALLISON_ORUFA_DISPLAY_DURATION = 12 * 60 * 60 * 1000; // 12 hours
-
 // Generate all mock traders
 function generateAllMockTraders(): MockTrader[] {
   const now = Date.now();
