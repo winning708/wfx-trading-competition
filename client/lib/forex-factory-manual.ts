@@ -147,14 +147,17 @@ export async function uploadForexFactoryTraderData(
 
       // 3. Update performance data
       // Use exact values provided in CSV - no calculations
+      // Important: setting starting_balance to 1000 (default account size)
       const { error: updateError } = await supabase
         .from('performance_data')
         .upsert([
           {
             trader_id: targetTrader.id,
+            starting_balance: 1000,
             current_balance: trader.balance,
             profit_percentage: trader.profit_percent,
             last_updated: new Date().toISOString(),
+            updated_at: new Date().toISOString(), // Force update of Supabase auto-timestamp
           },
         ], { onConflict: 'trader_id' });
 
