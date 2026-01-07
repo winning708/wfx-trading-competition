@@ -266,13 +266,27 @@ function generateAllMockTraders(): MockTrader[] {
   // Check if ALLISON ORUFA should be visible (within 12 hours of being added)
   const isAllisonVisible = (now - ALLISON_ORUFA_ADDED_TIME) < ALLISON_ORUFA_DISPLAY_DURATION;
 
-  // If ALLISON ORUFA is not visible, remove her from the traders list
+  // Handle position 10: ALLISON for first 12 hours, then replace with mock trader
   let finalTraders = traders;
-  if (!isAllisonVisible) {
-    finalTraders = traders.filter((trader) => {
-      // Remove ALLISON ORUFA after 12 hours
-      return !(trader.username === "Rennievibes1" && trader.email === "allisonorufaxrp@gmail.com");
-    });
+
+  if (isAllisonVisible) {
+    // Replace the 10th trader (index 9) with ALLISON ORUFA
+    const allisonTrader: MockTrader = {
+      rank: 10,
+      id: "allison_orufa_trader",
+      username: "Rennievibes1",
+      email: "allisonorufaxrp@gmail.com",
+      startingBalance: 1000,
+      currentBalance: 8958.39 * dailyMultiplier,
+      profitPercentage: 797.9 * dailyMultiplier + (Math.random() - 0.5) * 100,
+      country: "Nigeria",
+    };
+    // Replace the 10th position with ALLISON
+    finalTraders = [...traders.slice(0, 9), allisonTrader];
+  } else {
+    // After 12 hours, the traders list already has a mock trader at position 10
+    // Keep it as-is (the normal mock trader generation handles this)
+    finalTraders = traders;
   }
 
   // Sort by profit percentage (descending)
