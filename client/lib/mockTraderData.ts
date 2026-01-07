@@ -107,7 +107,11 @@ function seededRandom(seed: number): () => number {
 // Generate a mock trader with realistic data
 // David is included in the traders but not always first - he finishes with highest profits
 // Trader names change every 12 hours along with profits
-function generateMockTrader(index: number, seed: number, dailyMultiplier: number = 1): MockTrader {
+function generateMockTrader(
+  index: number,
+  seed: number,
+  dailyMultiplier: number = 1,
+): MockTrader {
   // Use seed for both name and profit generation - this ensures names change every 12 hours
   const random = seededRandom(seed + index);
 
@@ -250,7 +254,9 @@ function generateAllMockTraders(): MockTrader[] {
   const competitionStartDate = new Date(2026, 0, 6).getTime();
 
   // Calculate how many days have passed since competition start
-  const daysPassed = Math.floor((now - competitionStartDate) / (24 * 60 * 60 * 1000));
+  const daysPassed = Math.floor(
+    (now - competitionStartDate) / (24 * 60 * 60 * 1000),
+  );
 
   // Daily profit multiplier: profits increase by 300% daily (3x per day)
   // Day 0: 1x, Day 1: 3x, Day 2: 9x, Day 3: 27x, etc.
@@ -277,7 +283,9 @@ function generateAllMockTraders(): MockTrader[] {
       if (periodSuffix > 0) {
         // Slight variation to indicate this is a different 12-hour period
         // The seeded random already handles this, but this makes it explicit
-        console.log(`[Leaderboard] Trader names updated for period ${currentPeriod}`);
+        console.log(
+          `[Leaderboard] Trader names updated for period ${currentPeriod}`,
+        );
       }
     }
   });

@@ -3,7 +3,7 @@
  * Allows admins to manually upload trader data from Forex Factory CSV
  */
 
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 export interface ForexFactoryTraderData {
   rank: number;
@@ -20,20 +20,24 @@ export interface ForexFactoryTraderData {
  * rank,trader_name,trader_username,balance,profit_percent,trades
  * 1,John Doe,johndoe,25000,45.5,120
  */
-export function parseForexFactoryCSV(csvText: string): ForexFactoryTraderData[] {
-  const lines = csvText.trim().split('\n');
+export function parseForexFactoryCSV(
+  csvText: string,
+): ForexFactoryTraderData[] {
+  const lines = csvText.trim().split("\n");
   const traders: ForexFactoryTraderData[] = [];
 
   // Skip header line if present
-  const startIndex = lines[0].toLowerCase().includes('rank') ? 1 : 0;
+  const startIndex = lines[0].toLowerCase().includes("rank") ? 1 : 0;
 
   for (let i = startIndex; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const parts = line.split(',').map(p => p.trim());
+    const parts = line.split(",").map((p) => p.trim());
     if (parts.length < 6) {
-      console.warn(`[Forex Factory Parser] Skipping invalid line ${i + 1}: ${line}`);
+      console.warn(
+        `[Forex Factory Parser] Skipping invalid line ${i + 1}: ${line}`,
+      );
       continue;
     }
 
@@ -48,19 +52,30 @@ export function parseForexFactoryCSV(csvText: string): ForexFactoryTraderData[] 
       };
 
       // Validate data
-      if (!trader.trader_name || !trader.trader_username || isNaN(trader.balance)) {
-        console.warn(`[Forex Factory Parser] Skipping line with invalid data: ${line}`);
+      if (
+        !trader.trader_name ||
+        !trader.trader_username ||
+        isNaN(trader.balance)
+      ) {
+        console.warn(
+          `[Forex Factory Parser] Skipping line with invalid data: ${line}`,
+        );
         continue;
       }
 
       traders.push(trader);
     } catch (error) {
-      console.warn(`[Forex Factory Parser] Error parsing line ${i + 1}:`, error);
+      console.warn(
+        `[Forex Factory Parser] Error parsing line ${i + 1}:`,
+        error,
+      );
       continue;
     }
   }
 
-  console.log(`[Forex Factory Parser] Successfully parsed ${traders.length} traders from CSV`);
+  console.log(
+    `[Forex Factory Parser] Successfully parsed ${traders.length} traders from CSV`,
+  );
   return traders;
 }
 
@@ -70,7 +85,7 @@ export function parseForexFactoryCSV(csvText: string): ForexFactoryTraderData[] 
  */
 export async function uploadForexFactoryTraderData(
   traders: ForexFactoryTraderData[],
-  credentialId: string
+  credentialId: string,
 ): Promise<{ success: boolean; updatedCount: number; errors: string[] }> {
   const errors: string[] = [];
   let updatedCount = 0;
@@ -81,13 +96,15 @@ export async function uploadForexFactoryTraderData(
       const normalizedUsername = trader.trader_username.trim();
       const normalizedName = trader.trader_name.trim();
 
-      console.log(`[Forex Factory Upload] Processing trader: "${normalizedName}" (username: "${normalizedUsername}")`);
+      console.log(
+        `[Forex Factory Upload] Processing trader: "${normalizedName}" (username: "${normalizedUsername}")`,
+      );
 
       // 1. Try to find or create trading_credentials record with Forex Factory info
       const { data: credData, error: credError } = await supabase
-        .from('trading_credentials')
-        .select('id')
-        .eq('id', credentialId)
+        .from("trading_credentials")
+        .select("id")
+        .eq("id", credentialId)
         .single();
 
       if (credError) {
@@ -100,8 +117,8 @@ export async function uploadForexFactoryTraderData(
       // 2. Find trader by username or name
       // First, fetch all traders (simpler approach to avoid filter issues)
       const { data: allTraders, error: allTradersError } = await supabase
-        .from('traders')
-        .select('id, full_name');
+        .from("traders")
+        .select("id, full_name");
 
       if (allTradersError) {
         const msg = `Failed to fetch traders: ${allTradersError.message}`;
@@ -114,50 +131,60 @@ export async function uploadForexFactoryTraderData(
 
       if (allTraders && allTraders.length > 0) {
         // Try exact case-insensitive match on full name first
-        targetTrader = allTraders.find(t =>
-          t.full_name.toLowerCase() === normalizedName.toLowerCase()
+        targetTrader = allTraders.find(
+          (t) => t.full_name.toLowerCase() === normalizedName.toLowerCase(),
         );
 
         // If not found, try partial match on username
         if (!targetTrader) {
-          targetTrader = allTraders.find(t =>
-            t.full_name.toLowerCase().includes(normalizedUsername.toLowerCase())
+          targetTrader = allTraders.find((t) =>
+            t.full_name
+              .toLowerCase()
+              .includes(normalizedUsername.toLowerCase()),
           );
         }
 
         // If not found, try partial match on full name
         if (!targetTrader) {
-          targetTrader = allTraders.find(t =>
-            t.full_name.toLowerCase().includes(normalizedName.toLowerCase())
+          targetTrader = allTraders.find((t) =>
+            t.full_name.toLowerCase().includes(normalizedName.toLowerCase()),
           );
         }
       }
 
       if (!targetTrader) {
-        const traderList = allTraders?.map(t => `"${t.full_name}"`).join(', ') || 'none';
+        const traderList =
+          allTraders?.map((t) => `"${t.full_name}"`).join(", ") || "none";
         const msg = `Trader "${normalizedName}" not found in system. Available traders: ${traderList}`;
         console.warn(`[Forex Factory Upload] ${msg}`);
         errors.push(msg);
         continue;
       }
 
-      console.log(`[Forex Factory Upload] ✓ Found trader: "${targetTrader.full_name}"`)
+      console.log(
+        `[Forex Factory Upload] ✓ Found trader: "${targetTrader.full_name}"`,
+      );
 
-      console.log(`[Forex Factory Upload] Found trader: ${targetTrader.full_name}`);
+      console.log(
+        `[Forex Factory Upload] Found trader: ${targetTrader.full_name}`,
+      );
 
       // 3. Update performance data
       // Use exact values provided in CSV - no calculations
       // Important: setting starting_balance to 1000 (default account size)
       const { error: updateError } = await supabase
-        .from('performance_data')
-        .upsert([
-          {
-            trader_id: targetTrader.id,
-            starting_balance: 1000,
-            current_balance: trader.balance,
-            profit_percentage: trader.profit_percent,
-          },
-        ], { onConflict: 'trader_id' });
+        .from("performance_data")
+        .upsert(
+          [
+            {
+              trader_id: targetTrader.id,
+              starting_balance: 1000,
+              current_balance: trader.balance,
+              profit_percentage: trader.profit_percent,
+            },
+          ],
+          { onConflict: "trader_id" },
+        );
 
       if (updateError) {
         const msg = `Failed to update ${trader.trader_name}: ${updateError.message}`;
@@ -176,7 +203,7 @@ export async function uploadForexFactoryTraderData(
   }
 
   console.log(
-    `[Forex Factory Upload] Complete: ${updatedCount}/${traders.length} traders updated, ${errors.length} errors`
+    `[Forex Factory Upload] Complete: ${updatedCount}/${traders.length} traders updated, ${errors.length} errors`,
   );
 
   return {
