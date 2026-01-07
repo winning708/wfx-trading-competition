@@ -166,27 +166,6 @@ export async function uploadForexFactoryTraderData(
         continue;
       }
 
-      // 4. Create/update Forex Factory integration record
-      const { error: integrationError } = await supabase
-        .from('forex_factory_integrations')
-        .upsert([
-          {
-            credential_id: credentialId,
-            trader_id: targetTrader.id,
-            ff_account_username: trader.trader_username,
-            ff_api_key: 'manual_input',
-            ff_system_id: `trader_${trader.rank}`,
-            sync_status: 'manual_success',
-            last_sync: new Date().toISOString(),
-            is_active: true,
-          },
-        ], { onConflict: 'trader_id' });
-
-      if (integrationError) {
-        console.warn(`[Forex Factory Upload] Could not create integration record:`, integrationError);
-        // Don't fail the whole import, this is optional
-      }
-
       console.log(`[Forex Factory Upload] ✓ Updated ${trader.trader_name}`);
       updatedCount++;
     } catch (error) {
