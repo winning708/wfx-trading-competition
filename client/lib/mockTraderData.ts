@@ -174,7 +174,10 @@ function generateMockTrader(index: number, seed: number): MockTrader {
   // David has the BEST profits so he finishes first
   // All traders show exceptional gains with realistic variation
   let profitPercentage: number;
-  if (isDavid) {
+  if (isAllison) {
+    // ALLISON ORUFA: exact 797.9% profit from uploaded data
+    profitPercentage = 797.9;
+  } else if (isDavid) {
     // David: 1200-1500% profit (highest - $12k to $15k gain)
     profitPercentage = 1200 + random() * 300;
   } else if (index === 0 || index === 1) {
